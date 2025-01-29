@@ -1,0 +1,15 @@
+{
+  "name": "workouttracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "type": "module",
+  "scripts": {
+    "test": "node script.js"
+  },
+  "author": "Gavin Hopkins",
+  "license": "ISC",
+  "dependencies": {
+    "postgres": "^3.4.5"
+  }
+}

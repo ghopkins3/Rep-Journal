@@ -1,0 +1,81 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: red;
+    height: 8rem;
+}
+
+.header-text { 
+    padding-left: 1rem;
+    padding-top: 2rem;
+}
+
+.diary-header-container {
+    display: flex;
+    margin-top: 3rem;
+    border: 2px solid blue;
+    margin-left: 40rem;
+    margin-right: 40rem;
+}
+
+.diary-header-calendar {
+    display: flex;
+    margin-left: 4rem;
+}
+
+#date-display {
+    font-size: 1.5rem;
+}
+
+.strength-container { 
+    margin-left: 40rem;
+    margin-right: 40rem;
+    margin-top: 4rem;
+}
+
+.add-exercise {
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: blue;
+}
+
+.add-exercise:hover {
+    cursor: pointer;
+}
+
+.add-underline {
+    border: 1px solid blue
+}
+
+.exercise-template {
+    display: flex;
+    margin-top: 1rem;
+}
+
+#exercise-search {
+    padding-left: 0.5rem;
+    width: 12rem;
+    height: 1.5rem;
+    background-color: white;
+    color: black;
+    font-size: 1.15rem;
+}
+
+.number-input {
+    margin-left: 2rem;
+    background-color: white;
+    width: 3rem;
+    font-size: 1.15rem;
+}
+
+/* accounts for three digit numbers and one decimal places
+due to weight lifted typically being >100 and occasionally 
+only adding 2.5lbs to weight
+*/ 
+#weight {
+    width: 4.5rem;
+}
