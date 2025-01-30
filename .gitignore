@@ -1,2 +1,3 @@
-# ignore config files
+# ignore config file and copied html to store while experimenting
 config.js
+copy.html

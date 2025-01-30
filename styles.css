@@ -62,14 +62,21 @@
     height: 1.5rem;
     background-color: white;
     color: black;
-    font-size: 1.15rem;
+    font-size: 1.5rem;
+}
+
+.input-label {
+    margin-left: 2rem;
+    align-self: center;
+    font-size: 1.5rem;
 }
 
 .number-input {
-    margin-left: 2rem;
+    margin-left: 0.5rem;
     background-color: white;
     width: 3rem;
     font-size: 1.15rem;
+    padding-left: 0.5rem;
 }
 
 /* accounts for three digit numbers and one decimal places
@@ -78,4 +85,34 @@ only adding 2.5lbs to weight
 */ 
 #weight {
     width: 4.5rem;
+}
+
+.exercise-table-container {
+    margin-left: 40rem;
+    margin-right: 40rem;
+    margin-top: 4rem;
+}
+
+table {
+   border-collapse: collapse; 
+   width: 40rem;
+}
+
+th {
+    border: 2px solid blue;
+    text-align: center;
+}
+
+td {
+    border: 2px solid red;
+    text-align: center;
+}
+
+.exclusion {
+    border: none;
+    color: blue;
+}
+
+.exclusion:hover {
+    cursor: pointer;
 }

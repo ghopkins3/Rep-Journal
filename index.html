@@ -29,7 +29,28 @@
             <div class="strength-header-container"><h3>Strength Training</h3></div>
             <div class="add-exercise"><h4>Add Exercise</h4></div>
             <div class="add-underline"></div>
+            
+        </div>
 
+        <div class="exercise-table-container">
+            <table class="exercise-table">
+                <thead>
+                    <tr>
+                        <th class="exercise-table-heading">Exercise</th>
+                        <th class="exercise-table-heading"># of Sets</th>
+                        <th class="exercise-table-heading"># of Reps</th>
+                        <th class="exercise-table-heading">Weight (lbs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- Add Exercise Form Template -->
+        <template id="exercise-form-template">
             <div class="exercise-template">
                 <input type="text" id="exercise-search" list="input">
                 <datalist id="input">
@@ -39,13 +60,16 @@
                     <option value="Leg Press">Leg Press</option>
                     <option value="Barbell Squat">Barbell Squat</option>
                 </datalist>
-
-                <input type="number" class="number-input" id="sets" min="1">
-                <input type="number" class="number-input" id="reps" min="1">
-                <input type="number" class="number-input" id="weight" min="0" step="5">
-            </div>
             
-        </div>
+                <label for="sets" class="input-label">Sets</label>
+                <input type="number" class="number-input" id="sets" min="1">
+                <label for="reps" class="input-label">Reps</label>
+                <input type="number" class="number-input" id="reps" min="1">
+                <label for="weight" class="input-label">Weight</label>
+                <input type="number" class="number-input" id="weight" min="0" step="5">
+                <button type="submit" id="add-entered-data">Add</button>
+            </div>
+        </template>
 
         <script src="script.js" type="module"></script>
         <script src="db.js" type="module"></script>
