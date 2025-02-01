@@ -10,7 +10,7 @@
     <body>
         <div class="header">
             <h1 class="header-text">
-                Your List
+                Your Log
             </h1>
         </div>
 
@@ -26,7 +26,10 @@
 
         <div class="strength-container">
             <div class="strength-header-container"><h3>Strength Training</h3></div>
-            <div class="add-exercise"><h4>Add Exercise</h4></div>
+            <div class="add-exercise">
+                <h4 id="add-exercise-link">Add Exercise</h4>
+                <h4 id="add-sets-link">Add Set(s) to Last Added Exercise</h4>
+            </div>
             <div class="add-underline"></div>
             
         </div>
@@ -41,7 +44,7 @@
                         <th class="exercise-table-heading">Weight (lbs)</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="exercise-table-body">
                     
                 </tbody>
             </table>
@@ -49,22 +52,63 @@
 
         <!-- Add Exercise Form Template -->
         <template id="exercise-form-template">
-            <div class="exercise-template">
+            <div class="exercise-form">
                 <input type="text" id="exercise-search" list="input">
                 <datalist id="input">
-                    <option value="Bench Press">Bench Press</option>
-                    <option value="Incline Bench Press">Incline Bench Press</option>
-                    <option value="Shoulder Press">Shoulder Press</option>
-                    <option value="Leg Press">Leg Press</option>
+                    <option value="Barbell Bench Press">Barbell Bench Press</option>
+                    <option value="Dumbbell Bench Press">Dumbbell Bench Press</option>
+                    <option value="Barbell Incline Bench Press">Barbell Incline Bench Press</option>
+                    <option value="Dumbbell Incline Bench Press">Dumbbell Incline Bench Press</option>
+
+                    <option value="Seated Dumbbell Shoulder Press">Seated Dumbbell Shoulder Press</option>
+                    <option value="Barbell Overhead Press">Barbell Overhead Press</option>
+                    <option value="Cable Lateral Raise">Cable Lateral Raise</option>
+                    <option value="Dumbbell Lateral Raise">Dumbbell Lateral Raise</option>
+
+                    <option value="Tricep Pushdown">Tricep Pushdown</option>
+                    <option value="Tricep Overhead Extension">Tricep Overhead Extension</option>
+                
                     <option value="Barbell Squat">Barbell Squat</option>
+                    <option value="Romanian Deadlift">Romanian Deadlift</option>
+                    <option value="Leg Press">Leg Press</option>
+                    <option value="Hamstring Curl">Hamstring Curl</option>
+                    <option value="Leg Extension">Leg Extension</option>
+
+                    <option value="Bent Over Barbell Row">Bent Over Barbell Row</option>
+                    <option value="Pull-up">Pull-up</option>
+                    <option value="Lat Pulldown">Lat Pulldown</option>
+
+                    <option value="Preacher Curl">Preacher Curl</option>
+                    <option value="Hammer Curl">Hammer Curl</option>
+                    <option value="Dumbbell Curl">Dumbbell Curl</option>
+                    <option value="Bayesian Curl">Bayesian Curl</option>
+                    <option value="Incline Dumbbell Curl">Incline Dumbbell Curl</option>
+                    <option value="Barbell Curl">Barbell Curl</option>
+                    <option value="EZ-Bar Curl">EZ-Bar Curl</option>
+                    
+                    <option value="Wrist Curl">Wrist Curl</option>
+                    <option value="Reverse Wrist Curl">Reverse Wrist Curl</option>
+
+                    <option value="Dumbbell Shrugs">Dumbbell Shrug</option>
+                    <option value="Barbell Shrug">Barbell Shrug</option>
+
+                    <option value="Leg Press Calf Raise">Leg Press Calf Raise</option>
+                    <option value="Leg Press Calf Raise (Single)">Leg Press Calf Raise (Single)</option>
+                    <option value="Seated Calf Raise">Seated Calf Raise</option>
+                    <option value="Calf Raise">Calf Raise</option>
+                    <option value="Single Calf Raise">Single Calf Raise</option>
+
+                    <option value="Sit-ups">Sit-ups</option>
+                    <option value="Decline Sit-ups">Decline Sit-ups</option>
+                    <option value="Hanging Leg Raises">Hanging Leg Raises</option>
                 </datalist>
             
                 <label for="sets" class="input-label">Sets</label>
-                <input type="number" class="number-input" id="sets" min="1">
+                <input type="number" class="number-input" id="sets-input" min="1">
                 <label for="reps" class="input-label">Reps</label>
-                <input type="number" class="number-input" id="reps" min="1">
-                <label for="weight" class="input-label">Weight</label>
-                <input type="number" class="number-input" id="weight" min="0" step="5">
+                <input type="number" class="number-input" id="reps-input" min="1">
+                <label for="weight" class="input-label">Weight (lbs)</label>
+                <input type="number" class="number-input" id="weight-input" min="0" step="5">
                 <button type="submit" id="add-entered-data">Add</button>
             </div>
         </template>

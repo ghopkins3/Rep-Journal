@@ -37,13 +37,15 @@
 }
 
 .add-exercise {
+    display: flex;
+    gap: 5rem;
     margin-left: 1rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     color: blue;
 }
 
-.add-exercise:hover {
+#add-exercise-link, #add-sets-link:hover {
     cursor: pointer;
 }
 
@@ -51,9 +53,10 @@
     border: 1px solid blue
 }
 
-.exercise-template {
+.exercise-form {
     display: flex;
-    margin-top: 1rem;
+    padding-top: 1rem;
+    position: absolute;
 }
 
 #exercise-search {
