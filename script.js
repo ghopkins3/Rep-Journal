@@ -10,7 +10,7 @@
 // COMPARE TWO WORKOUTS IE WEEK VS WEEK, GRAPHWORKS, PR VIEW
 
 
-import { getFromDB, insertToDB } from "./db.js";
+import { getFromDB, insertToDB } from "./server.js";
 
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
