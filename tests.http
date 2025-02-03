@@ -1,0 +1,9 @@
+get http://localhost:3000
+###
+get http://localhost:3000/test
+###
+post http://localhost:3000
+Content-Type: application/json
+{
+    "message": "test!"
+}
