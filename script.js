@@ -1,5 +1,4 @@
 // TODO 
-// CANCEL/CLOSE EXERCISE FORM
 // DELETE ROW BUTTON
 // ADD EXERCISE VALIDATION
 // CALENDAR FUNCTIONALTITY 
@@ -23,8 +22,9 @@ let currentDate = new Date().toJSON().slice(0, 10);
 
 document.addEventListener("click", (event) => {
     if(event.target.id === "add-entered-data") {
-        console.log("HERE");
         createExerciseRow();
+        removeExerciseFormFromDOM();
+    } else if(event.target.id === "close-exercise-form") {
         removeExerciseFormFromDOM();
     }
 });
@@ -38,7 +38,6 @@ addExerciseLink.addEventListener("click", () => {
 });
 
 addExerciseSetsLink.addEventListener("click", (event) => {
-    
     if(exerciseTable.rows.length <= 1) {
         event.preventDefault();
     } else {

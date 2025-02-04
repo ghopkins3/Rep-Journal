@@ -96,6 +96,10 @@ only adding 2.5lbs to weight
     width: 4.5rem;
 }
 
+#close-exercise-form {
+    width: 4rem;
+}
+
 .exercise-table-container {
     margin-left: 40rem;
     margin-right: 40rem;
