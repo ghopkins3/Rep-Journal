@@ -1,8 +1,9 @@
 // TODO 
-// FIX ADD EXERCISE/SET BUG
 // ADD EXERCISE VALIDATION
+// CANCEL/CLOSE EXERCISE FORM
 // CALENDAR FUNCTIONALTITY 
 // DATABASING 
+// MOBILE ACCESSIBLE 
 // UI/UX, DESIGN, ETC
 // MIGRATE TO TYPESCRIPT
 
@@ -27,11 +28,6 @@ document.addEventListener("click", (event) => {
     }
 });
 
-
-// ----- FOR BOTH
-// IF A FORM IS ALREADY UP, PREVENT DEFAULT 
-// ALSO DISABLE HIGHLIGHTING WHEN CLICKING
-
 addExerciseLink.addEventListener("click", () => {
     appendExerciseFormToDOM();
     document.querySelector("#exercise-search").value = "";
@@ -40,9 +36,6 @@ addExerciseLink.addEventListener("click", () => {
         document.querySelector("#weight-input").value = "";
 });
 
-
-// if add exercise clicked, close it seamlessly
-// KNOWN BUG -> CLICK ADD EXERCISE THEN ADD SET -> WITNESS BUG
 addExerciseSetsLink.addEventListener("click", (event) => {
     
     if(exerciseTable.rows.length <= 1) {
