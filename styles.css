@@ -108,7 +108,8 @@ only adding 2.5lbs to weight
 
 table {
    border-collapse: collapse; 
-   width: 40rem;
+   border-spacing: 0;
+   width: 45rem;
 }
 
 th {

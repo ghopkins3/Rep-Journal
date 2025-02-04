@@ -27,6 +27,10 @@ document.addEventListener("click", (event) => {
         removeExerciseFormFromDOM();
     } else if(event.target.id === "close-exercise-form") {
         removeExerciseFormFromDOM();
+    } else if(event.target.id === "delete-row-button") {
+        console.log(event.target.parentNode.parentNode);
+        console.log(exerciseTableBody.children);
+        exerciseTableBody.removeChild(event.target.parentNode.parentNode);
     }
 });
 
@@ -71,11 +75,19 @@ function createExerciseRow() {
     let exerciseSetsCell = newRow.insertCell(1);
     let exerciseRepsCell = newRow.insertCell(2);
     let exerciseWeightCell = newRow.insertCell(3);
+    let deleteRowCell = newRow.insertCell(4);
 
+    deleteRowCell.className = "delete-button-cell";
+
+    let deleteButton = document.createElement("button");
+    deleteButton.setAttribute("id", "delete-row-button");
+    deleteRowCell.appendChild(deleteButton);
+    
     exerciseNameCell.textContent = exerciseNameInput.value;
     exerciseSetsCell.textContent = exerciseSetsInput.value;
     exerciseRepsCell.textContent = exerciseRepsInput.value;
     exerciseWeightCell.textContent = exerciseWeightInput.value;
+    deleteButton.textContent = "X";
 }
 
 function removeExerciseFormFromDOM() {
