@@ -6,14 +6,16 @@
   "type": "module",
   "scripts": {
     "test": "node script.js",
-    "dev": "nodemon db.js"
+    "dev": "nodemon server.js"
   },
   "author": "Gavin Hopkins",
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.48.1",
     "dotenv": "^16.4.7",
-    "nodemon": "^3.1.9",
     "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

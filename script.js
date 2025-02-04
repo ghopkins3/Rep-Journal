@@ -9,9 +9,6 @@
 // FEATURES SUCH AS WEIGHT LOG, RELEVANT RESOURCES, FILTER EXERCISES, OVERVIEW, 
 // COMPARE TWO WORKOUTS IE WEEK VS WEEK, GRAPHWORKS, PR VIEW
 
-
-import { getFromDB, insertToDB } from "./server.js";
-
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
 const addExerciseSetsLink = document.querySelector("#add-sets-link");
