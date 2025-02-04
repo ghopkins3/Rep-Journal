@@ -121,11 +121,11 @@ td {
     text-align: center;
 }
 
-.exclusion {
+.delete-button-cell {
     border: none;
     color: blue;
 }
 
-.exclusion:hover {
-    cursor: pointer;
+#delete-row-button {
+    width: 1.5rem;
 }
