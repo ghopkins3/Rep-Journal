@@ -27,8 +27,17 @@ document.addEventListener("click", (event) => {
     }
 });
 
+
+// ----- FOR BOTH
+// IF A FORM IS ALREADY UP, PREVENT DEFAULT 
+// ALSO DISABLE HIGHLIGHTING WHEN CLICKING
+
 addExerciseLink.addEventListener("click", () => {
     appendExerciseFormToDOM();
+    document.querySelector("#exercise-search").value = "";
+        document.querySelector("#sets-input").value = "";
+        document.querySelector("#reps-input").value = "";
+        document.querySelector("#weight-input").value = "";
 });
 
 
@@ -81,8 +90,13 @@ function removeExerciseFormFromDOM() {
 }
 
 function appendExerciseFormToDOM() {
-    let exerciseFormToAppend = exerciseFormTemplate.content.cloneNode(true);
-    strengthContainer.appendChild(exerciseFormToAppend);
+    console.log(strengthContainer.children);
+    let test = document.getElementsByClassName("exercise-form");
+    if(test.length === 0) {
+        console.log("HERE");
+        let exerciseFormToAppend = exerciseFormTemplate.content.cloneNode(true);
+        strengthContainer.appendChild(exerciseFormToAppend);
+    }
 }
 
 dateDisplay.value = currentDate;
