@@ -1,7 +1,7 @@
 // TODO 
-// EDIT ROW BUTTON/FUNCTION
 // ADD EXERCISE VALIDATION
 // CALENDAR FUNCTIONALTITY 
+// SAVE EDITS SOMEHOW? BUTTON? POPUP?
 // DATABASING 
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 // MOBILE ACCESSIBLE 
@@ -44,9 +44,9 @@ document.addEventListener("click", (event) => {
 addExerciseLink.addEventListener("click", () => {
     appendExerciseFormToDOM();
     document.querySelector("#exercise-search").value = "";
-        document.querySelector("#sets-input").value = "";
-        document.querySelector("#reps-input").value = "";
-        document.querySelector("#weight-input").value = "";
+    document.querySelector("#sets-input").value = "";
+    document.querySelector("#reps-input").value = "";
+    document.querySelector("#weight-input").value = ""; 
 });
 
 addExerciseSetsLink.addEventListener("click", (event) => {
