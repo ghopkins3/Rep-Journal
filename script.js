@@ -1,5 +1,5 @@
 // TODO 
-// DELETE ROW BUTTON
+// EDIT ROW BUTTON/FUNCTION
 // ADD EXERCISE VALIDATION
 // CALENDAR FUNCTIONALTITY 
 // DATABASING 
@@ -31,6 +31,13 @@ document.addEventListener("click", (event) => {
         console.log(event.target.parentNode.parentNode);
         console.log(exerciseTableBody.children);
         exerciseTableBody.removeChild(event.target.parentNode.parentNode);
+    } else if(event.target.id === "edit-row-button") {
+        console.log(event.target.parentNode.previousSibling);
+        let element = event.target.parentNode.previousSibling;
+        for(let i = 0; i < 4; i++) {
+            element.contentEditable = true;
+            element = element.previousSibling;
+        }
     }
 });
 
@@ -75,8 +82,13 @@ function createExerciseRow() {
     let exerciseSetsCell = newRow.insertCell(1);
     let exerciseRepsCell = newRow.insertCell(2);
     let exerciseWeightCell = newRow.insertCell(3);
-    let deleteRowCell = newRow.insertCell(4);
+    let editRowCell = newRow.insertCell(4);
+    let deleteRowCell = newRow.insertCell(5);
 
+    let editButton = document.createElement("button");
+    editButton.setAttribute("id", "edit-row-button");
+    editRowCell.appendChild(editButton);
+    
     deleteRowCell.className = "delete-button-cell";
 
     let deleteButton = document.createElement("button");
@@ -87,7 +99,9 @@ function createExerciseRow() {
     exerciseSetsCell.textContent = exerciseSetsInput.value;
     exerciseRepsCell.textContent = exerciseRepsInput.value;
     exerciseWeightCell.textContent = exerciseWeightInput.value;
+
     deleteButton.textContent = "X";
+    editButton.textContent = "Edit";
 }
 
 function removeExerciseFormFromDOM() {

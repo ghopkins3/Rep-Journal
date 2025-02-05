@@ -92,8 +92,8 @@
 due to weight lifted typically being >100 and occasionally 
 only adding 2.5lbs to weight
 */ 
-#weight {
-    width: 4.5rem;
+#weight-input {
+    width: 5rem;
 }
 
 #close-exercise-form {
@@ -101,20 +101,18 @@ only adding 2.5lbs to weight
 }
 
 .exercise-table-container {
-    margin-left: 40rem;
-    margin-right: 40rem;
     margin-top: 4rem;
 }
 
 table {
-   border-collapse: collapse; 
    border-spacing: 0;
-   width: 45rem;
+   margin-left: 40rem;
 }
 
 th {
     border: 2px solid blue;
     text-align: center;
+    width: 12rem;
 }
 
 td {
@@ -128,5 +126,6 @@ td {
 }
 
 #delete-row-button {
+    margin-left: 1rem;
     width: 1.5rem;
 }
