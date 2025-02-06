@@ -22,8 +22,21 @@ const exerciseTableBody = document.querySelector("#exercise-table-body");
 let currentDate = new Date().toJSON().slice(0, 10);
 
 document.addEventListener("click", (event) => {
-    if(event.target.id === "add-entered-data") {
-
+    if(event.target.id === "exercise-search") {
+        event.target.addEventListener("keydown", (event) => {
+            let exerciseNamePattern = /^[a-zA-Z\s]$/;
+            if(!exerciseNamePattern.test(event.key) && event.key !== "Backspace") {
+                event.preventDefault();
+            }
+        });
+    } else if(event.target.id === "sets-input" || event.target.id === "reps-input" || event.target.id === "weight-input") {
+        event.target.addEventListener("keydown", (event) => {
+            let numberInputPattern = /[0-9]/;
+            if(!numberInputPattern.test(event.key) && event.key !== "Backspace") {
+                event.preventDefault();
+            }
+        });
+    } else if(event.target.id === "add-entered-data") {
         let exerciseNameInput = document.querySelector("#exercise-search");
         let exerciseSetsInput = document.querySelector("#sets-input");
         let exerciseRepsInput = document.querySelector("#reps-input");
@@ -36,7 +49,6 @@ document.addEventListener("click", (event) => {
         } else {
             event.preventDefault();
         }
-
     } else if(event.target.id === "close-exercise-form") {
         removeExerciseFormFromDOM();
     } else if(event.target.id === "delete-row-button") {
@@ -56,7 +68,7 @@ document.addEventListener("click", (event) => {
             element.contentEditable = false;
             element = element.previousSibling;
         }
-    }
+    } 
 });
 
 addExerciseLink.addEventListener("click", () => {
