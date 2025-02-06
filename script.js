@@ -38,6 +38,12 @@ document.addEventListener("click", (event) => {
             element.contentEditable = true;
             element = element.previousSibling;
         }
+    } else if(event.target.id === "save-row-button") {
+        let element = event.target.parentNode.previousSibling.previousSibling;
+        for(let i = 0; i <4; i++) {
+            element.contentEditable = false;
+            element = element.previousSibling;
+        }
     }
 });
 
@@ -83,11 +89,16 @@ function createExerciseRow() {
     let exerciseRepsCell = newRow.insertCell(2);
     let exerciseWeightCell = newRow.insertCell(3);
     let editRowCell = newRow.insertCell(4);
-    let deleteRowCell = newRow.insertCell(5);
+    let saveRowCell = newRow.insertCell(5);
+    let deleteRowCell = newRow.insertCell(6);
 
     let editButton = document.createElement("button");
     editButton.setAttribute("id", "edit-row-button");
     editRowCell.appendChild(editButton);
+
+    let saveButton = document.createElement("button");
+    saveButton.setAttribute("id", "save-row-button");
+    saveRowCell.appendChild(saveButton);
     
     deleteRowCell.className = "delete-button-cell";
 
@@ -100,8 +111,9 @@ function createExerciseRow() {
     exerciseRepsCell.textContent = exerciseRepsInput.value;
     exerciseWeightCell.textContent = exerciseWeightInput.value;
 
-    deleteButton.textContent = "X";
     editButton.textContent = "Edit";
+    saveButton.textContent = "Save";
+    deleteButton.textContent = "X";
 }
 
 function removeExerciseFormFromDOM() {
