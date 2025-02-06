@@ -72,6 +72,7 @@
     background-color: white;
     color: black;
     font-size: 1.5rem;
+    outline: none;
 }
 
 .input-label {
@@ -86,6 +87,7 @@
     width: 3rem;
     font-size: 1.15rem;
     padding-left: 0.5rem;
+    outline: none;
 }
 
 /* accounts for three digit numbers and one decimal places
