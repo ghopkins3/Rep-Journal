@@ -22,8 +22,20 @@ let currentDate = new Date().toJSON().slice(0, 10);
 
 document.addEventListener("click", (event) => {
     if(event.target.id === "add-entered-data") {
-        createExerciseRow();
-        removeExerciseFormFromDOM();
+
+        let exerciseNameInput = document.querySelector("#exercise-search");
+        let exerciseSetsInput = document.querySelector("#sets-input");
+        let exerciseRepsInput = document.querySelector("#reps-input");
+        let exerciseWeightInput = document.querySelector("#weight-input");
+
+        if((exerciseNameInput.value != "") && (exerciseSetsInput.value != "") && 
+            (exerciseRepsInput.value != "") && (exerciseWeightInput.value != "")) {
+                createExerciseRow();
+                removeExerciseFormFromDOM();
+        } else {
+            event.preventDefault();
+        }
+
     } else if(event.target.id === "close-exercise-form") {
         removeExerciseFormFromDOM();
     } else if(event.target.id === "delete-row-button") {
