@@ -1,5 +1,5 @@
 // TODO 
-// ADD EXERCISE FORM VALIDATION
+// ADD EXERCISE FORM VALIDATION STYLES (ACTUAL VALIDATION HAS BEEN ADDED
 // CALENDAR FUNCTIONALTITY 
 // VALIDATION WHEN EDITING
 // DATABASING 
@@ -25,7 +25,7 @@ document.addEventListener("click", (event) => {
     if(event.target.id === "exercise-search") {
         event.target.addEventListener("keydown", (event) => {
             let exerciseNamePattern = /^[a-zA-Z\s]$/;
-            if(!exerciseNamePattern.test(event.key) && event.key !== "Backspace") {
+            if(!exerciseNamePattern.test(event.key) && event.key !== "Backspace" && event.key !== "Tab") {
                 event.preventDefault();
             }
         });
