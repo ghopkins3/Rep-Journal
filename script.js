@@ -30,7 +30,9 @@ document.addEventListener("click", (event) => {
                 event.preventDefault();
             }
         });
-    } else if(event.target.id === "sets-input" || event.target.id === "reps-input" || event.target.id === "weight-input") {
+    } else if(event.target.id === "sets-input" 
+        || event.target.id === "reps-input" 
+        || event.target.id === "weight-input") {
         event.target.addEventListener("keydown", (event) => {
             let numberInputPattern = /[0-9]/;
             if(!numberInputPattern.test(event.key) && event.key !== "Backspace") {
