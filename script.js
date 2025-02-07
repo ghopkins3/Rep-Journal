@@ -22,6 +22,11 @@ const exerciseTableBody = document.querySelector("#exercise-table-body");
 
 let currentDate = new Date().toJSON().slice(0, 10);
 
+dateDisplay.addEventListener("change", () => {
+    console.log("CHANGE");
+    console.log(dateDisplay.value);
+});
+
 document.addEventListener("click", (event) => {
     if(event.target.id === "exercise-search" || event.target.getAttribute("className") === "entered-exercise-name") {
         event.target.addEventListener("keydown", (event) => {
