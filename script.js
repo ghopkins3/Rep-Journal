@@ -1,6 +1,6 @@
 // TODO 
-// ADD EDIT VALIDATION IE ADD/SAVE
-// ADD EXERCISE FORM VALIDATION STYLES (ACTUAL VALIDATION HAS BEEN ADDED
+// ADD EXERCISE FORM VALIDATION STYLES (ACTUAL VALIDATION HAS BEEN ADDED, EDIT CAN BE WONKY IF CLICK AND DRAG
+// ^^ NOT NECESSARY
 // CALENDAR FUNCTIONALTITY 
 // VALIDATION WHEN EDITING
 // DATABASING 
@@ -28,7 +28,7 @@ document.addEventListener("click", (event) => {
             let exerciseNamePattern = /^[a-zA-Z\s]$/;
             if(!exerciseNamePattern.test(event.key) && event.key !== "Backspace" && event.key !== "Tab") {
                 event.preventDefault();
-            }
+            } 
         });
     } else if(event.target.id === "sets-input" 
         || event.target.id === "reps-input" 
