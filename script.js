@@ -23,7 +23,7 @@ const exerciseTableBody = document.querySelector("#exercise-table-body");
 let currentDate = new Date().toJSON().slice(0, 10);
 
 document.addEventListener("click", (event) => {
-    if(event.target.id === "exercise-search") {
+    if(event.target.id === "exercise-search" || event.target.getAttribute("className") === "entered-exercise-name") {
         event.target.addEventListener("keydown", (event) => {
             let exerciseNamePattern = /^[a-zA-Z\s]$/;
             if(!exerciseNamePattern.test(event.key) && event.key !== "Backspace" && event.key !== "Tab") {
@@ -32,7 +32,8 @@ document.addEventListener("click", (event) => {
         });
     } else if(event.target.id === "sets-input" 
         || event.target.id === "reps-input" 
-        || event.target.id === "weight-input") {
+        || event.target.id === "weight-input"
+        || event.target.getAttribute("className") === "entered-number") {
         event.target.addEventListener("keydown", (event) => {
             let numberInputPattern = /[0-9]/;
             if(!numberInputPattern.test(event.key) && event.key !== "Backspace") {
@@ -63,15 +64,21 @@ document.addEventListener("click", (event) => {
         let element = event.target.parentNode.previousSibling;
         for(let i = 0; i < 4; i++) {
             element.contentEditable = true;
+            element.style.caretColor = "auto";
             element = element.previousSibling;
         }
     } else if(event.target.id === "save-row-button") {
         let element = event.target.parentNode.previousSibling.previousSibling;
         for(let i = 0; i <4; i++) {
             element.contentEditable = false;
+            element.style.caretColor = "transparent";
             element = element.previousSibling;
         }
     } 
+
+    console.log(event.target);
+    console.log(event.target.id);
+    console.log(event.target.className);
 });
 
 addExerciseLink.addEventListener("click", () => {
@@ -134,9 +141,16 @@ function createExerciseRow() {
     deleteRowCell.appendChild(deleteButton);
     
     exerciseNameCell.textContent = exerciseNameInput.value;
+    exerciseNameCell.setAttribute("className", "entered-exercise-name");
+
     exerciseSetsCell.textContent = exerciseSetsInput.value;
+    exerciseSetsCell.setAttribute("className", "entered-number");
+
     exerciseRepsCell.textContent = exerciseRepsInput.value;
+    exerciseRepsCell.setAttribute("className", "entered-number");
+
     exerciseWeightCell.textContent = exerciseWeightInput.value;
+    exerciseWeightCell.setAttribute("className", "entered-number");
 
     editButton.textContent = "Edit";
     saveButton.textContent = "Save";
