@@ -1,6 +1,6 @@
 import express from "express";
 import env from "dotenv";
-import {createClient, RealtimeChannel} from "@supabase/supabase-js";
+import {createClient} from "@supabase/supabase-js";
 env.config();
 const supabase = createClient(process.env.DATABSE_URL, process.env.DATABASE_SECRET_KEY);
 const app = express();
