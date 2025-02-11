@@ -24,8 +24,18 @@ let currentDate = new Date().toJSON().slice(0, 10);
 dateDisplay.addEventListener("change", () => {
     console.log("CHANGE");
     console.log("date selected: " + dateDisplay.value);
+    let selectedDate = dateDisplay.value;
+    getDataByDate(selectedDate);
+    console.log(selectedDate.toString());
+    
+    //post data with date when clicked 
+    // postData(a string, selectedDate)
+    
+    // delete data with id when clicked
+    // deleteDataByID("13");
 
-    //get data by date selected
+    // update data with id when clicked
+    // updateDataByID("updated by id", "12");
 });
 
 document.addEventListener("click", (event) => {
@@ -178,25 +188,103 @@ function appendExerciseFormToDOM() {
     }
 }
 
+const jsonHeaders = new Headers();
+jsonHeaders.append("Content-Type", "application/json");
+
 async function getAllData() {
-    // Fetch data when the web app loads
-    fetch("http://localhost:3000/test")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    try {
+        const response = await fetch("http://localhost:3000/test", {
+            method: "GET",
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not fetch resource");
         }
-        return response.json(); // Parse the JSON response
-      })
-      .then((data) => {
-        console.log("Fetched data:", data); // Log the data to the console
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error); // Log any errors
-    });
+
+        const data = await response.json();
+        console.log(data);
+    }
+    catch(error) {
+        console.error(error);
+    }
 }
 
-async function getDataByDate() {
+async function getDataByDate(selectedDate) {
+    try {
+        const response = await fetch(`http://localhost:3000/test/date=${selectedDate}`, {
+            method: "GET",
+        });
 
+        if(!response.ok) {
+            throw new Error("Could not fetch resource");
+        }
+
+        const data = await response.json();
+        console.log("Data by date: ", data);
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
+
+async function postData(testInput, dateInput) {
+    try {
+        const response = await fetch("http://localhost:3000/test", {
+            method: "POST",
+            body: JSON.stringify({
+                test: testInput,
+                date: dateInput
+            }),
+            headers: jsonHeaders,
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not post");
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
+
+    console.log("posted");
+}
+
+async function deleteDataByID(id) {
+    try {
+        const response = await fetch(`http://localhost:3000/test/id=${id}`, {
+            method: "DELETE"
+        })
+
+        if(!response.ok) {
+            throw new Error(`Could not delete data with id: ${id}`);
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
+
+    console.log(`Deleted data with id: ${id}`);
+}
+
+async function updateDataByID(testInput, id) {
+    try {
+        const response = await fetch(`http://localhost:3000/test/id=${id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                test: testInput,
+            }),
+            headers: jsonHeaders,
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not put");
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
+
+    console.log(`Updated data with id: ${id}`);
 }
 
 getAllData();
