@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import env from "dotenv";
 import {createClient} from "@supabase/supabase-js";
 env.config();
@@ -6,6 +7,7 @@ const supabase = createClient(process.env.DATABSE_URL, process.env.DATABASE_SECR
 const app = express();
 let PORT = process.env.PORT;
 app.use(express.json());
+app.use(cors());
 
 app.get("/test", async (req, res) => {
     try {

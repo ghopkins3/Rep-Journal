@@ -23,7 +23,9 @@ let currentDate = new Date().toJSON().slice(0, 10);
 
 dateDisplay.addEventListener("change", () => {
     console.log("CHANGE");
-    console.log(dateDisplay.value);
+    console.log("date selected: " + dateDisplay.value);
+
+    //get data by date selected
 });
 
 document.addEventListener("click", (event) => {
@@ -176,4 +178,26 @@ function appendExerciseFormToDOM() {
     }
 }
 
+async function getAllData() {
+    // Fetch data when the web app loads
+    fetch("http://localhost:3000/test")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse the JSON response
+      })
+      .then((data) => {
+        console.log("Fetched data:", data); // Log the data to the console
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error); // Log any errors
+    });
+}
+
+async function getDataByDate() {
+
+}
+
+getAllData();
 dateDisplay.value = currentDate;
