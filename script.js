@@ -192,9 +192,9 @@ function appendExerciseFormToDOM() {
 const jsonHeaders = new Headers();
 jsonHeaders.append("Content-Type", "application/json");
 
-async function getAllData() {
+async function getAllExercises() {
     try {
-        const response = await fetch("http://localhost:3000/test", {
+        const response = await fetch("http://localhost:3000/exercise", {
             method: "GET",
         });
 
@@ -288,5 +288,5 @@ async function updateDataByID(testInput, id) {
     console.log(`Updated data with id: ${id}`);
 }
 
-getAllData();
+getAllExercises();
 dateDisplay.value = currentDate;

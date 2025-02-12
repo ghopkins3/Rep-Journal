@@ -19,6 +19,19 @@ app.get("/exercise", async (req, res) => {
     }
 });
 
+app.post("/exercise", async (req, res) => {
+    const { error } = await supabase
+        .from("exercise")
+        .insert({
+            exercise_name: req.body.exercise_name,
+        });
+
+    if (error) {
+        return res.status(400).json({ error: error.message });
+    }
+    res.status(201).send("created!! exercise");
+}); 
+
 app.get("/exercise-set", async (req, res) => {
     try {
         let {data, error} = await supabase.from("exercise_set").select();
@@ -27,6 +40,22 @@ app.get("/exercise-set", async (req, res) => {
     } catch (error) {
         return res.send({error});
     }
+});
+
+app.post("/exercise-set", async (req, res) => {
+    const { error } = await supabase
+        .from("exercise_set")
+        .insert({
+            exercise_id: req.body.exercise_id,
+            exercise_set_number: req.body.sets,
+            repetitions: req.body.repetitions,
+            weight: req.body.weight,
+        });
+
+    if (error) {
+        return res.status(400).json({ error: error.message });
+    }
+    res.status(201).send("created!! exercise-set");
 });
 
 app.get("/workout", async (req, res) => {
@@ -39,7 +68,20 @@ app.get("/workout", async (req, res) => {
     }
 });
 
-app.get("/workout-exercises", async (req, res) => {
+app.post("/workout", async (req, res) => {
+    const { error } = await supabase
+        .from("workout")
+        .insert({
+            date: req.body.date,
+        });
+
+    if (error) {
+        return res.status(400).json({ error: error.message });
+    }
+    res.status(201).send("created!! workout");
+});
+
+app.get("/workout-exercise", async (req, res) => {
     try {
         let {data, error} = await supabase.from("workout_exercise").select();
         console.log(data);
@@ -47,6 +89,20 @@ app.get("/workout-exercises", async (req, res) => {
     } catch (error) {
         return res.send({error});
     }
+});
+
+app.post("/workout-exercise", async (req, res) => {
+    const { error } = await supabase
+        .from("workout_exercise")
+        .insert({
+            workout_id: req.body.workout_id,
+            exercise_id: req.body.exercise_id,
+        });
+
+    if (error) {
+        return res.status(400).json({ error: error.message });
+    }
+    res.status(201).send("created!! workout-exercises");
 });
 
 app.get("/test/date=:date", async (req, res) => {

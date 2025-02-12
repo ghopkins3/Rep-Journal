@@ -10,4 +10,57 @@ get http://localhost:3000/workout
 
 ###
 
-get http://localhost:3000/workout-exercises
+get http://localhost:3000/workout-exercise
+
+
+###
+
+post http://localhost:3000/test
+Content-Type: application/json
+
+{
+    "test": "i am testing",
+    "date": "2025-02-10"
+}
+
+
+###
+
+post http://localhost:3000/exercise
+Content-Type: application/json
+
+{
+    "exercise_name": "Dumbbell Shoulder Press"
+}
+
+###
+
+post http://localhost:3000/exercise-set
+Content-Type: application/json
+
+{
+    "exercise_id": "3",
+    "sets": "1",
+    "repetitions": "12",
+    "weight": "35"
+}
+
+###
+
+post http://localhost:3000/workout 
+Content-Type: application/json
+
+{
+    "date": "2025-02-13"
+}
+
+###
+
+post http://localhost:3000/workout-exercise 
+Content-Type: application/json
+
+{
+    "workout_id": "2",
+    "exercise_id": "3"
+
+}
