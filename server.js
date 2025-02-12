@@ -131,6 +131,30 @@ app.post("/workout", async (req, res) => {
     res.status(201).send("created!! workout");
 });
 
+app.put("/workout/id=:id", async (req, res) => {
+    const {error} = await supabase
+        .from("workout")
+        .update({
+            date: req.body.date
+        })
+        .eq("workout_id", req.params.id)
+    if(error) {
+        return res.status(400).json({error: error.message});
+    }
+    res.status(201).send("updated date of workout with id: " + req.params.id);
+});
+
+app.delete("/workout/id=:id", async (req, res) => {
+    const {error} = await supabase
+        .from("workout")
+        .delete()
+        .eq("workout_id", req.params.id)
+    if(error) {
+        return res.status(400).json({error: error.message});
+    }
+    res.status(201).send("deleted workout with id: " + req.params.id);
+});
+
 app.get("/workout-exercise", async (req, res) => {
     try {
         let {data, error} = await supabase.from("workout_exercise").select();
@@ -153,6 +177,31 @@ app.post("/workout-exercise", async (req, res) => {
         return res.status(400).json({ error: error.message });
     }
     res.status(201).send("created!! workout-exercises");
+});
+
+app.put("/workout-exercise/id=:id", async (req, res) => {
+    const {error} = await supabase
+        .from("workout_exercise")
+        .update({
+            workout_id: req.body.workout_id,
+            exercise_id: req.body.exercise_id
+        })
+        .eq("workout_exercises_id", req.params.id)
+    if(error) {
+        return res.status(400).json({error: error.message});
+    }
+    res.status(201).send("updated workout exercise junction with id: " + req.params.id);
+});
+
+app.delete("/workout-exercise/id=:id", async (req, res) => {
+    const {error} = await supabase
+        .from("workout_exercise")
+        .delete()
+        .eq("workout_exercises_id", req.params.id)
+    if(error) {
+        return res.status(400).json({error: error.message});
+    }
+    res.status(201).send("deleted workout exercises junction with id: " + req.params.id);
 });
 
 app.get("/test/date=:date", async (req, res) => {
