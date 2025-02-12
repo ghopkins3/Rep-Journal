@@ -19,6 +19,19 @@ app.get("/exercise", async (req, res) => {
     }
 });
 
+app.get("/exercise/id=:id", async (req, res) => {
+    try {
+        const {data, error} = await supabase
+            .from("exercise")
+            .select()
+            .eq("exercise_id", req.params.id);
+        console.log(data);
+        return res.send(data);
+    } catch (error) {
+        return res.send({error});
+    }
+});
+
 app.post("/exercise", async (req, res) => {
     const { error } = await supabase
         .from("exercise")
@@ -71,7 +84,7 @@ app.post("/exercise-set", async (req, res) => {
         .from("exercise_set")
         .insert({
             exercise_id: req.body.exercise_id,
-            exercise_set_number: req.body.sets,
+            amount_of_sets: req.body.sets,
             repetitions: req.body.repetitions,
             weight: req.body.weight,
         });
@@ -86,7 +99,7 @@ app.put("/exercise-set/id=:id", async (req, res) => {
     const {error} = await supabase
         .from("exercise_set")
         .update({
-            exercise_set_number: req.body.sets,
+            amount_of_sets: req.body.sets,
             repetitions: req.body.repetitions,
             weight: req.body.weight,
         })
