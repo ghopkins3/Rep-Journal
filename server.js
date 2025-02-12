@@ -45,6 +45,17 @@ app.put("/exercise/id=:id", async (req, res) => {
     res.status(201).send("updated exercise name of exercise with id: " + req.params.id);
 });
 
+app.delete("/exercise/id=:id", async (req, res) => {
+    const {error} = await supabase
+        .from("exercise")
+        .delete()
+        .eq("exercise_id", req.params.id)
+    if(error) {
+        return res.status(400).json({error: error.message});
+    }
+    res.status(201).send("deleted exercise with id: " + req.params.id);
+});
+
 app.get("/exercise-set", async (req, res) => {
     try {
         let {data, error} = await supabase.from("exercise_set").select();
@@ -69,6 +80,32 @@ app.post("/exercise-set", async (req, res) => {
         return res.status(400).json({ error: error.message });
     }
     res.status(201).send("created!! exercise-set");
+});
+
+app.put("/exercise-set/id=:id", async (req, res) => {
+    const {error} = await supabase
+        .from("exercise_set")
+        .update({
+            exercise_set_number: req.body.sets,
+            repetitions: req.body.repetitions,
+            weight: req.body.weight,
+        })
+        .eq("exercise_set_id", req.params.id)
+    if(error) {
+        return res.status(400).json({error: error.message});
+    }
+    res.status(201).send("updated exercise set of exercise set with id: " + req.params.id);
+});
+
+app.delete("/exercise-set/id=:id", async (req, res) => {
+    const {error} = await supabase
+        .from("exercise_set")
+        .delete()
+        .eq("exercise_set_id", req.params.id)
+    if(error) {
+        return res.status(400).json({error: error.message});
+    }
+    res.status(201).send("deleted exercise set with id: " + req.params.id);
 });
 
 app.get("/workout", async (req, res) => {
