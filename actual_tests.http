@@ -1,0 +1,13 @@
+get http://localhost:3000/exercise
+
+###
+
+get http://localhost:3000/exercise-set
+
+###
+
+get http://localhost:3000/workout
+
+###
+
+get http://localhost:3000/workout-exercises

@@ -9,9 +9,39 @@ let PORT = process.env.PORT;
 app.use(express.json());
 app.use(cors());
 
-app.get("/test", async (req, res) => {
+app.get("/exercise", async (req, res) => {
     try {
-        let {data, error} = await supabase.from("test").select();
+        let {data, error} = await supabase.from("exercise").select();
+        console.log(data);
+        return res.send(data);
+    } catch (error) {
+        return res.send({error});
+    }
+});
+
+app.get("/exercise-set", async (req, res) => {
+    try {
+        let {data, error} = await supabase.from("exercise_set").select();
+        console.log(data);
+        return res.send(data);
+    } catch (error) {
+        return res.send({error});
+    }
+});
+
+app.get("/workout", async (req, res) => {
+    try {
+        let {data, error} = await supabase.from("workout").select();
+        console.log(data);
+        return res.send(data);
+    } catch (error) {
+        return res.send({error});
+    }
+});
+
+app.get("/workout-exercises", async (req, res) => {
+    try {
+        let {data, error} = await supabase.from("workout_exercise").select();
         console.log(data);
         return res.send(data);
     } catch (error) {
