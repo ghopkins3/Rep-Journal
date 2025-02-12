@@ -172,6 +172,8 @@ function createExerciseRow() {
     editButton.textContent = "Edit";
     saveButton.textContent = "Save";
     deleteButton.textContent = "X";
+
+    
 }
 
 function removeExerciseFormFromDOM() {
