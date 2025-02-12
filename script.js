@@ -173,7 +173,7 @@ function createExerciseRow() {
     saveButton.textContent = "Save";
     deleteButton.textContent = "X";
 
-    
+
 }
 
 function removeExerciseFormFromDOM() {
@@ -289,6 +289,19 @@ async function updateDataByID(testInput, id) {
 
     console.log(`Updated data with id: ${id}`);
 }
+
+// functions to post to all tables -> add data to row
+
+
+
+
+
+
+// functions to put to appropriate tables -> edit data in row
+// functions to delete from appropriate tables -> delete data in row
+
+
+
 
 getAllExercises();
 dateDisplay.value = currentDate;
