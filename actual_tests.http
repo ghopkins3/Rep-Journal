@@ -56,6 +56,8 @@ Content-Type: application/json
 
 ###
 
+delete http://localhost:3000/exercise-set/id=9 
+
 // End exercise set table tests
 
 get http://localhost:3000/workout
