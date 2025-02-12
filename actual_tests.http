@@ -56,35 +56,61 @@ Content-Type: application/json
 
 ###
 
-delete http://localhost:3000/exercise-set/id=9 
-
+delete http://localhost:3000/exercise-set/id=3
+###
 // End exercise set table tests
 
 get http://localhost:3000/workout
 
 ###
 
-get http://localhost:3000/workout-exercise
-
-
-###
-
-###
-
-post http://localhost:3000/workout 
+post http://localhost:3000/workout
 Content-Type: application/json
 
 {
-    "date": "2025-02-13"
+    "date": "2025-02-14"
 }
 
 ###
 
-post http://localhost:3000/workout-exercise 
+put http://localhost:3000/workout/id=3
+Content-Type: application/json
+
+{
+    "date": "2025-02-15"
+}
+###
+
+delete http://localhost:3000/workout/id=3
+
+// End workout table routes tests
+###
+
+get http://localhost:3000/workout-exercise
+
+###
+
+post http://localhost:3000/workout-exercise
 Content-Type: application/json
 
 {
     "workout_id": "2",
-    "exercise_id": "3"
-
+    "exercise_id": "2"
 }
+
+###
+
+put http://localhost:3000/workout-exercise/id=4
+Content-Type: application/json
+
+{
+    "workout_id": "2",
+    "exercise_id": "1"
+}
+
+###
+
+delete http://localhost:3000/workout-exercise/id=4
+
+###
+// End workout exercise junction table routes tests
