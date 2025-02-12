@@ -32,6 +32,19 @@ app.post("/exercise", async (req, res) => {
     res.status(201).send("created!! exercise");
 }); 
 
+app.put("/exercise/id=:id", async (req, res) => {
+    const {error} = await supabase
+        .from("exercise")
+        .update({
+            exercise_name: req.body.exercise_name
+        })
+        .eq("exercise_id", req.params.id)
+    if(error) {
+        return res.status(400).json({error: error.message});
+    }
+    res.status(201).send("updated exercise name of exercise with id: " + req.params.id);
+});
+
 app.get("/exercise-set", async (req, res) => {
     try {
         let {data, error} = await supabase.from("exercise_set").select();
