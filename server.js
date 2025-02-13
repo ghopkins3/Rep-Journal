@@ -32,17 +32,36 @@ app.get("/exercise/id=:id", async (req, res) => {
     }
 });
 
+app.get("/exercise/name=:name", async (req, res) => {
+    let exerciseName = req.params.name.toLowerCase();
+    try {
+        const {data, error} = await supabase
+            .from("exercise")
+            .select()
+            .eq("exercise_name", exerciseName);
+        console.log(data);
+        return res.send(data);
+    } catch (error) {
+        return res.send({error});
+    }
+});
+
 app.post("/exercise", async (req, res) => {
-    const { error } = await supabase
+    let exerciseName = req.body.exercise_name.replaceAll(" ", "-").toLowerCase();
+    const { data, error } = await supabase
         .from("exercise")
         .insert({
-            exercise_name: req.body.exercise_name,
-        });
+            exercise_name: exerciseName,
+        })
+        .select("exercise_id")
 
     if (error) {
         return res.status(400).json({ error: error.message });
     }
-    res.status(201).send("created!! exercise");
+    res.status(201).json({
+        message: "Exercise created successfully",
+        exercise_id: data[0].exercise_id,
+    });
 }); 
 
 app.put("/exercise/id=:id", async (req, res) => {

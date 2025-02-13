@@ -173,6 +173,9 @@ function createExerciseRow() {
     saveButton.textContent = "Save";
     deleteButton.textContent = "X";
 
+    // post data
+    postExerciseData(exerciseNameInput.value);
+    // get exercise id and post set info
 
 }
 
@@ -206,6 +209,27 @@ async function getAllExercises() {
 
         const data = await response.json();
         console.log(data);
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
+
+async function getExerciseByName(exerciseName) {
+    exerciseName = exerciseName.replaceAll(" ", "-").toLowerCase();
+    console.log("exercise name: ", exerciseName);
+    try {
+        const response = await fetch(`http://localhost:3000/exercise/name=${exerciseName}`, {
+            method: "GET",
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not fetch resource");
+        }
+
+        const data = await response.json();
+        console.log("data: ", data);
+        console.log("id: ", data[0].exercise_id);
     }
     catch(error) {
         console.error(error);
@@ -293,7 +317,7 @@ async function updateDataByID(testInput, id) {
 // functions to post to all tables -> add data to row
 
 // post to exercise table
-async function postExerciseData(exerciseName) {
+async function postExerciseData(exerciseName, sets, repetitions, weight) {
     try {
         const response = await fetch("http://localhost:3000/exercise", {
             method: "POST",
@@ -306,12 +330,15 @@ async function postExerciseData(exerciseName) {
         if(!response.ok) {
             throw new Error("Could not post exercise");
         }
+
+        const data = await response.json();
+        console.log("data: ", data);
+        console.log("exercise id: ", data.exercise_id);
+        postExerciseSetData(data.exercise_id, sets, repetitions, weight);
     }
     catch(error) {
         console.error(error);
     }
-
-    console.log(`Posted exercise with name: ${exerciseName}`);
 }
 
 // post to exercise sets table
