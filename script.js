@@ -292,10 +292,97 @@ async function updateDataByID(testInput, id) {
 
 // functions to post to all tables -> add data to row
 
+// post to exercise table
+async function postExerciseData(exerciseName) {
+    try {
+        const response = await fetch("http://localhost:3000/exercise", {
+            method: "POST",
+            body: JSON.stringify({
+                exercise_name: exerciseName
+            }),
+            headers: jsonHeaders,
+        });
 
+        if(!response.ok) {
+            throw new Error("Could not post exercise");
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
 
+    console.log(`Posted exercise with name: ${exerciseName}`);
+}
 
+// post to exercise sets table
+async function postExerciseSetData(exerciseID, sets, repetitions, weight) {
+    try {
+        const response = await fetch("http://localhost:3000/exercise-set", {
+            method: "POST",
+            body: JSON.stringify({
+                exercise_id: exerciseID,
+                amount_of_sets: sets,
+                repetitions: repetitions,
+                weight: weight,
+            }),
+            headers: jsonHeaders,
+        });
 
+        if(!response.ok) {
+            throw new Error("Could not post exercise set data");
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
+
+    console.log(`Posted exercise with exercise id: ${exerciseID}`);
+}
+
+// post to workout table
+async function postWorkoutData(date) {
+    try {
+        const response = await fetch("http://localhost:3000/workout", {
+            method: "POST",
+            body: JSON.stringify({
+                date: date,
+            }),
+            headers: jsonHeaders,
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not post workout data");
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
+
+    console.log(`Posted workout with date: ${date}`);
+}
+
+// post to workout exercises junction table
+async function postWorkoutExerciseJunctionData(workoutID, exerciseID) {
+    try {
+        const response = await fetch("http://localhost:3000/workout-exercise", {
+            method: "POST",
+            body: JSON.stringify({
+                workout_id: workoutID,
+                exercise_id: exerciseID,
+            }),
+            headers: jsonHeaders,
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not post workout data");
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
+
+    console.log(`Posted workout with date: ${date}`);
+}
 
 // functions to put to appropriate tables -> edit data in row
 // functions to delete from appropriate tables -> delete data in row
