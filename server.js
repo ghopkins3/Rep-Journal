@@ -211,6 +211,40 @@ app.get("/workout-exercise", async (req, res) => {
     }
 });
 
+app.get("/workout-exercise/workout-id=:id", async (req, res) => {
+    try {
+        const {data: workoutExercises, error: exerciseError} = await supabase
+            .from("workout_exercise")
+            .select(`
+                exercise_id,
+                exercise (exercise_name)
+            `)
+            .eq("workout_id", req.params.id);
+
+        if(exerciseError) throw exerciseError;
+        
+        const exerciseIDs = workoutExercises.map(exercise => exercise.exercise_id);
+
+        const {data: exerciseSets, error: setError} = await supabase
+            .from("exercise_set")
+            .select("exercise_id, amount_of_sets, repetitions, weight")
+            .in("exercise_id", exerciseIDs);
+        
+        if(setError) throw setError;
+
+        const combinedData = workoutExercises.map(exercise => ({
+            exercise_name: exercise.exercise.exercise_name,
+            exercise_id: exercise.exercise_id,
+            sets: exerciseSets.filter(set => set.exercise_id === exercise.exercise_id)
+        }));
+
+        return res.send(combinedData);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({error: error.message});
+    }
+});
+
 app.post("/workout-exercise", async (req, res) => {
     const { error } = await supabase
         .from("workout_exercise")

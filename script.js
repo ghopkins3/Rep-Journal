@@ -3,7 +3,6 @@
 // DATABASING WITH ACTUAL DATA I.E. ACTUAL USE CASE
 
 // populate from database now
-// current date when loaded for the first time, on change, prevent currentdate
 
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 // MOBILE ACCESSIBLE 
@@ -41,12 +40,22 @@ dateDisplay.addEventListener("change", () => {
     console.log("date selected: " + dateDisplay.value);
     sessionStorage.setItem("key", dateDisplay.value);
     console.log(sessionStorage.getItem("key"));
+
+    // populate table
+
 });
 
 if(sessionStorage.getItem("key") === null) {
     dateDisplay.value = currentDate;
 } else {
     dateDisplay.value = sessionStorage.getItem("key");
+}
+
+const test = await getWorkoutByDate(dateDisplay.value);
+if(test !== null && test !== undefined) {
+    console.log("here", test);
+} else {
+    console.log("not test");
 }
 
 document.addEventListener("click", (event) => {
