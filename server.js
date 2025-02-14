@@ -154,7 +154,7 @@ app.get("/workout/date=:date", async (req, res) => {
     try {
         const {data, error} = await supabase
             .from("workout")
-            .select("id")
+            .select("workout_id")
             .eq("date", req.params.date)
             .limit(1);
         console.log(data);
