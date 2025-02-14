@@ -21,6 +21,7 @@ const exerciseTable = document.querySelector(".exercise-table");
 const exerciseTableBody = document.querySelector("#exercise-table-body");
 
 let currentDate = new Date().toJSON().slice(0, 10);
+console.log(currentDate);
 
 dateDisplay.addEventListener("change", () => {
     console.log("CHANGE");
@@ -174,8 +175,9 @@ function createExerciseRow() {
     deleteButton.textContent = "X";
 
     // post data
-    postExerciseData(exerciseNameInput.value);
+    postExerciseData(exerciseNameInput.value, exerciseSetsInput.value, exerciseRepsInput.value, exerciseWeightInput.value, dateDisplay.value);
     // get exercise id and post set info
+    console.log(dateDisplay.value);
 
 }
 
@@ -317,7 +319,7 @@ async function updateDataByID(testInput, id) {
 // functions to post to all tables -> add data to row
 
 // post to exercise table
-async function postExerciseData(exerciseName, sets, repetitions, weight) {
+async function postExerciseData(exerciseName, sets, repetitions, weight, date) {
     try {
         const response = await fetch("http://localhost:3000/exercise", {
             method: "POST",
@@ -335,6 +337,11 @@ async function postExerciseData(exerciseName, sets, repetitions, weight) {
         console.log("data: ", data);
         console.log("exercise id: ", data.exercise_id);
         postExerciseSetData(data.exercise_id, sets, repetitions, weight);
+        if(getWorkoutByDate(date).length > 0) {
+            console.log("YES")
+        } else {
+            postWorkoutData(date);
+        }
     }
     catch(error) {
         console.error(error);
@@ -364,6 +371,25 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight) {
     }
 
     console.log(`Posted exercise with exercise id: ${exerciseID}`);
+}
+
+async function getWorkoutByDate(date) {
+    try {
+        const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
+            method: "GET",
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not fetch resource");
+        }
+
+        const data = await response.json();
+        console.log("Workout by date: ", data);
+        return data.length > 0
+    }
+    catch(error) {
+        console.error(error);
+    }
 }
 
 // post to workout table
@@ -408,7 +434,7 @@ async function postWorkoutExerciseJunctionData(workoutID, exerciseID) {
         console.error(error);
     }
 
-    console.log(`Posted workout with date: ${date}`);
+    console.log(`Posted junction with ids: ${workoutID}, ${exerciseID}`);
 }
 
 // functions to put to appropriate tables -> edit data in row

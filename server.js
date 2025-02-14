@@ -150,6 +150,20 @@ app.get("/workout", async (req, res) => {
     }
 });
 
+app.get("/workout/date=:date", async (req, res) => {
+    try {
+        const {data, error} = await supabase
+            .from("workout")
+            .select("id")
+            .eq("date", req.params.date)
+            .limit(1);
+        console.log(data);
+        return res.send(data);
+    } catch (error) {
+        return res.send({error});
+    }
+});
+
 app.post("/workout", async (req, res) => {
     const { error } = await supabase
         .from("workout")
