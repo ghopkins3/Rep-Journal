@@ -2,8 +2,13 @@
 // CALENDAR FUNCTIONALTITY 
 // DATABASING WITH ACTUAL DATA I.E. ACTUAL USE CASE
 
+// populate from database now
+// current date when loaded for the first time, on change, prevent currentdate
+
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 // MOBILE ACCESSIBLE 
+// REFACTOR ASAP
+
 // CARDIO/MILE TIMES 
 // UI/UX, DESIGN, ETC
 // Skeleton html on load
@@ -34,19 +39,15 @@ console.log(currentDate);
 dateDisplay.addEventListener("change", () => {
     console.log("CHANGE");
     console.log("date selected: " + dateDisplay.value);
-    let selectedDate = dateDisplay.value;
-    getDataByDate(selectedDate);
-    console.log(selectedDate.toString());
-    
-    //post data with date when clicked 
-    // postData(a string, selectedDate)
-    
-    // delete data with id when clicked
-    // deleteDataByID("13");
-
-    // update data with id when clicked
-    // updateDataByID("updated by id", "12");
+    sessionStorage.setItem("key", dateDisplay.value);
+    console.log(sessionStorage.getItem("key"));
 });
+
+if(sessionStorage.getItem("key") === null) {
+    dateDisplay.value = currentDate;
+} else {
+    dateDisplay.value = sessionStorage.getItem("key");
+}
 
 document.addEventListener("click", (event) => {
     if(event.target.id === "exercise-search" || event.target.getAttribute("className") === "entered-exercise-name") {
@@ -449,10 +450,5 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID) {
 }
 
 // functions to put to appropriate tables -> edit data in row
+
 // functions to delete from appropriate tables -> delete data in row
-
-
-
-
-getAllExercises();
-dateDisplay.value = currentDate;
