@@ -3,6 +3,10 @@
 // DATABASING WITH ACTUAL DATA I.E. ACTUAL USE CASE
 
 // populate from database now
+// query workout table to get workout id for date -- DONE
+// fetch exercise ids associated with that workout
+// use exercise ids to query exercise set for corresponding data
+// combine data from exercise and exercise set to popoulate table 
 
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 // MOBILE ACCESSIBLE 
@@ -35,27 +39,35 @@ if(dateSplitOnSlash[0] < 10) {
 }
 console.log(currentDate);
 
-dateDisplay.addEventListener("change", () => {
-    console.log("CHANGE");
-    console.log("date selected: " + dateDisplay.value);
-    sessionStorage.setItem("key", dateDisplay.value);
-    console.log(sessionStorage.getItem("key"));
+let selectedDate = "selectedDate";
 
-    // populate table
-
-});
-
-if(sessionStorage.getItem("key") === null) {
+// if a saved date doesnt exist reset
+// PAGE LOADS HERE
+if(sessionStorage.getItem(selectedDate) === null) {
     dateDisplay.value = currentDate;
+    sessionStorage.setItem(selectedDate, dateDisplay.value);
+    console.log("HERE");
 } else {
-    dateDisplay.value = sessionStorage.getItem("key");
+    dateDisplay.value = sessionStorage.getItem(selectedDate);
+    console.log("here");
 }
 
-const test = await getWorkoutByDate(dateDisplay.value);
-if(test !== null && test !== undefined) {
-    console.log("here", test);
-} else {
-    console.log("not test");
+checkWorkoutOnDate(dateDisplay.value);
+
+dateDisplay.addEventListener("change", () => {
+    while(exerciseTableBody.lastElementChild) {
+        exerciseTableBody.removeChild(exerciseTableBody.lastElementChild);
+    }
+    sessionStorage.setItem(selectedDate, dateDisplay.value);
+    console.log("session object date:", sessionStorage.getItem(selectedDate));
+    checkWorkoutOnDate(dateDisplay.value);
+});
+
+async function checkWorkoutOnDate(date) {
+    const workoutOnDate = await getWorkoutByDate(date);
+    if(workoutOnDate !== null && workoutOnDate !== undefined) {
+        populateTableFromData(workoutOnDate);
+    }
 }
 
 document.addEventListener("click", (event) => {
@@ -195,6 +207,53 @@ function createExerciseRow() {
     postExerciseData(exerciseNameInput.value, exerciseSetsInput.value, exerciseRepsInput.value, exerciseWeightInput.value, dateDisplay.value);
     console.log(dateDisplay.value);
 
+}
+
+async function populateTableFromData(workoutDate) {
+    const exerciseData = await getExerciseDataByWorkoutID(workoutDate);
+
+    exerciseData.forEach(exercise => {
+        let newRow = exerciseTableBody.insertRow();
+        let exerciseNameCell = newRow.insertCell(0);
+        let exerciseSetsCell = newRow.insertCell(1);
+        let exerciseRepsCell = newRow.insertCell(2);
+        let exerciseWeightCell = newRow.insertCell(3);
+        let editRowCell = newRow.insertCell(4);
+        let saveRowCell = newRow.insertCell(5);
+        let deleteRowCell = newRow.insertCell(6);
+
+        let editButton = document.createElement("button");
+        editButton.setAttribute("id", "edit-row-button");
+        editRowCell.appendChild(editButton);
+
+        let saveButton = document.createElement("button");
+        saveButton.setAttribute("id", "save-row-button");
+        saveRowCell.appendChild(saveButton);
+    
+        deleteRowCell.className = "delete-button-cell";
+
+        let deleteButton = document.createElement("button");
+        deleteButton.setAttribute("id", "delete-row-button");
+        deleteRowCell.appendChild(deleteButton);
+    
+        exerciseNameCell.textContent = exercise.exercise_name;
+        exerciseNameCell.setAttribute("className", "entered-exercise-name");
+
+        exerciseSetsCell.textContent = exercise.sets[0].amount_of_sets;
+        exerciseSetsCell.setAttribute("className", "entered-number");
+
+        exerciseRepsCell.textContent = exercise.sets[0].repetitions;
+        exerciseRepsCell.setAttribute("className", "entered-number");
+
+        exerciseWeightCell.textContent = exercise.sets[0].weight;
+        exerciseWeightCell.setAttribute("className", "entered-number");
+
+        editButton.textContent = "Edit";
+        saveButton.textContent = "Save";
+        deleteButton.textContent = "X";
+
+        console.log(exercise);
+    });
 }
 
 function removeExerciseFormFromDOM() {
@@ -405,8 +464,9 @@ async function getWorkoutByDate(date) {
 
         const data = await response.json();
         console.log("Workout by date: ", data);
-        console.log("workout id: ", data[0].workout_id);
-        return data[0].workout_id;
+        if(data.length > 0) {
+            return data[0].workout_id;
+        }
     }
     catch(error) {
         console.error(error);
@@ -456,6 +516,25 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID) {
     }
 
     console.log(`Posted junction with ids: ${workoutID}, ${exerciseID}`);
+}
+
+// function to get data to popoulate table
+async function getExerciseDataByWorkoutID(workoutID) {
+    try {
+        const response = await fetch(`http://localhost:3000/workout-exercise/workout-id=${workoutID}`, {
+            method: "GET",
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not fetch exercise data by workout ID");
+        }
+
+        const data = await response.json();
+        return data;
+    }
+    catch(error) {
+        console.error(error);
+    }
 }
 
 // functions to put to appropriate tables -> edit data in row

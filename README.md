@@ -64,3 +64,37 @@ app.put("/test/id=:id", async (req, res) => {
     }
     res.status(201).send("updated item with id: " + req.params.id);
 });
+
+dateDisplay.addEventListener("change", () => {
+    console.log("CHANGE");
+    while(exerciseTableBody.lastElementChild) {
+        exerciseTableBody.removeChild(exerciseTableBody.lastElementChild);
+    }
+    console.log("date selected: " + dateDisplay.value);
+    sessionStorage.setItem("key", dateDisplay.value);
+    console.log(sessionStorage.getItem("key"));
+    checkWorkoutOnDate(dateDisplay.value);
+    
+});
+
+// if session storage object is null, current date is displayed
+// else not
+
+// so i want to populate on change but 
+if(sessionStorage.getItem("key") === null) {
+    dateDisplay.value = currentDate;
+} else {
+    dateDisplay.value = sessionStorage.getItem("key");
+}
+
+async function checkWorkoutOnDate(date) {
+    const workoutOnDate = await getWorkoutByDate(date);
+    if(workoutOnDate !== null && workoutOnDate !== undefined) {
+        console.log("here:", workoutOnDate);
+        populateTableFromData(workoutOnDate);
+    }
+}
+
+while(exerciseTableBody.lastElementChild) {
+  exerciseTableBody.removeChild(exerciseTableBody.lastElementChild);
+}
