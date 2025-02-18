@@ -1,14 +1,10 @@
 // TODO 
-// CALENDAR FUNCTIONALTITY 
-// DATABASING WITH ACTUAL DATA I.E. ACTUAL USE CASE
 
-// populate from database now
-// query workout table to get workout id for date -- DONE
-// fetch exercise ids associated with that workout
-// use exercise ids to query exercise set for corresponding data
-// combine data from exercise and exercise set to popoulate table 
-
+// DATABASING WITH ACTUAL DATA I.E. ACTUAL USE CASE -- PARTIALLY DONE
+// EDIT/DELETE FUNCTIONALITY 
+// TRANSFORM DATA BACK TO NORMAL CASE/SPACES WHEN FETCHING AND POPULATING ROWS
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
+
 // MOBILE ACCESSIBLE 
 // REFACTOR ASAP
 
@@ -43,6 +39,7 @@ let selectedDate = "selectedDate";
 
 // if a saved date doesnt exist reset
 // PAGE LOADS HERE
+
 if(sessionStorage.getItem(selectedDate) === null) {
     dateDisplay.value = currentDate;
     sessionStorage.setItem(selectedDate, dateDisplay.value);
@@ -129,6 +126,17 @@ document.addEventListener("click", (event) => {
     console.log(event.target.className);
 });
 
+// added for increased testing speed
+document.addEventListener("keydown", (event) => {
+    if(event.key === "Enter") {
+        let existingExerciseForms = document.getElementsByClassName("exercise-form");
+        if(existingExerciseForms.length > 0) {
+            let addButton = document.querySelector("#add-entered-data");
+            addButton.click();
+        }
+    }
+});
+
 addExerciseLink.addEventListener("click", () => {
     appendExerciseFormToDOM();
     document.querySelector("#exercise-search").value = "";
@@ -204,7 +212,8 @@ function createExerciseRow() {
     saveButton.textContent = "Save";
     deleteButton.textContent = "X";
 
-    postExerciseData(exerciseNameInput.value, exerciseSetsInput.value, exerciseRepsInput.value, exerciseWeightInput.value, dateDisplay.value);
+    console.log("sets from create row:", exerciseSetsInput.value);
+    postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value);
     console.log(dateDisplay.value);
 
 }
@@ -263,8 +272,8 @@ function removeExerciseFormFromDOM() {
 
 function appendExerciseFormToDOM() {
     console.log(strengthContainer.children);
-    let test = document.getElementsByClassName("exercise-form");
-    if(test.length === 0) {
+    let existingExerciseForms = document.getElementsByClassName("exercise-form");
+    if(existingExerciseForms.length === 0) {
         console.log("HERE");
         let exerciseFormToAppend = exerciseFormTemplate.content.cloneNode(true);
         strengthContainer.appendChild(exerciseFormToAppend);
@@ -395,6 +404,7 @@ async function updateDataByID(testInput, id) {
 
 // post to exercise table
 async function postExerciseData(exerciseName, sets, repetitions, weight, date) {
+    console.log("sets from exercise data:", sets);
     try {
         const response = await fetch("http://localhost:3000/exercise", {
             method: "POST",
@@ -409,18 +419,32 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date) {
         }
 
         const data = await response.json();
-        console.log("data: ", data);
-        console.log("exercise id: ", data.exercise_id);
-        postExerciseSetData(data.exercise_id, sets, repetitions, weight);
-
-        const workoutID = await getWorkoutByDate(date);
-        if(workoutID !== null && workoutID !== undefined) {
-            console.log("workout id from thing: ", workoutID);
-        } else {
-            postWorkoutData(date);
+        if(!data.exercise_id) {
+            throw new Error("Exercise ID is missing");
         }
 
-        postWorkoutExerciseJoinData(workoutID, data.exercise_id);
+        console.log("sets immediate before:", sets);
+
+        if(sets !== null || sets !== undefined) {
+            await postExerciseSetData(data.exercise_id, sets, repetitions, weight);
+        } else {
+            console.log("HMMM");
+        }
+
+
+        // enter first exercise on a date -> check if workout on date exists, if it doesn't, post workout date to
+        // workout table. 
+        // wait for workout data to be posted before posting join data
+        // join data needs to be posted;
+        
+        let workoutID = await getWorkoutByDate(date);
+        if(workoutID) {
+            console.log("workout id from thing:", workoutID);
+            await postWorkoutExerciseJoinData(workoutID, data.exercise_id);
+        } else {
+            workoutID = await postWorkoutData(date);
+            await postWorkoutExerciseJoinData(workoutID, data.exercise_id);
+        }
     }
     catch(error) {
         console.error(error);
@@ -429,19 +453,28 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date) {
 
 // post to exercise sets table
 async function postExerciseSetData(exerciseID, sets, repetitions, weight) {
+    console.log("before posting sets:", sets);
+
+    if (sets === null || sets === undefined) {
+        console.error("Error: sets is null or undefined before posting");
+        return;
+    }
+
     try {
+        console.log("sets from within try:", sets);
         const response = await fetch("http://localhost:3000/exercise-set", {
             method: "POST",
             body: JSON.stringify({
                 exercise_id: exerciseID,
-                amount_of_sets: sets,
-                repetitions: repetitions,
-                weight: weight,
+                sets: Number(sets),
+                repetitions: Number(repetitions),
+                weight: Number(weight)
             }),
             headers: jsonHeaders,
         });
 
         if(!response.ok) {
+            console.log("sets from error:", sets);
             throw new Error("Could not post exercise set data");
         }
     }
@@ -449,7 +482,7 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight) {
         console.error(error);
     }
 
-    console.log(`Posted exercise with exercise id: ${exerciseID}`);
+    console.log(`Posted exercise with exercise id: ${exerciseID} and sets: ${sets}`);
 }
 
 async function getWorkoutByDate(date) {
@@ -484,8 +517,11 @@ async function postWorkoutData(date) {
             headers: jsonHeaders,
         });
 
-        if(!response.ok) {
-            throw new Error("Could not post workout data");
+        const result = await response.json();
+        if(response.ok) {
+            return result.workout_id;
+        } else {
+            throw new Error(result.error);
         }
     }
     catch(error) {
@@ -494,7 +530,7 @@ async function postWorkoutData(date) {
 
     console.log(`Posted workout with date: ${date}`);
 }
-``
+
 // post to workout exercises junction table
 async function postWorkoutExerciseJoinData(workoutID, exerciseID) {
     try {

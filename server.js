@@ -53,7 +53,7 @@ app.post("/exercise", async (req, res) => {
         .insert({
             exercise_name: exerciseName,
         })
-        .select("exercise_id")
+        .select("exercise_id");
 
     if (error) {
         return res.status(400).json({ error: error.message });
@@ -70,7 +70,7 @@ app.put("/exercise/id=:id", async (req, res) => {
         .update({
             exercise_name: req.body.exercise_name
         })
-        .eq("exercise_id", req.params.id)
+        .eq("exercise_id", req.params.id);
     if(error) {
         return res.status(400).json({error: error.message});
     }
@@ -81,7 +81,7 @@ app.delete("/exercise/id=:id", async (req, res) => {
     const {error} = await supabase
         .from("exercise")
         .delete()
-        .eq("exercise_id", req.params.id)
+        .eq("exercise_id", req.params.id);
     if(error) {
         return res.status(400).json({error: error.message});
     }
@@ -122,7 +122,7 @@ app.put("/exercise-set/id=:id", async (req, res) => {
             repetitions: req.body.repetitions,
             weight: req.body.weight,
         })
-        .eq("exercise_set_id", req.params.id)
+        .eq("exercise_set_id", req.params.id);
     if(error) {
         return res.status(400).json({error: error.message});
     }
@@ -133,7 +133,7 @@ app.delete("/exercise-set/id=:id", async (req, res) => {
     const {error} = await supabase
         .from("exercise_set")
         .delete()
-        .eq("exercise_set_id", req.params.id)
+        .eq("exercise_set_id", req.params.id);
     if(error) {
         return res.status(400).json({error: error.message});
     }
@@ -165,16 +165,20 @@ app.get("/workout/date=:date", async (req, res) => {
 });
 
 app.post("/workout", async (req, res) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from("workout")
         .insert({
             date: req.body.date,
-        });
+        })
+        .select("workout_id");
 
     if (error) {
         return res.status(400).json({ error: error.message });
     }
-    res.status(201).send("created!! workout");
+    res.status(201).json({
+        message: "workout posted successfully",
+        workout_id: data[0].workout_id,
+    });
 });
 
 app.put("/workout/id=:id", async (req, res) => {
@@ -213,6 +217,8 @@ app.get("/workout-exercise", async (req, res) => {
 
 app.get("/workout-exercise/workout-id=:id", async (req, res) => {
     try {
+
+        // select exercise id and exercise name from exercise equal to workout id
         const {data: workoutExercises, error: exerciseError} = await supabase
             .from("workout_exercise")
             .select(`
@@ -223,8 +229,10 @@ app.get("/workout-exercise/workout-id=:id", async (req, res) => {
 
         if(exerciseError) throw exerciseError;
         
+        // extract exerciseIDs from workoutExercises
         const exerciseIDs = workoutExercises.map(exercise => exercise.exercise_id);
 
+        // select exercise id, sets, reps, weight from exercise set with id
         const {data: exerciseSets, error: setError} = await supabase
             .from("exercise_set")
             .select("exercise_id, amount_of_sets, repetitions, weight")
@@ -232,6 +240,7 @@ app.get("/workout-exercise/workout-id=:id", async (req, res) => {
         
         if(setError) throw setError;
 
+        // extract exercise names, keep exercise id, then filter data by matching exercise IDs
         const combinedData = workoutExercises.map(exercise => ({
             exercise_name: exercise.exercise.exercise_name,
             exercise_id: exercise.exercise_id,
