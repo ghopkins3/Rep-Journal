@@ -588,12 +588,9 @@ async function getExerciseDataByWorkoutID(workoutID) {
     }
 }
 
-// function to get exercise and related set data 
-async function getExerciseSetDataByExerciseID(id) {
+// functions to put to appropriate tables -> edit data in row
+async function updateExerciseByID(exerciseID) {
 
 }
-
-// functions to put to appropriate tables -> edit data in row
-
 
 // functions to delete from appropriate tables -> delete data in row
