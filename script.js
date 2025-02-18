@@ -32,6 +32,7 @@ const exerciseTableBody = document.querySelector("#exercise-table-body");
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
+let rowToEdit;
 let rowID;
 
 if(dateSplitOnSlash[0] < 10) {
@@ -117,17 +118,21 @@ document.addEventListener("click", (event) => {
 
         deleteExerciseByID(rowID);
     } else if(event.target.id === "edit-row-button") {
+        console.log(rowToEdit);
         let editableCell = event.target.closest("tr").children;
-        let rowToEdit = event.target.closest("tr");
-        rowID = rowToEdit.getAttribute("data-id");
-        for(let i = 0; i < 4; i++) {
-            editableCell[i].contentEditable = true;
-            editableCell[i].style.caretColor = "auto";
+        rowToEdit = event.target.closest("tr");
+        if(rowToEdit !== null || rowToEdit !== undefined) {
+            for(let i = 0; i < 4; i++) {
+                editableCell[i].contentEditable = true;
+                editableCell[i].style.caretColor = "auto";
+            }
         }
+        console.log("editing:", rowToEdit);
+        rowID = rowToEdit.getAttribute("data-id");
+        
     } else if(event.target.id === "save-row-button") {
         let editableCell = event.target.closest("tr").children;
         for(let i = 0; i < 4; i++) {
-            console.log(editableCell[i]);
             editableCell[i].contentEditable = false;
             editableCell[i].style.caretColor = "transparent";
         }
@@ -138,7 +143,7 @@ document.addEventListener("click", (event) => {
         console.log("exercies name:", editableCell[0].textContent);
         console.log("row id when save:", rowID);
         updateExerciseByID(rowID, convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent);
-    } 
+    }
 
     console.log(event.target);
     console.log(event.target.id);
