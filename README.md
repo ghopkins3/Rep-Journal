@@ -15,13 +15,13 @@ user [icon: user, color: blue] {
 }
 
 exercise [icon: user, color: blue] {
-  exercise_id int
+  exercise_id int unique auto_increment pk
   exercise_name string
 }
 
 exercise_set [icon: users, color: blue] {
-  exercise_set_id int
-  exercise_id int
+  exercise_set_id int unique auto_increment primary key
+  exercise_id int foreign key
   reps int
   weight float
 }

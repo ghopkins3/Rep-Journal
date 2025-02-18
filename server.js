@@ -122,7 +122,7 @@ app.put("/exercise-set/id=:id", async (req, res) => {
             repetitions: req.body.repetitions,
             weight: req.body.weight,
         })
-        .eq("exercise_set_id", req.params.id);
+        .eq("exercise_id", req.params.id);
     if(error) {
         return res.status(400).json({error: error.message});
     }
@@ -133,7 +133,7 @@ app.delete("/exercise-set/id=:id", async (req, res) => {
     const {error} = await supabase
         .from("exercise_set")
         .delete()
-        .eq("exercise_set_id", req.params.id);
+        .eq("exercise_id", req.params.id);
     if(error) {
         return res.status(400).json({error: error.message});
     }

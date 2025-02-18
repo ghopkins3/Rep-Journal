@@ -104,9 +104,15 @@ document.addEventListener("click", (event) => {
     } else if(event.target.id === "close-exercise-form") {
         removeExerciseFormFromDOM();
     } else if(event.target.id === "delete-row-button") {
-        console.log(event.target.parentNode.parentNode);
+        console.log("here:", event.target.parentNode.parentNode);
         console.log(exerciseTableBody.children);
         exerciseTableBody.removeChild(event.target.parentNode.parentNode);
+        let rowToDelete = event.target.closest("tr");
+        rowID = rowToDelete.getAttribute("data-id");
+        console.log("delete id:", rowID);
+        console.log("here here:", rowToDelete);
+
+        deleteExerciseByID(rowID);
     } else if(event.target.id === "edit-row-button") {
         let editableCell = event.target.closest("tr").children;
         let rowToEdit = event.target.closest("tr");
@@ -122,7 +128,10 @@ document.addEventListener("click", (event) => {
             editableCell[i].contentEditable = false;
             editableCell[i].style.caretColor = "transparent";
         }
+
+        console.log("exercies name:", editableCell[0].textContent);
         console.log("row id when save:", rowID);
+        updateExerciseByID(rowID, editableCell[0].textContent, editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent);
     } 
 
     console.log(event.target);
@@ -598,6 +607,7 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
             body: JSON.stringify({
                 exercise_name: exerciseName
             }),
+            headers: jsonHeaders,
         });
 
         if(!response.ok) {
@@ -605,10 +615,13 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
         }
 
         await updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight);
+
     }
     catch(error) {
         console.error(error);
     }
+
+    console.log(`attempting to update exercise with id, ${exerciseID} to new name: ${exerciseName}`);
 }
 
 async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight) {
@@ -620,6 +633,7 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
                 repetitions: repetitions,
                 weight: weight
             }),
+            headers: jsonHeaders,
         })
 
         if(!response.ok) {
@@ -632,3 +646,34 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
 }
 
 // functions to delete from appropriate tables -> delete data in row
+async function deleteExerciseByID(exerciseID) {
+    try {
+        const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
+            method: "DELETE",
+        });
+
+        if(!response.ok) {
+            throw new Error(`Could not delete exercise with id: ${exerciseID}`);
+        }
+
+        await deleteExerciseSetDataByID(exerciseID);
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
+
+async function deleteExerciseSetDataByID(exerciseID) {
+    try {
+        const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
+            method: "DELETE",
+        });
+
+        if(!response.ok) {
+            throw new Error(`Could not delete exercise set data with id: ${exerciseID}`);
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
