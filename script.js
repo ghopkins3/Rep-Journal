@@ -1,11 +1,8 @@
 // TODO 
-
-// DATABASING WITH ACTUAL DATA I.E. ACTUAL USE CASE -- SEEMSOKAY DONE
-// EDIT/DELETE FUNCTIONALITY -- DONE
-// TRANSFORM DATA BACK TO NORMAL CASE/SPACES WHEN FETCHING AND POPULATING ROWS -- DONEZO    
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 
-// no dashes in exercise names -- DONEZY
+// user should only be able to edit one entry at a time. 
+// escape, click out, or press edit on another entry = save and edit = false.
 // validation when saving, do nothing if click outside of save perhaps -- ASAP  
 
 // MOBILE ACCESSIBLE 
