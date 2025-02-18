@@ -27,6 +27,7 @@ const exerciseTableBody = document.querySelector("#exercise-table-body");
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
+let rowID;
 
 if(dateSplitOnSlash[0] < 10) {
     currentDate = `${dateSplitOnSlash[2]}-0${dateSplitOnSlash[0]}-${dateSplitOnSlash[1]}`;
@@ -105,20 +106,21 @@ document.addEventListener("click", (event) => {
         console.log(exerciseTableBody.children);
         exerciseTableBody.removeChild(event.target.parentNode.parentNode);
     } else if(event.target.id === "edit-row-button") {
-        console.log(event.target.parentNode.previousSibling);
-        let element = event.target.parentNode.previousSibling;
+        let editableCell = event.target.closest("tr").children;
+        let rowToEdit = event.target.closest("tr");
+        rowID = rowToEdit.getAttribute("data-id");
         for(let i = 0; i < 4; i++) {
-            element.contentEditable = true;
-            element.style.caretColor = "auto";
-            element = element.previousSibling;
+            editableCell[i].contentEditable = true;
+            editableCell[i].style.caretColor = "auto";
         }
     } else if(event.target.id === "save-row-button") {
-        let element = event.target.parentNode.previousSibling.previousSibling;
-        for(let i = 0; i <4; i++) {
-            element.contentEditable = false;
-            element.style.caretColor = "transparent";
-            element = element.previousSibling;
+        let editableCell = event.target.closest("tr").children;
+        for(let i = 0; i < 4; i++) {
+            console.log(editableCell[i]);
+            editableCell[i].contentEditable = false;
+            editableCell[i].style.caretColor = "transparent";
         }
+        console.log("row id when save:", rowID);
     } 
 
     console.log(event.target);
@@ -133,6 +135,13 @@ document.addEventListener("keydown", (event) => {
         if(existingExerciseForms.length > 0) {
             let addButton = document.querySelector("#add-entered-data");
             addButton.click();
+        }
+    }
+
+    if(event.target.getAttribute("className") === "entered-number") {
+        let numberInputPattern = /[0-9]/;
+        if(!numberInputPattern.test(event.key) && event.key !== "Backspace") {
+            event.preventDefault();
         }
     }
 });
@@ -162,7 +171,7 @@ addExerciseSetsLink.addEventListener("click", (event) => {
     }
 });
 
-function createExerciseRow() {
+async function createExerciseRow() {
     let exerciseNameInput = document.querySelector("#exercise-search");
     let exerciseSetsInput = document.querySelector("#sets-input");
     let exerciseRepsInput = document.querySelector("#reps-input");
@@ -213,9 +222,10 @@ function createExerciseRow() {
     deleteButton.textContent = "X";
 
     console.log("sets from create row:", exerciseSetsInput.value);
-    postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value);
+    let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value);
+    console.log("exercise id:", exerciseID);
+    newRow.setAttribute("data-id", exerciseID);
     console.log(dateDisplay.value);
-
 }
 
 async function populateTableFromData(workoutDate) {
@@ -223,6 +233,8 @@ async function populateTableFromData(workoutDate) {
 
     exerciseData.forEach(exercise => {
         let newRow = exerciseTableBody.insertRow();
+        newRow.setAttribute("data-id", exercise.exercise_id);
+
         let exerciseNameCell = newRow.insertCell(0);
         let exerciseSetsCell = newRow.insertCell(1);
         let exerciseRepsCell = newRow.insertCell(2);
@@ -260,7 +272,8 @@ async function populateTableFromData(workoutDate) {
         editButton.textContent = "Edit";
         saveButton.textContent = "Save";
         deleteButton.textContent = "X";
-
+    
+        console.log("test:", exercise.exercise_id);
         console.log(exercise);
     });
 }
@@ -445,6 +458,8 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date) {
             workoutID = await postWorkoutData(date);
             await postWorkoutExerciseJoinData(workoutID, data.exercise_id);
         }
+
+        return data.exercise_id;
     }
     catch(error) {
         console.error(error);
@@ -573,6 +588,12 @@ async function getExerciseDataByWorkoutID(workoutID) {
     }
 }
 
+// function to get exercise and related set data 
+async function getExerciseSetDataByExerciseID(id) {
+
+}
+
 // functions to put to appropriate tables -> edit data in row
+
 
 // functions to delete from appropriate tables -> delete data in row
