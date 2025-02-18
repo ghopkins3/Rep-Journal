@@ -1,10 +1,11 @@
 // TODO 
 
-// DATABASING WITH ACTUAL DATA I.E. ACTUAL USE CASE -- PARTIALLY DONE
-// EDIT/DELETE FUNCTIONALITY 
+// DATABASING WITH ACTUAL DATA I.E. ACTUAL USE CASE -- SEEMSOKAY DONE
+// EDIT/DELETE FUNCTIONALITY -- DONE
 // TRANSFORM DATA BACK TO NORMAL CASE/SPACES WHEN FETCHING AND POPULATING ROWS
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 
+// no dashes in exercise names
 // validation when saving, do nothing if click outside of save perhaps
 
 // MOBILE ACCESSIBLE 
@@ -268,7 +269,7 @@ async function populateTableFromData(workoutDate) {
         deleteButton.setAttribute("id", "delete-row-button");
         deleteRowCell.appendChild(deleteButton);
     
-        exerciseNameCell.textContent = exercise.exercise_name;
+        exerciseNameCell.textContent = formatExerciseNameToDisplay(exercise.exercise_name);
         exerciseNameCell.setAttribute("className", "entered-exercise-name");
 
         exerciseSetsCell.textContent = exercise.sets[0].amount_of_sets;
@@ -676,4 +677,15 @@ async function deleteExerciseSetDataByID(exerciseID) {
     catch(error) {
         console.error(error);
     }
+}
+
+function toTitleCase(str) {
+    return str.replace(
+        /\w\S*/g,
+        text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+    );
+}
+
+function formatExerciseNameToDisplay(str) {
+    return toTitleCase(str.replaceAll("-", " "));
 }
