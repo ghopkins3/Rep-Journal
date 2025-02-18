@@ -19,6 +19,8 @@
 // FEATURES SUCH AS WEIGHT LOG, RELEVANT RESOURCES, FILTER EXERCISES, OVERVIEW, 
 // COMPARE TWO WORKOUTS IE WEEK VS WEEK, GRAPHWORKS, PR VIEW
 
+import { convertToDatabaseFormat } from "./convertToDatabaseFormat.js";
+
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
 const addExerciseSetsLink = document.querySelector("#add-sets-link");
@@ -217,7 +219,7 @@ async function createExerciseRow() {
     deleteButton.setAttribute("id", "delete-row-button");
     deleteRowCell.appendChild(deleteButton);
     
-    exerciseNameCell.textContent = exerciseNameInput.value;
+    exerciseNameCell.textContent = convertToDisplayFormat(exerciseNameInput.value);
     exerciseNameCell.setAttribute("className", "entered-exercise-name");
 
     exerciseSetsCell.textContent = exerciseSetsInput.value;
@@ -269,7 +271,7 @@ async function populateTableFromData(workoutDate) {
         deleteButton.setAttribute("id", "delete-row-button");
         deleteRowCell.appendChild(deleteButton);
     
-        exerciseNameCell.textContent = formatExerciseNameToDisplay(exercise.exercise_name);
+        exerciseNameCell.textContent = convertToDisplayFormat(exercise.exercise_name);
         exerciseNameCell.setAttribute("className", "entered-exercise-name");
 
         exerciseSetsCell.textContent = exercise.sets[0].amount_of_sets;
@@ -327,7 +329,7 @@ async function getAllExercises() {
 }
 
 async function getExerciseByName(exerciseName) {
-    exerciseName = exerciseName.replaceAll(" ", "-").toLowerCase();
+    exerciseName = convertToDatabaseFormat(exerciseName);
     console.log("exercise name: ", exerciseName);
     try {
         const response = await fetch(`http://localhost:3000/exercise/name=${exerciseName}`, {
@@ -686,6 +688,6 @@ function toTitleCase(str) {
     );
 }
 
-function formatExerciseNameToDisplay(str) {
+function convertToDisplayFormat(str) {
     return toTitleCase(str.replaceAll("-", " "));
 }

@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import env from "dotenv";
 import {createClient} from "@supabase/supabase-js";
+import { convertToDatabaseFormat } from "./convertToDatabaseFormat.js";
 env.config();
 const supabase = createClient(process.env.DATABSE_URL, process.env.DATABASE_SECRET_KEY);
 const app = express();
@@ -47,7 +48,7 @@ app.get("/exercise/name=:name", async (req, res) => {
 });
 
 app.post("/exercise", async (req, res) => {
-    let exerciseName = req.body.exercise_name.replaceAll(" ", "-").toLowerCase();
+    let exerciseName = convertToDatabaseFormat(req.body.exercise_name);
     const { data, error } = await supabase
         .from("exercise")
         .insert({
@@ -379,4 +380,4 @@ app.listen(PORT, () => {
     console.log(
         new Date().toLocaleTimeString() + `: Server is running on port ${PORT}...`
     )
-})
+});
