@@ -5,6 +5,8 @@
 // TRANSFORM DATA BACK TO NORMAL CASE/SPACES WHEN FETCHING AND POPULATING ROWS
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 
+// validation when saving, do nothing if click outside of save perhaps
+
 // MOBILE ACCESSIBLE 
 // REFACTOR ASAP
 
@@ -589,8 +591,44 @@ async function getExerciseDataByWorkoutID(workoutID) {
 }
 
 // functions to put to appropriate tables -> edit data in row
-async function updateExerciseByID(exerciseID) {
+async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, weight) {
+    try {
+        const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                exercise_name: exerciseName
+            }),
+        });
 
+        if(!response.ok) {
+            console.log("Failure to update exercise by id");
+        }
+
+        await updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight);
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
+
+async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight) {
+    try {
+        const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                sets: sets,
+                repetitions: repetitions,
+                weight: weight
+            }),
+        })
+
+        if(!response.ok) {
+            console.log("Failure to update exercise_set by exerciseid");
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
 }
 
 // functions to delete from appropriate tables -> delete data in row

@@ -126,7 +126,7 @@ app.put("/exercise-set/id=:id", async (req, res) => {
     if(error) {
         return res.status(400).json({error: error.message});
     }
-    res.status(201).send("updated exercise set of exercise set with id: " + req.params.id);
+    res.status(201).send("updated exercise set of exercise_set with id: " + req.params.id);
 });
 
 app.delete("/exercise-set/id=:id", async (req, res) => {
