@@ -2,11 +2,11 @@
 
 // DATABASING WITH ACTUAL DATA I.E. ACTUAL USE CASE -- SEEMSOKAY DONE
 // EDIT/DELETE FUNCTIONALITY -- DONE
-// TRANSFORM DATA BACK TO NORMAL CASE/SPACES WHEN FETCHING AND POPULATING ROWS
+// TRANSFORM DATA BACK TO NORMAL CASE/SPACES WHEN FETCHING AND POPULATING ROWS -- DONEZO    
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 
-// no dashes in exercise names
-// validation when saving, do nothing if click outside of save perhaps
+// no dashes in exercise names -- DONEZY
+// validation when saving, do nothing if click outside of save perhaps -- ASAP  
 
 // MOBILE ACCESSIBLE 
 // REFACTOR ASAP
@@ -132,9 +132,12 @@ document.addEventListener("click", (event) => {
             editableCell[i].style.caretColor = "transparent";
         }
 
+        // validating 
+        editableCell[0].textContent = convertToDisplayFormat(editableCell[0].textContent);
+
         console.log("exercies name:", editableCell[0].textContent);
         console.log("row id when save:", rowID);
-        updateExerciseByID(rowID, editableCell[0].textContent, editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent);
+        updateExerciseByID(rowID, convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent);
     } 
 
     console.log(event.target);
