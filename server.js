@@ -304,6 +304,18 @@ app.get("/exercise_library", async (req, res) => {
     }
 });
 
+app.get("/exercise_library/name", async (req, res) => {
+    try {
+        let {data, error} = await supabase
+        .from("exercise_library")
+        .select("name")
+        console.log(data);
+        return res.send(data);
+    } catch (error) {
+        return res.send({error});
+    }
+});
+
 /////////////////////////////////////////////////////
 
 app.get("/test/date=:date", async (req, res) => {
