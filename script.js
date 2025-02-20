@@ -132,6 +132,13 @@ document.addEventListener("click", (event) => {
             rowID = rowToEdit.getAttribute("data-id");
             console.log("editing:", rowToEdit);
         } else {
+            console.log("~~~~~~ HERE ~~~~~~~");
+            let saveButtons = document.querySelectorAll("#save-row-button");
+            saveButtons.forEach(btn => {
+                if(btn.parentNode.parentNode.getAttribute("data-id") === rowToEdit.getAttribute("data-id")) {
+                    btn.click();
+                }
+            });
             event.preventDefault();
         }
     } else if(event.target.id === "save-row-button") {
@@ -161,14 +168,9 @@ document.addEventListener("click", (event) => {
         }
     } 
 
-    if(isEditing) {
-        console.log("CLICK");
-        console.log("event target:", event.target);
-        console.log("parent:", event.target.parentNode);
-        let saveButtons = document.querySelectorAll("#save-row-button");
-        console.log("save buttons:", saveButtons);
-    }
-
+    // if isEditing = true 
+    // AND event.target.parentNode DOES NOT EQUAL rowToEdit 
+    // AND event.target.id IS NOT edit-row-button -> SAVE
     if(isEditing && event.target.parentNode !== rowToEdit && event.target.id !== "edit-row-button") {
         let saveButtons = document.querySelectorAll("#save-row-button");
         console.log("row to edit:", rowToEdit);
