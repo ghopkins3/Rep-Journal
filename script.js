@@ -1,8 +1,8 @@
 // TODO 
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 
-// user should only be able to edit one entry at a time. 
-// escape, click out, or press edit on another entry = save and edit = false.
+// user should only be able to edit one entry at a time. -- DONE
+// escape, click out, or press edit on another entry something 
 // validation when saving, do nothing if click outside of save perhaps -- ASAP  
 
 // MOBILE ACCESSIBLE 
@@ -29,6 +29,7 @@ const exerciseTableBody = document.querySelector("#exercise-table-body");
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
+let isEditing = false;
 let rowToEdit;
 let rowID;
 
@@ -116,30 +117,48 @@ document.addEventListener("click", (event) => {
         deleteExerciseByID(rowID);
     } else if(event.target.id === "edit-row-button") {
         console.log(rowToEdit);
-        let editableCell = event.target.closest("tr").children;
-        rowToEdit = event.target.closest("tr");
-        if(rowToEdit !== null || rowToEdit !== undefined) {
-            for(let i = 0; i < 4; i++) {
-                editableCell[i].contentEditable = true;
-                editableCell[i].style.caretColor = "auto";
+
+        if(!isEditing) {
+            isEditing = true
+            let editableCell = event.target.closest("tr").children;
+            rowToEdit = event.target.closest("tr");
+            if(rowToEdit !== null || rowToEdit !== undefined) {
+                for(let i = 0; i < 4; i++) {
+                    editableCell[i].contentEditable = true;
+                    editableCell[i].style.caretColor = "auto";
+                }
             }
+
+            rowID = rowToEdit.getAttribute("data-id");
+            console.log("editing:", rowToEdit);
+        } else {
+            event.preventDefault();
         }
-        console.log("editing:", rowToEdit);
-        rowID = rowToEdit.getAttribute("data-id");
-        
     } else if(event.target.id === "save-row-button") {
-        let editableCell = event.target.closest("tr").children;
-        for(let i = 0; i < 4; i++) {
-            editableCell[i].contentEditable = false;
-            editableCell[i].style.caretColor = "transparent";
+        console.log("row to edit:", rowToEdit);
+        console.log("row id:", rowID);
+        console.log("id of tr:", event.target.closest("tr").getAttribute("data-id"));
+        if(event.target.closest("tr").getAttribute("data-id") === rowToEdit.getAttribute("data-id")) {
+            console.log("saving row:", rowToEdit);
+            console.log("row id:", rowID);
+            console.log("id of tr:", event.target.closest("tr").getAttribute("data-id"));
+            
+            let editableCell = event.target.closest("tr").children;
+            for(let i = 0; i < 4; i++) {
+                editableCell[i].contentEditable = false;
+                editableCell[i].style.caretColor = "transparent";
+            }
+
+            // validating 
+            editableCell[0].textContent = convertToDisplayFormat(editableCell[0].textContent);
+
+            console.log("exercies name:", editableCell[0].textContent);
+            console.log("row id when save:", rowID);
+            updateExerciseByID(rowToEdit.getAttribute("data-id"), convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent);
+            isEditing = false;
+        } else {
+            event.preventDefault();
         }
-
-        // validating 
-        editableCell[0].textContent = convertToDisplayFormat(editableCell[0].textContent);
-
-        console.log("exercies name:", editableCell[0].textContent);
-        console.log("row id when save:", rowID);
-        updateExerciseByID(rowID, convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent);
     }
 
     console.log(event.target);
