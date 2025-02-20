@@ -150,7 +150,7 @@ document.addEventListener("click", (event) => {
             }
 
             // validating 
-            editableCell[0].textContent = convertToDisplayFormat(editableCell[0].textContent);
+            editableCell[0].textContent = toTitleCase(editableCell[0].textContent);
 
             console.log("exercies name:", editableCell[0].textContent);
             console.log("row id when save:", rowID);
@@ -159,11 +159,34 @@ document.addEventListener("click", (event) => {
         } else {
             event.preventDefault();
         }
+    } 
+
+    if(isEditing) {
+        console.log("CLICK");
+        console.log("event target:", event.target);
+        console.log("parent:", event.target.parentNode);
+        let saveButtons = document.querySelectorAll("#save-row-button");
+        console.log("save buttons:", saveButtons);
     }
 
-    console.log(event.target);
+    if(isEditing && event.target.parentNode !== rowToEdit && event.target.id !== "edit-row-button") {
+        let saveButtons = document.querySelectorAll("#save-row-button");
+        console.log("row to edit:", rowToEdit);
+        console.log("row id:", rowID);
+        saveButtons.forEach(btn => {
+            console.log("data id:", btn.parentNode.parentNode.getAttribute("data-id"));
+            if(btn.parentNode.parentNode.getAttribute("data-id") === rowToEdit.getAttribute("data-id")) {
+                console.log("yes");
+                btn.click();
+            }
+        });
+    }
+
+    /* console.log(event.target);
     console.log(event.target.id);
+    console.log("parent:", event.target.parentNode);
     console.log(event.target.className);
+    */
 });
 
 // added for increased testing speed
@@ -705,11 +728,15 @@ async function deleteExerciseSetDataByID(exerciseID) {
     }
 }
 
+function removeExcessWhiteSpace(str) {
+    return str.replace(/\s{2,}/g,' ').trim();
+}
+
 function toTitleCase(str) {
-    return str.replace(
+    return removeExcessWhiteSpace(str.replace(
         /\w\S*/g,
         text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
-    );
+    ));
 }
 
 function convertToDisplayFormat(str) {
