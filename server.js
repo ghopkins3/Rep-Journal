@@ -294,6 +294,16 @@ app.delete("/workout-exercise/id=:id", async (req, res) => {
     res.status(201).send("deleted workout exercises junction with id: " + req.params.id);
 });
 
+app.get("/exercise_library", async (req, res) => {
+    try {
+        let {data, error} = await supabase.from("exercise_library").select();
+        console.log(data);
+        return res.send(data);
+    } catch(error) {
+        return res.send({error});
+    }
+});
+
 /////////////////////////////////////////////////////
 
 app.get("/test/date=:date", async (req, res) => {

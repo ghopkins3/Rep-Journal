@@ -1,10 +1,6 @@
 // TODO 
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 
-// user should only be able to edit one entry at a time. -- DONE
-// escape, click out, or press edit on another entry something 
-// validation when saving, do nothing if click outside of save perhaps -- ASAP  
-
 // MOBILE ACCESSIBLE 
 // REFACTOR ASAP
 
