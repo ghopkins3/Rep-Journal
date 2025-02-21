@@ -9,47 +9,16 @@
     height: 8rem;
 }
 
-.header-text { 
-    padding-left: 1rem;
-    padding-top: 2rem;
-}
-
 .diary-header-container {
     display: flex;
-    margin-top: 3rem;
-    border: 2px solid blue;
-    margin-left: 40rem;
-    margin-right: 40rem;
 }
 
 .diary-header-calendar {
     display: flex;
-    margin-left: 4rem;
-}
-
-#date-display {
-    font-size: 1.5rem;
-}
-
-.strength-container { 
-    margin-left: 40rem;
-    margin-right: 40rem;
-    margin-top: 4rem;
 }
 
 .add-exercise {
     display: flex;
-    gap: 5rem;
-    margin-left: 1rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    color: blue;
-    -webkit-touch-callout: none; 
-    -webkit-user-select: none; 
-    -khtml-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none;
 }
 
 #add-exercise-link, #add-sets-link:hover {
@@ -62,35 +31,6 @@
 
 .exercise-form {
     display: flex;
-    padding-top: 1rem;
-    position: absolute;
-}
-
-#exercise-search {
-    padding-left: 0.5rem;
-    width: 12rem;
-    height: 1.5rem;
-    background-color: white;
-    color: black;
-    font-size: 1.5rem;
-    outline: none;
-    caret-color: auto;
-}
-
-.input-label {
-    margin-left: 2rem;
-    align-self: center;
-    font-size: 1.5rem;
-}
-
-.number-input {
-    margin-left: 0.5rem;
-    background-color: white;
-    width: 3rem;
-    font-size: 1.15rem;
-    padding-left: 0.5rem;
-    outline: none;
-    caret-color: auto;
 }
 
 /* accounts for three digit numbers and one decimal places
@@ -101,36 +41,205 @@ only adding 2.5lbs to weight
     width: 5rem;
 }
 
-#close-exercise-form {
-    width: 4rem;
+@media (min-width: 1000px) {
+    .header-text { 
+        padding-left: 1rem;
+        padding-top: 2rem;
+    }
+
+    .diary-header-container {
+        margin-top: 3rem;
+        border: 2px solid blue;
+        margin-left: 40rem;
+        margin-right: 40rem;
+    }
+
+    .diary-header-calendar {
+        margin-left: 4rem;
+    }
+
+    #date-display {
+        font-size: 1.5rem;
+    }
+
+    .strength-container { 
+        margin-left: 40rem;
+        margin-right: 40rem;
+        margin-top: 4rem;
+    }
+
+    .add-exercise {
+        gap: 5rem;
+        margin-left: 1rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        color: blue;
+        -webkit-touch-callout: none; 
+        -webkit-user-select: none; 
+        -khtml-user-select: none; 
+        -moz-user-select: none; 
+        -ms-user-select: none; 
+        user-select: none;
+    }
+
+    .exercise-form {
+        padding-top: 1rem;
+        position: absolute;
+    }
+
+    #exercise-search {
+        padding-left: 0.5rem;
+        width: 12rem;
+        height: 1.5rem;
+        background-color: white;
+        color: black;
+        font-size: 1.5rem;
+        outline: none;
+        caret-color: auto;
+    }
+
+    .input-label {
+        margin-left: 2rem;
+        align-self: center;
+        font-size: 1.5rem;
+    }
+
+    .number-input {
+        margin-left: 0.5rem;
+        background-color: white;
+        width: 3rem;
+        font-size: 1.15rem;
+        padding-left: 0.5rem;
+        outline: none;
+        caret-color: auto;
+    }
+
+    #close-exercise-form {
+        width: 4rem;
+    }
+    
+    .exercise-table-container {
+        margin-top: 4rem;
+    }
+    
+    table {
+       border-spacing: 0;
+       margin-left: 40rem;
+    }
+    
+    th {
+        border: 2px solid blue;
+        text-align: center;
+        width: 12rem;
+    }
+    
+    td {
+        border: 2px solid red;
+        text-align: center;
+    }
+    
+    .delete-button-cell {
+        border: none;
+        color: blue;
+    }
+    
+    #delete-row-button {
+        margin-left: 1rem;
+        width: 1.5rem;
+    }
 }
 
-.exercise-table-container {
-    margin-top: 4rem;
-}
+@media (max-width: 360px) {
+    .header-text {
+        text-align: center;
+        padding-top: 2.5rem;
+    }
 
-table {
-   border-spacing: 0;
-   margin-left: 40rem;
-}
+    .diary-header-container {
+        margin-top: 1rem;
+    }
 
-th {
-    border: 2px solid blue;
-    text-align: center;
-    width: 12rem;
-}
+    .diary-header-calendar {
+        margin-left: 2rem;
+    }
 
-td {
-    border: 2px solid red;
-    text-align: center;
-}
+    #date-display {
+        font-size: 1rem;
+    }
 
-.delete-button-cell {
-    border: none;
-    color: blue;
-}
+    .add-exercise {
+        color: blue;
+        -webkit-touch-callout: none; 
+        -webkit-user-select: none; 
+        -khtml-user-select: none; 
+        -moz-user-select: none; 
+        -ms-user-select: none; 
+        user-select: none;
+    }
 
-#delete-row-button {
-    margin-left: 1rem;
-    width: 1.5rem;
+    .exercise-form {
+        padding-top: 1rem;
+        position: absolute;
+    }
+
+    #exercise-search {
+        padding-left: 0.5rem;
+        width: 12rem;
+        height: 1.5rem;
+        background-color: white;
+        color: black;
+        font-size: 1.5rem;
+        outline: none;
+        caret-color: auto;
+    }
+
+    .input-label {
+        margin-left: 2rem;
+        align-self: center;
+        font-size: 1.5rem;
+    }
+
+    .number-input {
+        margin-left: 0.5rem;
+        background-color: white;
+        width: 3rem;
+        font-size: 1.15rem;
+        padding-left: 0.5rem;
+        outline: none;
+        caret-color: auto;
+    }
+
+    #close-exercise-form {
+        width: 4rem;
+    }
+    
+    .exercise-table-container {
+        margin-top: 4rem;
+    }
+    
+    table {
+       border-spacing: 0;
+       margin-left: 40rem;
+    }
+    
+    th {
+        border: 2px solid blue;
+        text-align: center;
+        width: 12rem;
+    }
+    
+    td {
+        border: 2px solid red;
+        text-align: center;
+    }
+    
+    .delete-button-cell {
+        border: none;
+        color: blue;
+    }
+    
+    #delete-row-button {
+        margin-left: 1rem;
+        width: 1.5rem;
+    }
 }
