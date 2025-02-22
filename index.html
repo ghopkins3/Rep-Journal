@@ -39,9 +39,9 @@
                 <thead>
                     <tr class="table-head-row">
                         <th class="exercise-table-heading">Exercise</th>
-                        <th class="exercise-table-heading"># of Sets</th>
-                        <th class="exercise-table-heading"># of Reps</th>
-                        <th class="exercise-table-heading">Weight (lbs)</th>
+                        <th class="sets-table-heading"># of Sets</th>
+                        <th class="reps-table-heading"># of Reps</th>
+                        <th class="weight-table-heading">Weight (lbs)</th>
                     </tr>
                 </thead>
                 <tbody id="exercise-table-body">
@@ -102,15 +102,23 @@
                     <option value="Decline Sit-ups">Decline Sit-ups</option>
                     <option value="Hanging Leg Raises">Hanging Leg Raises</option>
                 </datalist>
-            
-                <label for="sets" class="input-label">Sets</label>
-                <input type="number" class="number-input" id="sets-input" min="1">
-                <label for="reps" class="input-label">Reps</label>
-                <input type="number" class="number-input" id="reps-input" min="1">
-                <label for="weight" class="input-label">Weight (lbs)</label>
-                <input type="number" class="number-input" id="weight-input" min="0" step="5">
-                <button type="submit" id="add-entered-data">Add</button>
-                <button type="button" id="close-exercise-form">Cancel</button>
+                
+                <div class="sets-input-container">
+                    <label for="sets" class="input-label">Sets</label>
+                    <input type="number" class="number-input" id="sets-input" min="1">
+                </div>
+                <div class="reps-input-container">
+                    <label for="reps" class="input-label" id="test">Reps</label>
+                    <input type="number" class="number-input" id="reps-input" min="1">
+                </div>
+                <div class="weight-input-container">
+                    <label for="weight" class="input-label">Weight (lbs)</label>
+                    <input type="number" class="number-input" id="weight-input" min="0" step="5">
+                </div>
+                <div class="add-cancel-container">
+                    <button type="button" class="exercise-form-button" id="close-exercise-form">Cancel</button>
+                    <button type="submit" class="exercise-form-button" id="add-entered-data">Add</button>
+                </div>
             </div>
         </template>
 

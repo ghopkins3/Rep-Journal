@@ -13,10 +13,6 @@
     display: flex;
 }
 
-.diary-header-calendar {
-    display: flex;
-}
-
 .add-exercise {
     display: flex;
 }
@@ -55,6 +51,10 @@ only adding 2.5lbs to weight
     }
 
     .diary-header-calendar {
+        display: flex;
+    }
+
+    .diary-header-calendar {
         margin-left: 4rem;
     }
 
@@ -87,6 +87,10 @@ only adding 2.5lbs to weight
         position: absolute;
     }
 
+    #add-entered-data {
+        float: left;
+    }
+
     #exercise-search {
         padding-left: 0.5rem;
         width: 12rem;
@@ -124,13 +128,22 @@ only adding 2.5lbs to weight
     
     table {
        border-spacing: 0;
-       margin-left: 40rem;
+       margin-left: 36rem;
     }
     
     th {
-        border: 2px solid blue;
+        border-bottom: 2px solid blue;
+        border-top: 2px solid blue;
         text-align: center;
         width: 12rem;
+    }
+
+    .exercise-table-heading {
+        border-left: 2px solid;
+    }
+
+    .weight-table-heading {
+        border-right: 2px solid blue;
     }
     
     td {
@@ -149,7 +162,7 @@ only adding 2.5lbs to weight
     }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 600px) {
     .header-text {
         text-align: center;
         padding-top: 2.5rem;
@@ -157,17 +170,28 @@ only adding 2.5lbs to weight
 
     .diary-header-container {
         margin-top: 1rem;
+        justify-content: center;
     }
 
-    .diary-header-calendar {
-        margin-left: 2rem;
+    .diary-header-text {
+        display: none;
     }
 
     #date-display {
-        font-size: 1rem;
+        font-size: 1.5rem;
+    }
+
+    .strengh-header-container, h3 {
+        margin-top: 1rem;
+        margin-left: 1rem;
     }
 
     .add-exercise {
+        margin-top: 1rem;
+        justify-content: center;
+        margin-right: 1rem;
+        margin-left: 1rem;
+        gap: 2rem;
         color: blue;
         -webkit-touch-callout: none; 
         -webkit-user-select: none; 
@@ -177,55 +201,121 @@ only adding 2.5lbs to weight
         user-select: none;
     }
 
+    #add-exercise-link {
+        text-wrap: balance;
+        text-align: center;
+
+    }
+
+    #add-sets-link {
+        text-wrap: balance;
+        text-align: center;
+
+    }
+
+    .add-underline {
+        margin-top: 0.6rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        width: 24rem;
+        min-width: 24rem;
+        max-width: 24rem;
+    }
+
     .exercise-form {
-        padding-top: 1rem;
-        position: absolute;
+        flex-direction: column;
+        margin-top: 1.5rem;
+        align-self: center;
+        justify-content: center;
+        
     }
 
     #exercise-search {
-        padding-left: 0.5rem;
-        width: 12rem;
-        height: 1.5rem;
+        width: 20rem;
+        margin-left: 1rem;
+        height: 2rem;
         background-color: white;
         color: black;
         font-size: 1.5rem;
         outline: none;
         caret-color: auto;
+        padding-left: 0.35rem;
+        
+    }
+
+    .sets-input-container {
+        margin-top: 1rem;
+        margin-left: 1rem;
+    }
+
+    .reps-input-container {
+        margin-top: 1rem;
+        margin-left: 1rem;
+    }
+
+    .weight-input-container {
+        margin-top: 1rem;
+        margin-left: 1rem;
+    }
+
+    .add-cancel-container {
+        margin-top: 1rem;
+        align-self: center;
     }
 
     .input-label {
-        margin-left: 2rem;
-        align-self: center;
         font-size: 1.5rem;
     }
 
     .number-input {
+        width: 3.75rem;
+        font-size: 1.35rem;
         margin-left: 0.5rem;
-        background-color: white;
-        width: 3rem;
-        font-size: 1.15rem;
-        padding-left: 0.5rem;
-        outline: none;
-        caret-color: auto;
+        padding-left: 0.35rem;
     }
 
-    #close-exercise-form {
+    .exercise-form-button {
         width: 4rem;
+        height: 2rem;
+        border-radius: 5px;
+    }
+
+    .exercise-form-button:active {
+        border: 2px solid black;
     }
     
     .exercise-table-container {
-        margin-top: 4rem;
+        margin-top: 2rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
     }
     
     table {
-       border-spacing: 0;
-       margin-left: 40rem;
+        border-collapse: collapse;
     }
     
     th {
-        border: 2px solid blue;
+        border-bottom: 2px solid blue;
+        border-top: 2px solid blue;
         text-align: center;
         width: 12rem;
+    }
+
+    .exercise-table-heading {
+        border-left: 2px solid blue;
+        border-right: 2px solid blue;
+    }
+
+    .sets-table-heading {
+        border-right: 2px solid blue;
+    }
+
+    .reps-table-heading {
+        border-right: 2px solid blue;
+    }
+
+    .weight-table-heading {
+        border-right: 2px solid blue;
     }
     
     td {
