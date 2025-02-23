@@ -21,7 +21,9 @@ const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
 const addExerciseSetsLink = document.querySelector("#add-sets-link");
 const strengthContainer = document.querySelector(".strength-container");
+const exerciseFormContainer = document.querySelector(".exercise-form-container")
 const exerciseFormTemplate = document.querySelector("#exercise-form-template");
+const exerciseTableContainer = document.querySelector(".exercise-table-container");
 const exerciseTable = document.querySelector(".exercise-table");
 const exerciseTableBody = document.querySelector("#exercise-table-body");
 
@@ -68,6 +70,13 @@ async function checkWorkoutOnDate(date) {
     const workoutOnDate = await getWorkoutByDate(date);
     if(workoutOnDate !== null && workoutOnDate !== undefined) {
         populateTableFromData(workoutOnDate);
+        if(window.innerWidth >= "1000px") {
+            exerciseTableContainer.style.marginLeft = "6.25rem";
+        } else {
+            exerciseTableContainer.style.marginLeft = "";
+        }
+    } else {
+        exerciseTableContainer.style.marginLeft = "";
     }
 }
 
@@ -112,7 +121,12 @@ document.addEventListener("click", (event) => {
         rowID = rowToDelete.getAttribute("data-id");
         console.log("delete id:", rowID);
         console.log("here here:", rowToDelete);
-
+        console.log("closest tr:", exerciseTable.closest("tr"));
+        if(exerciseTable.closest("tr") === null) {
+            console.log("current date delete:", dateDisplay.value);
+            deleteWorkoutByDate(dateDisplay.value);
+            exerciseTableContainer.style.marginLeft = "";
+        }
         deleteExerciseByID(rowID);
     } else if(event.target.id === "edit-row-button") {
         console.log(rowToEdit);
@@ -244,6 +258,11 @@ async function createExerciseRow() {
     console.log(exerciseRepsInput.value);
     console.log(exerciseWeightInput.value);
 
+
+    if(window.innerWidth >= "1000px") {
+        exerciseTableContainer.style.marginLeft = "6.25rem";
+    }
+
     let newRow = exerciseTableBody.insertRow();
     let exerciseNameCell = newRow.insertCell(0);
     let exerciseSetsCell = newRow.insertCell(1);
@@ -288,6 +307,7 @@ async function createExerciseRow() {
     console.log("exercise id:", exerciseID);
     newRow.setAttribute("data-id", exerciseID);
     console.log(dateDisplay.value);
+
 }
 
 async function populateTableFromData(workoutDate) {
@@ -342,7 +362,7 @@ async function populateTableFromData(workoutDate) {
 
 function removeExerciseFormFromDOM() {
     let exerciseFormToRemove = document.querySelector(".exercise-form");
-    strengthContainer.removeChild(exerciseFormToRemove);
+    exerciseFormContainer.removeChild(exerciseFormToRemove);
 }
 
 function appendExerciseFormToDOM() {
@@ -351,7 +371,7 @@ function appendExerciseFormToDOM() {
     if(existingExerciseForms.length === 0) {
         console.log("HERE");
         let exerciseFormToAppend = exerciseFormTemplate.content.cloneNode(true);
-        strengthContainer.appendChild(exerciseFormToAppend);
+        exerciseFormContainer.appendChild(exerciseFormToAppend);
     }
 }
 
@@ -722,6 +742,21 @@ async function deleteExerciseSetDataByID(exerciseID) {
 
         if(!response.ok) {
             throw new Error(`Could not delete exercise set data with id: ${exerciseID}`);
+        }
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
+
+async function deleteWorkoutByDate(date) {
+    try {
+        const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
+            method: "DELETE",
+        });
+
+        if(!response.ok) {
+            throw new Error(`Could not delete workout on date: ${date}`);
         }
     }
     catch(error) {

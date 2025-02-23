@@ -195,15 +195,15 @@ app.put("/workout/id=:id", async (req, res) => {
     res.status(201).send("updated date of workout with id: " + req.params.id);
 });
 
-app.delete("/workout/id=:id", async (req, res) => {
+app.delete("/workout/date=:date", async (req, res) => {
     const {error} = await supabase
         .from("workout")
         .delete()
-        .eq("workout_id", req.params.id)
+        .eq("date", req.params.date)
     if(error) {
         return res.status(400).json({error: error.message});
     }
-    res.status(201).send("deleted workout with id: " + req.params.id);
+    res.status(201).send("deleted workout on date: " + req.params.date);
 });
 
 app.get("/workout-exercise", async (req, res) => {

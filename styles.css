@@ -5,8 +5,10 @@
 }
 
 .header {
-    background-color: red;
+    background-color: #323232;
     height: 8rem;
+    max-height: 8rem;
+    color: white;
 }
 
 .diary-header-container {
@@ -22,7 +24,7 @@
 }
 
 .add-underline {
-    border: 1px solid blue
+    border: 1px solid blue;
 }
 
 .exercise-form {
@@ -44,10 +46,14 @@ only adding 2.5lbs to weight
     }
 
     .diary-header-container {
+        margin: auto;
         margin-top: 3rem;
-        border: 2px solid blue;
-        margin-left: 40rem;
-        margin-right: 40rem;
+        width: 40rem;
+    }
+
+    .diary-header-text {
+        margin-left: 2rem;
+        font-size: 1.5rem;
     }
 
     .diary-header-calendar {
@@ -55,16 +61,17 @@ only adding 2.5lbs to weight
     }
 
     .diary-header-calendar {
-        margin-left: 4rem;
+        margin-left: 2rem;
     }
 
     #date-display {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+        border: none;
     }
 
     .strength-container { 
-        margin-left: 40rem;
-        margin-right: 40rem;
+        width: 40rem;
+        margin: auto;
         margin-top: 4rem;
     }
 
@@ -85,15 +92,18 @@ only adding 2.5lbs to weight
     .exercise-form {
         padding-top: 1rem;
         position: absolute;
+        left: 30rem;
     }
 
     #add-entered-data {
         float: left;
+        width: 4rem;
+        margin-top: 0.25rem;
     }
 
     #exercise-search {
         padding-left: 0.5rem;
-        width: 12rem;
+        width: 20rem;
         height: 1.5rem;
         background-color: white;
         color: black;
@@ -104,7 +114,6 @@ only adding 2.5lbs to weight
 
     .input-label {
         margin-left: 2rem;
-        align-self: center;
         font-size: 1.5rem;
     }
 
@@ -120,6 +129,7 @@ only adding 2.5lbs to weight
 
     #close-exercise-form {
         width: 4rem;
+        margin-top: 0.25rem;
     }
     
     .exercise-table-container {
@@ -127,23 +137,32 @@ only adding 2.5lbs to weight
     }
     
     table {
-       border-spacing: 0;
-       margin-left: 36rem;
+        border-spacing: 0;
+        margin: auto;
+        max-width: 48rem;
     }
     
     th {
-        border-bottom: 2px solid blue;
-        border-top: 2px solid blue;
+        border: 2px solid blue;
         text-align: center;
-        width: 12rem;
     }
 
     .exercise-table-heading {
         border-left: 2px solid;
+        width: 15rem;
+    }
+
+    .sets-table-heading {
+        width: 5rem;
+    }
+
+    .reps-table-heading {
+        width: 5rem;
     }
 
     .weight-table-heading {
         border-right: 2px solid blue;
+        width: 6rem;
     }
     
     td {
@@ -163,9 +182,16 @@ only adding 2.5lbs to weight
 }
 
 @media (max-width: 600px) {
+    .header {
+        background-color: #323232;
+        height: 6rem;
+        max-height: 6rem;
+        color: white;
+    }
+
     .header-text {
         text-align: center;
-        padding-top: 2.5rem;
+        padding-top: 2rem;
     }
 
     .diary-header-container {
@@ -210,7 +236,6 @@ only adding 2.5lbs to weight
     #add-sets-link {
         text-wrap: balance;
         text-align: center;
-
     }
 
     .add-underline {
@@ -288,22 +313,26 @@ only adding 2.5lbs to weight
         margin-top: 2rem;
         margin-left: 1rem;
         margin-right: 1rem;
+        height: 30rem;
+        overflow-y: auto;
     }
     
     table {
         border-spacing: 0;
+        width: 100%;
+        
     }
     
     th {
         border-bottom: 2px solid blue;
         border-top: 2px solid blue;
         text-align: center;
-        width: 12rem;
     }
 
     .exercise-table-heading {
         border-left: 2px solid blue;
         border-right: 2px solid blue;
+        width: 7rem;
     }
 
     .sets-table-heading {
