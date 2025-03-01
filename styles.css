@@ -5,9 +5,14 @@
 }
 
 .header {
-    background-color: #323232;
+    background-color: #1d2834;
     height: 8rem;
     max-height: 8rem;
+    color: white;
+}
+
+body {
+    background-color: #19212a;
     color: white;
 }
 
@@ -39,7 +44,7 @@ only adding 2.5lbs to weight
     width: 5rem;
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 601px) {
     .header-text { 
         padding-left: 1rem;
         padding-top: 2rem;
@@ -133,12 +138,14 @@ only adding 2.5lbs to weight
     }
     
     .exercise-table-container {
-        margin-top: 4rem;
+        background-color: #1d2834;
+        margin: auto;
+        margin-top: 2rem;
+        width: 40rem;
     }
     
     table {
         border-spacing: 0;
-        margin: auto;
         max-width: 48rem;
     }
     
@@ -183,7 +190,6 @@ only adding 2.5lbs to weight
 
 @media (max-width: 600px) {
     .header {
-        background-color: #323232;
         height: 6rem;
         max-height: 6rem;
         color: white;
@@ -218,7 +224,7 @@ only adding 2.5lbs to weight
         margin-right: 1rem;
         margin-left: 1rem;
         gap: 2rem;
-        color: blue;
+        color: white;
         -webkit-touch-callout: none; 
         -webkit-user-select: none; 
         -khtml-user-select: none; 
@@ -230,7 +236,6 @@ only adding 2.5lbs to weight
     #add-exercise-link {
         text-wrap: balance;
         text-align: center;
-
     }
 
     #add-sets-link {
@@ -308,47 +313,41 @@ only adding 2.5lbs to weight
     .exercise-form-button:active {
         border: 2px solid black;
     }
-    
+
     .exercise-table-container {
+        display: none;
+    }
+    
+    .exercise-table-container-mobile {
+        color: black;
+        width: 80%;
+        margin: auto;
         margin-top: 2rem;
-        margin-left: 1rem;
-        margin-right: 1rem;
-        height: 30rem;
-        overflow-y: auto;
+        border: 2px solid white;
+
     }
-    
-    table {
-        border-spacing: 0;
+
+    .exercise-table-mobile {
+        background-color: white;
+        border-collapse: collapse;
         width: 100%;
-        
     }
-    
+
     th {
-        border-bottom: 2px solid blue;
-        border-top: 2px solid blue;
-        text-align: center;
+        border: 2px solid black;
     }
 
-    .exercise-table-heading {
-        border-left: 2px solid blue;
-        border-right: 2px solid blue;
-        width: 7rem;
+    .exercise-table-heading-mobile {
+        text-align: left;
+        width: 10.5rem;
+        min-width: 10.5rem;
     }
 
-    .sets-table-heading {
-        border-right: 2px solid blue;
-    }
-
-    .reps-table-heading {
-        border-right: 2px solid blue;
-    }
-
-    .weight-table-heading {
-        border-right: 2px solid blue;
-    }
-    
     td {
-        border: 2px solid red;
+        height: 1rem;
+    }
+
+    .sets-reps-weight {
         text-align: center;
     }
     
