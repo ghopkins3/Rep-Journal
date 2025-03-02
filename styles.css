@@ -319,38 +319,43 @@ only adding 2.5lbs to weight
     }
     
     .exercise-table-container-mobile {
-        color: black;
-        width: 80%;
         margin: auto;
+        min-width: 20rem;
+        width: 20rem;
+        max-width: 20rem;
         margin-top: 2rem;
-        border: 2px solid white;
-
     }
 
     .exercise-table-mobile {
-        background-color: white;
-        border-collapse: collapse;
+        background: white;
         width: 100%;
+        background-color: #323232;
+        color: white;
+        border-collapse: collapse;
     }
 
     th {
-        border: 2px solid black;
+        display: none;
+        text-align: left;
+        background-color: hsl(0 0% 0% / 0.5);
     }
 
-    .exercise-table-heading-mobile {
-        text-align: left;
-        width: 10.5rem;
-        min-width: 10.5rem;
+    tr:nth-of-type(2n) {
+        background-color: hsl(0 0% 0% / 0.1);
     }
 
     td {
-        height: 1rem;
+        display: block;
+        padding-top: 1rem;
+        padding-left: 1rem;
     }
 
-    .sets-reps-weight {
-        text-align: center;
+    td::before {
+        content: attr(data-cell) ": ";
+        font-weight: 700;
+        text-transform: capitalize;
     }
-    
+
     .delete-button-cell {
         border: none;
         color: blue;
