@@ -79,6 +79,8 @@ async function checkWorkoutOnDate(date) {
 }
 
 document.addEventListener("click", (event) => {
+    console.log(event.target);
+    console.log(event.target.id);
     if(event.target.id === "exercise-search" || event.target.getAttribute("className") === "entered-exercise-name") {
         event.target.addEventListener("keydown", (event) => {
             let exerciseNamePattern = /^[a-zA-Z\s]$/;
@@ -177,7 +179,12 @@ document.addEventListener("click", (event) => {
         } else {
             event.preventDefault();
         }
-    } 
+    } else if(event.target.id === "mobile-hide-button") {
+        let mobileRowContent = event.target.parentNode.parentNode.children;
+        for(let i = 1; i < mobileRowContent.length; i++) {
+            mobileRowContent[i].classList.toggle("hidden");
+        }
+    }
 
     // if isEditing = true 
     // AND event.target.parentNode DOES NOT EQUAL rowToEdit 
