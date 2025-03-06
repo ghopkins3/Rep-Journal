@@ -140,7 +140,7 @@ only adding 2.5lbs to weight
     .exercise-table-container {
         background-color: #1d2834;
         margin: auto;
-        margin-top: 2rem;
+        margin-top: 4rem;
         width: 40rem;
     }
     
@@ -315,20 +315,16 @@ only adding 2.5lbs to weight
     }
 
     .exercise-table-container {
-        display: none;
-    }
-    
-    .exercise-table-container-mobile {
         margin: auto;
         min-width: 20rem;
         width: 20rem;
         max-width: 20rem;
         margin-top: 2rem;
     }
-
-    .exercise-table-mobile {
-        background: white;
+    
+    .exercise-table {
         width: 100%;
+        max-width: 100%;
         background-color: #323232;
         color: white;
         border-collapse: collapse;
@@ -336,8 +332,6 @@ only adding 2.5lbs to weight
 
     th {
         display: none;
-        text-align: left;
-        background-color: hsl(0 0% 0% / 0.5);
     }
 
     tr:nth-of-type(2n) {
@@ -345,8 +339,11 @@ only adding 2.5lbs to weight
     }
 
     td {
-        display: block;
-        padding-top: 1rem;
+        display: block;     
+        text-wrap: wrap;   
+        word-wrap: break-word;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
         padding-left: 1rem;
     }
 
@@ -359,6 +356,19 @@ only adding 2.5lbs to weight
     .delete-button-cell {
         border: none;
         color: blue;
+        display: none;
+    }
+
+    .edit-button-cell {
+        border: none;
+        color: blue;
+        display: none;
+    }
+
+    .save-button-cell {
+        border: none;
+        color: blue;
+        display: none;
     }
     
     #delete-row-button {

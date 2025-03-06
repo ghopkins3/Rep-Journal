@@ -35,13 +35,21 @@ let rowToEdit;
 let rowID;
 
 if(dateSplitOnSlash[0] < 10) {
-    currentDate = `${dateSplitOnSlash[2]}-0${dateSplitOnSlash[0]}-${dateSplitOnSlash[1]}`;
-} else {
-    currentDate = `${dateSplitOnSlash[2]}-${dateSplitOnSlash[0]}-${dateSplitOnSlash[1]}`;
+    if(dateSplitOnSlash[1] < 10) {
+        currentDate = `${dateSplitOnSlash[2]}-0${dateSplitOnSlash[0]}-0${dateSplitOnSlash[1]}`;
+    } else if(dateSplitOnSlash[1] >= 10) {
+        currentDate = `${dateSplitOnSlash[2]}-0${dateSplitOnSlash[0]}-${dateSplitOnSlash[1]}`;
+    }
+} else if(dateSplitOnSlash[0] >= 10) {
+    if(dateSplitOnSlash[1] < 10) {
+        currentDate = `${dateSplitOnSlash[2]}-${dateSplitOnSlash[0]}-0${dateSplitOnSlash[1]}`;
+    } else if(dateSplitOnSlash[1] >= 10) {
+        currentDate = `${dateSplitOnSlash[2]}-0${dateSplitOnSlash[0]}-${dateSplitOnSlash[1]}`;
+    }
 }
-console.log(currentDate);
 
 let selectedDate = "selectedDate";
+
 
 // if a saved date doesnt exist reset
 // PAGE LOADS HERE
@@ -49,20 +57,17 @@ let selectedDate = "selectedDate";
 if(sessionStorage.getItem(selectedDate) === null) {
     dateDisplay.value = currentDate;
     sessionStorage.setItem(selectedDate, dateDisplay.value);
-    console.log("HERE");
 } else {
     dateDisplay.value = sessionStorage.getItem(selectedDate);
-    console.log("here");
 }
 
-checkWorkoutOnDate(dateDisplay.value);
+await checkWorkoutOnDate(dateDisplay.value);
 
 dateDisplay.addEventListener("change", () => {
     while(exerciseTableBody.lastElementChild) {
         exerciseTableBody.removeChild(exerciseTableBody.lastElementChild);
     }
     sessionStorage.setItem(selectedDate, dateDisplay.value);
-    console.log("session object date:", sessionStorage.getItem(selectedDate));
     checkWorkoutOnDate(dateDisplay.value);
 });
 
@@ -70,14 +75,7 @@ async function checkWorkoutOnDate(date) {
     const workoutOnDate = await getWorkoutByDate(date);
     if(workoutOnDate !== null && workoutOnDate !== undefined) {
         populateTableFromData(workoutOnDate);
-        if(window.innerWidth >= "1000px") {
-            exerciseTableContainer.style.marginLeft = "6.25rem";
-        } else {
-            exerciseTableContainer.style.marginLeft = "";
-        }
-    } else {
-        exerciseTableContainer.style.marginLeft = "";
-    }
+    } 
 }
 
 document.addEventListener("click", (event) => {
@@ -121,11 +119,11 @@ document.addEventListener("click", (event) => {
         rowID = rowToDelete.getAttribute("data-id");
         console.log("delete id:", rowID);
         console.log("here here:", rowToDelete);
-        console.log("closest tr:", exerciseTable.closest("tr"));
-        if(exerciseTable.closest("tr") === null) {
+        console.log("closest tr:", exerciseTableBody.closest("tr"));
+        console.log(exerciseTableBody.children);
+        if(exerciseTableBody.childElementCount === 0) {
             console.log("current date delete:", dateDisplay.value);
             deleteWorkoutByDate(dateDisplay.value);
-            exerciseTableContainer.style.marginLeft = "";
         }
         deleteExerciseByID(rowID);
     } else if(event.target.id === "edit-row-button") {
@@ -258,11 +256,6 @@ async function createExerciseRow() {
     console.log(exerciseRepsInput.value);
     console.log(exerciseWeightInput.value);
 
-
-    if(window.innerWidth >= "1000px") {
-        exerciseTableContainer.style.marginLeft = "6.25rem";
-    }
-
     let newRow = exerciseTableBody.insertRow();
     let exerciseNameCell = newRow.insertCell(0);
     let exerciseSetsCell = newRow.insertCell(1);
@@ -272,9 +265,13 @@ async function createExerciseRow() {
     let saveRowCell = newRow.insertCell(5);
     let deleteRowCell = newRow.insertCell(6);
 
+    editRowCell.className = "edit-button-cell";
+
     let editButton = document.createElement("button");
     editButton.setAttribute("id", "edit-row-button");
     editRowCell.appendChild(editButton);
+
+    saveRowCell.className = "save-button-cell";
 
     let saveButton = document.createElement("button");
     saveButton.setAttribute("id", "save-row-button");
@@ -288,15 +285,19 @@ async function createExerciseRow() {
     
     exerciseNameCell.textContent = convertToDisplayFormat(exerciseNameInput.value);
     exerciseNameCell.setAttribute("className", "entered-exercise-name");
+    exerciseNameCell.setAttribute("data-cell", "name");
 
     exerciseSetsCell.textContent = exerciseSetsInput.value;
     exerciseSetsCell.setAttribute("className", "entered-number");
+    exerciseSetsCell.setAttribute("data-cell", "sets");
 
     exerciseRepsCell.textContent = exerciseRepsInput.value;
     exerciseRepsCell.setAttribute("className", "entered-number");
+    exerciseRepsCell.setAttribute("data-cell", "reps");
 
     exerciseWeightCell.textContent = exerciseWeightInput.value;
     exerciseWeightCell.setAttribute("className", "entered-number");
+    exerciseWeightCell.setAttribute("data-cell", "weight");
 
     editButton.textContent = "Edit";
     saveButton.textContent = "Save";
@@ -325,9 +326,13 @@ async function populateTableFromData(workoutDate) {
         let saveRowCell = newRow.insertCell(5);
         let deleteRowCell = newRow.insertCell(6);
 
+        editRowCell.className = "edit-button-cell";
+
         let editButton = document.createElement("button");
         editButton.setAttribute("id", "edit-row-button");
         editRowCell.appendChild(editButton);
+
+        saveRowCell.className = "save-button-cell";
 
         let saveButton = document.createElement("button");
         saveButton.setAttribute("id", "save-row-button");
@@ -341,15 +346,19 @@ async function populateTableFromData(workoutDate) {
     
         exerciseNameCell.textContent = convertToDisplayFormat(exercise.exercise_name);
         exerciseNameCell.setAttribute("className", "entered-exercise-name");
+        exerciseNameCell.setAttribute("data-cell", "name");
 
         exerciseSetsCell.textContent = exercise.sets[0].amount_of_sets;
         exerciseSetsCell.setAttribute("className", "entered-number");
+        exerciseSetsCell.setAttribute("data-cell", "sets");
 
         exerciseRepsCell.textContent = exercise.sets[0].repetitions;
         exerciseRepsCell.setAttribute("className", "entered-number");
+        exerciseRepsCell.setAttribute("data-cell", "reps");
 
         exerciseWeightCell.textContent = exercise.sets[0].weight;
         exerciseWeightCell.setAttribute("className", "entered-number");
+        exerciseWeightCell.setAttribute("data-cell", "weight");
 
         editButton.textContent = "Edit";
         saveButton.textContent = "Save";
