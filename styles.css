@@ -142,6 +142,8 @@ only adding 2.5lbs to weight
         margin: auto;
         margin-top: 4rem;
         width: 40rem;
+        max-width: 40rem;
+        min-width: 40rem;   
     }
     
     table {
@@ -175,6 +177,10 @@ only adding 2.5lbs to weight
     td {
         border: 2px solid red;
         text-align: center;
+    }
+
+    .mobile-hide-button-cell {
+        display: none;
     }
     
     .delete-button-cell {
@@ -222,7 +228,7 @@ only adding 2.5lbs to weight
         margin-top: 1rem;
         justify-content: center;
         margin-right: 1rem;
-        margin-left: 1rem;
+        margin-left: 3rem;
         gap: 2rem;
         color: white;
         -webkit-touch-callout: none; 
@@ -244,11 +250,9 @@ only adding 2.5lbs to weight
     }
 
     .add-underline {
-        margin-top: 0.6rem;
-        margin-left: 1rem;
-        margin-right: 1rem;
-        width: 24rem;
-        min-width: 24rem;
+        margin: auto;
+        margin-top: 1rem;
+        width: 20rem;
         max-width: 24rem;
     }
 
@@ -351,6 +355,18 @@ only adding 2.5lbs to weight
         content: attr(data-cell) ": ";
         font-weight: 700;
         text-transform: capitalize;
+    }
+
+    .mobile-hide-button-cell::before {
+        display: none;
+    }
+
+    .mobile-hide-button-cell {
+        border: 2px solid blue;
+    }
+
+    #mobile-hide-button {
+        margin-left: 17rem;
     }
 
     .delete-button-cell {
