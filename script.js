@@ -26,6 +26,7 @@ const exerciseFormTemplate = document.querySelector("#exercise-form-template");
 const exerciseTableContainer = document.querySelector(".exercise-table-container");
 const exerciseTable = document.querySelector(".exercise-table");
 const exerciseTableBody = document.querySelector("#exercise-table-body");
+const cells = exerciseTable.getElementsByTagName("td");
 
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
@@ -181,8 +182,11 @@ document.addEventListener("click", (event) => {
         }
     } else if(event.target.id === "mobile-hide-button") {
         let mobileRowContent = event.target.parentNode.parentNode.children;
+        let targetRowDataID = event.target.parentNode.parentNode.getAttribute("data-id");
+        console.log(targetRowDataID);
         for(let i = 1; i < mobileRowContent.length; i++) {
             mobileRowContent[i].classList.toggle("hidden");
+            localStorage.setItem(targetRowDataID, mobileRowContent[i].classList.contains("hidden"));
         }
     }
 
@@ -390,6 +394,15 @@ async function populateTableFromData(workoutDate) {
     
         console.log("test:", exercise.exercise_id);
         console.log(exercise);
+        console.log("data received");
+
+        for(const cell of cells) {
+            console.log("checking...");
+            if(localStorage.getItem(cell.parentNode.getAttribute("data-id")) === "true" 
+                                && cell !== cell.parentNode.firstElementChild) {
+                cell.classList.add("hidden");
+            }
+        }
     });
 }
 
