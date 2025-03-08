@@ -365,12 +365,9 @@ only adding 2.5lbs to weight
         display: none;
     }
 
-    .mobile-hide-button-cell {
-        border: 2px solid blue;
-    }
-
     #mobile-hide-button {
-        margin-left: 17rem;
+        margin-left: 16.5rem;
+        width: 1.75rem;
     }
 
     .delete-button-cell {

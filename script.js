@@ -184,6 +184,14 @@ document.addEventListener("click", (event) => {
         let mobileRowContent = event.target.parentNode.parentNode.children;
         let targetRowDataID = event.target.parentNode.parentNode.getAttribute("data-id");
         console.log(targetRowDataID);
+        console.log(event.target.textContent);
+
+        if(event.target.textContent === "-") {
+            event.target.textContent = "+";
+        } else if(event.target.textContent === "+") {
+            event.target.textContent = "-";
+        }
+
         for(let i = 1; i < mobileRowContent.length; i++) {
             mobileRowContent[i].classList.toggle("hidden");
             localStorage.setItem(targetRowDataID, mobileRowContent[i].classList.contains("hidden"));
@@ -318,7 +326,7 @@ async function createExerciseRow() {
     exerciseWeightCell.setAttribute("className", "entered-number");
     exerciseWeightCell.setAttribute("data-cell", "weight");
 
-    mobileHideBtn.textContent = "Test";
+    mobileHideBtn.textContent = "-";
     editButton.textContent = "Edit";
     saveButton.textContent = "Save";
     deleteButton.textContent = "X";
@@ -387,7 +395,6 @@ async function populateTableFromData(workoutDate) {
         exerciseWeightCell.setAttribute("className", "entered-number");
         exerciseWeightCell.setAttribute("data-cell", "weight");
 
-        mobileHideBtn.textContent = "Test";
         editButton.textContent = "Edit";
         saveButton.textContent = "Save";
         deleteButton.textContent = "X";
@@ -401,6 +408,9 @@ async function populateTableFromData(workoutDate) {
             if(localStorage.getItem(cell.parentNode.getAttribute("data-id")) === "true" 
                                 && cell !== cell.parentNode.firstElementChild) {
                 cell.classList.add("hidden");
+                mobileHideBtn.textContent = "+";
+            } else {
+                mobileHideBtn.textContent = "-";
             }
         }
     });
