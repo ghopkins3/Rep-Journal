@@ -193,7 +193,10 @@ document.addEventListener("click", (event) => {
         }
 
         for(let i = 1; i < mobileRowContent.length; i++) {
-            mobileRowContent[i].classList.toggle("hidden");
+            if(mobileRowContent[i].getAttribute("data-cell") !== "name") {
+                mobileRowContent[i].classList.toggle("hidden");
+            }
+        
             localStorage.setItem(targetRowDataID, mobileRowContent[i].classList.contains("hidden"));
         }
     }
@@ -406,7 +409,8 @@ async function populateTableFromData(workoutDate) {
         for(const cell of cells) {
             console.log("checking...");
             if(localStorage.getItem(cell.parentNode.getAttribute("data-id")) === "true" 
-                                && cell !== cell.parentNode.firstElementChild) {
+                                && (cell !== cell.parentNode.firstElementChild)
+                                && (cell !== cell.parentNode.firstElementChild.nextElementSibling)) {
                 cell.classList.add("hidden");
                 mobileHideBtn.textContent = "+";
             } else {
