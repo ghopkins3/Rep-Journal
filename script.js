@@ -114,7 +114,7 @@ document.addEventListener("click", (event) => {
         }
     } else if(event.target.id === "close-exercise-form") {
         removeExerciseFormFromDOM();
-    } else if(event.target.id === "delete-row-button") {
+    } else if(event.target.id === "delete-row-button" || event.target.id === "mobile-delete-button") {
         console.log("here:", event.target.parentNode.parentNode);
         console.log(exerciseTableBody.children);
         exerciseTableBody.removeChild(event.target.parentNode.parentNode);
@@ -129,7 +129,7 @@ document.addEventListener("click", (event) => {
             deleteWorkoutByDate(dateDisplay.value);
         }
         deleteExerciseByID(rowID);
-    } else if(event.target.id === "edit-row-button") {
+    } else if(event.target.id === "edit-row-button" || event.target.id === "mobile-edit-button") {
         console.log(rowToEdit);
 
         if(!isEditing) {
@@ -199,7 +199,7 @@ document.addEventListener("click", (event) => {
         
             localStorage.setItem(targetRowDataID, mobileRowContent[i].classList.contains("hidden"));
         }
-    }
+    } 
 
     // if isEditing = true 
     // AND event.target.parentNode DOES NOT EQUAL rowToEdit 
