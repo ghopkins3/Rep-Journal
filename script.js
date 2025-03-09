@@ -129,7 +129,7 @@ document.addEventListener("click", (event) => {
             deleteWorkoutByDate(dateDisplay.value);
         }
         deleteExerciseByID(rowID);
-    } else if(event.target.id === "edit-row-button" || event.target.id === "mobile-edit-button") {
+    } else if(event.target.id === "edit-row-button") {
         console.log(rowToEdit);
 
         if(!isEditing) {
