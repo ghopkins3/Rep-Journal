@@ -290,8 +290,16 @@ async function createExerciseRow() {
 
     mobileHideBtnCell.className = "mobile-hide-button-cell";
 
+    let mobileDeleteBtn = document.createElement("button");
+    let mobileEditBtn = document.createElement("button");   
     let mobileHideBtn = document.createElement("button");
+
+    mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
+    mobileEditBtn.setAttribute("id", "mobile-edit-button");
     mobileHideBtn.setAttribute("id", "mobile-hide-button");
+
+    mobileHideBtnCell.appendChild(mobileDeleteBtn);
+    mobileHideBtnCell.appendChild(mobileEditBtn);
     mobileHideBtnCell.appendChild(mobileHideBtn);
 
     editRowCell.className = "edit-button-cell";
@@ -329,6 +337,8 @@ async function createExerciseRow() {
     exerciseWeightCell.setAttribute("className", "entered-number");
     exerciseWeightCell.setAttribute("data-cell", "weight");
 
+    mobileDeleteBtn.textContent = "Del";
+    mobileEditBtn.textContent = "Edit";
     mobileHideBtn.textContent = "-";
     editButton.textContent = "Edit";
     saveButton.textContent = "Save";
@@ -348,7 +358,7 @@ async function populateTableFromData(workoutDate) {
     exerciseData.forEach(exercise => {
         let newRow = exerciseTableBody.insertRow();
         newRow.setAttribute("data-id", exercise.exercise_id);
-
+        
         let mobileHideBtnCell = newRow.insertCell(0);
         let exerciseNameCell = newRow.insertCell(1);
         let exerciseSetsCell = newRow.insertCell(2);
@@ -360,8 +370,16 @@ async function populateTableFromData(workoutDate) {
 
         mobileHideBtnCell.className = "mobile-hide-button-cell";
 
+        let mobileDeleteBtn = document.createElement("button");
+        let mobileEditBtn = document.createElement("button");   
         let mobileHideBtn = document.createElement("button");
+
+        mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
+        mobileEditBtn.setAttribute("id", "mobile-edit-button");
         mobileHideBtn.setAttribute("id", "mobile-hide-button");
+
+        mobileHideBtnCell.appendChild(mobileDeleteBtn);
+        mobileHideBtnCell.appendChild(mobileEditBtn);
         mobileHideBtnCell.appendChild(mobileHideBtn);
 
         editRowCell.className = "edit-button-cell";
@@ -397,6 +415,9 @@ async function populateTableFromData(workoutDate) {
         exerciseWeightCell.textContent = exercise.sets[0].weight;
         exerciseWeightCell.setAttribute("className", "entered-number");
         exerciseWeightCell.setAttribute("data-cell", "weight");
+
+        mobileDeleteBtn.textContent = "Del";
+        mobileEditBtn.textContent = "Edit";
 
         editButton.textContent = "Edit";
         saveButton.textContent = "Save";
