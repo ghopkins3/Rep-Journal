@@ -1,5 +1,7 @@
 // TODO 
 
+// login/signup forms
+// authorization/figure out how user sees user specific information
 // MOBILE ACCESSIBLE -> ::before data-cell OR simplify to exercise name and set/reps/weight,
 // bring up form when editing 
 // USER AUTHENTICATION!! 
