@@ -1,10 +1,14 @@
 import express from "express";
 import cors from "cors";
-import env from "dotenv";
-import {createClient} from "@supabase/supabase-js";
-import { convertToDatabaseFormat } from "./convertToDatabaseFormat.js";
-env.config();
-const supabase = createClient(process.env.DATABSE_URL, process.env.DATABASE_SECRET_KEY);
+import { supabase } from "./lib/supabaseClient.js";
+import { convertToDatabaseFormat } from "./utils/convertToDatabaseFormat.js";
+import { postSignUp } from "./auth/postSignUp.js";
+import { postLogin } from "./auth/postLogin.js";
+import { supabaseAuthMiddleware } from "./auth/supabaseAuthMiddleware.js";
+import { getUser } from "./auth/getUser.js";
+import { putUser } from "./auth/putUser.js";
+import { deleteUser } from "./auth/deleteUser.js";
+
 const app = express();
 let PORT = process.env.PORT;
 app.use(express.json());
@@ -397,6 +401,15 @@ app.put("/test/id=:id", async (req, res) => {
 app.get("/", (req, res) => {
     res.send("Hello Worldington!");
 });
+
+app.get("/signup", async (req, res) => {
+    res.send("hello man");
+})
+app.post("/signup", postSignUp);
+app.post("/login", postLogin);
+app.get("/auth/user", supabaseAuthMiddleware, getUser);
+app.put("/auth/user", supabaseAuthMiddleware, putUser);
+app.delete("/auth/user", supabaseAuthMiddleware, deleteUser);
 
 app.listen(PORT, () => {
     console.log(
