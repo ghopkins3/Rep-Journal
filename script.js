@@ -872,6 +872,9 @@ async function deleteWorkoutByDate(date) {
     }
 }
 
+
+// move to utils files, import 
+
 function removeExcessWhiteSpace(str) {
     return str.replace(/\s{2,}/g,' ').trim();
 }
