@@ -209,8 +209,7 @@ document.addEventListener("click", (event) => {
             console.log(event.target.parentNode.parentNode.children[i].textContent);
         }
         console.log(event.target.parentNode.parentNode);
-        let editRow = event.target.parentNode.parentNode.getAttribute("data-id");
-        console.log("num:", editRow);
+        rowID = event.target.parentNode.parentNode.getAttribute("data-id");
 
         appendEditExerciseFormToDOM();
         document.querySelector("#exercise-search").value = event.target.parentNode.parentNode.children[1].textContent;
@@ -218,6 +217,22 @@ document.addEventListener("click", (event) => {
         document.querySelector("#reps-input").value = event.target.parentNode.parentNode.children[3].textContent;
         document.querySelector("#weight-input").value = event.target.parentNode.parentNode.children[4].textContent; 
 
+        let mobileRowContent = event.target.parentNode.parentNode.children;
+        let targetRowDataID = event.target.parentNode.parentNode.getAttribute("data-id");
+        console.log(targetRowDataID);
+        console.log(event.target.textContent);
+
+        for(let i = 1; i < mobileRowContent.length; i++) {
+
+            if(mobileRowContent[i].getAttribute("class") === "hidden") {
+                mobileRowContent[i].classList.remove("hidden");
+            }
+        
+            localStorage.setItem(targetRowDataID, "false");
+        }
+
+    } else if(event.target.id === "save-entered-data") {
+        console.log("row id:", rowID);
     }
 
     // if isEditing = true 

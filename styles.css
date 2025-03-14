@@ -254,6 +254,11 @@ only adding 2.5lbs to weight
         text-decoration-color: #0000FF;
         text-decoration-thickness: 1px;
         text-underline-offset: 2px;
+        border: 0.5px solid blue;
+    }
+
+    #add-sets-link {
+        margin-right: 0.75rem;
     }
 
     .add-underline {
