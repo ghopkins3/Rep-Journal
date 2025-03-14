@@ -233,6 +233,16 @@ document.addEventListener("click", (event) => {
 
     } else if(event.target.id === "save-entered-data") {
         console.log("row id:", rowID);
+        
+        for(let i = 0; i < exerciseTableBody.children.length; i++) {
+            if(exerciseTableBody.children[i].getAttribute("data-id") === rowID) {
+                console.log(exerciseTableBody.children[i].children);
+                exerciseTableBody.children[i].children[1].textContent = document.querySelector("#exercise-search").value;
+                exerciseTableBody.children[i].children[2].textContent = document.querySelector("#sets-input").value;
+                exerciseTableBody.children[i].children[3].textContent = document.querySelector("#reps-input").value;
+                exerciseTableBody.children[i].children[4].textContent = document.querySelector("#weight-input").value;
+            }
+        }
     }
 
     // if isEditing = true 
