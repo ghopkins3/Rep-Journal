@@ -25,6 +25,7 @@ const addExerciseSetsLink = document.querySelector("#add-sets-link");
 const strengthContainer = document.querySelector(".strength-container");
 const exerciseFormContainer = document.querySelector(".exercise-form-container")
 const exerciseFormTemplate = document.querySelector("#exercise-form-template");
+const exerciseEditFormTemplate = document.querySelector("#edit-exercise-form-template");
 const exerciseTableContainer = document.querySelector(".exercise-table-container");
 const exerciseTable = document.querySelector(".exercise-table");
 const exerciseTableBody = document.querySelector("#exercise-table-body");
@@ -204,7 +205,19 @@ document.addEventListener("click", (event) => {
     } else if(event.target.id === "mobile-edit-button") {
         console.log(event.target.parentNode.parentNode.children);
         let testOne = event.target.parentNode.parentNode.children[1];
-        console.log(testOne.textContent);
+        for(let i = 1; i < 5; i++) {
+            console.log(event.target.parentNode.parentNode.children[i].textContent);
+        }
+        console.log(event.target.parentNode.parentNode);
+        let editRow = event.target.parentNode.parentNode.getAttribute("data-id");
+        console.log("num:", editRow);
+
+        appendEditExerciseFormToDOM();
+        document.querySelector("#exercise-search").value = event.target.parentNode.parentNode.children[1].textContent;
+        document.querySelector("#sets-input").value = event.target.parentNode.parentNode.children[2].textContent;
+        document.querySelector("#reps-input").value = event.target.parentNode.parentNode.children[3].textContent;
+        document.querySelector("#weight-input").value = event.target.parentNode.parentNode.children[4].textContent; 
+
     }
 
     // if isEditing = true 
@@ -458,6 +471,14 @@ function appendExerciseFormToDOM() {
     if(existingExerciseForms.length === 0) {
         console.log("HERE");
         let exerciseFormToAppend = exerciseFormTemplate.content.cloneNode(true);
+        exerciseFormContainer.appendChild(exerciseFormToAppend);
+    }
+}
+
+function appendEditExerciseFormToDOM() {
+    let existingExerciseForms = document.getElementsByClassName("exercise-form");
+    if(existingExerciseForms.length === 0) {
+        let exerciseFormToAppend = exerciseEditFormTemplate.content.cloneNode(true);
         exerciseFormContainer.appendChild(exerciseFormToAppend);
     }
 }
