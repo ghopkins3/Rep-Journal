@@ -25,7 +25,7 @@ const addExerciseSetsLink = document.querySelector("#add-sets-link");
 const strengthContainer = document.querySelector(".strength-container");
 const exerciseFormContainer = document.querySelector(".exercise-form-container")
 const exerciseFormTemplate = document.querySelector("#exercise-form-template");
-const exerciseEditFormTemplate = document.querySelector("#edit-exercise-form-template");
+const editExerciseFormTemplate = document.querySelector("#edit-exercise-form-template");
 const exerciseTableContainer = document.querySelector(".exercise-table-container");
 const exerciseTable = document.querySelector(".exercise-table");
 const exerciseTableBody = document.querySelector("#exercise-table-body");
@@ -478,7 +478,7 @@ function appendExerciseFormToDOM() {
 function appendEditExerciseFormToDOM() {
     let existingExerciseForms = document.getElementsByClassName("exercise-form");
     if(existingExerciseForms.length === 0) {
-        let exerciseFormToAppend = exerciseEditFormTemplate.content.cloneNode(true);
+        let exerciseFormToAppend = editExerciseFormTemplate.content.cloneNode(true);
         exerciseFormContainer.appendChild(exerciseFormToAppend);
     }
 }
