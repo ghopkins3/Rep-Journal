@@ -89,13 +89,17 @@ only adding 2.5lbs to weight
         margin-left: 1rem;
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
-        color: blue;
+        color: white;
         -webkit-touch-callout: none; 
         -webkit-user-select: none; 
         -khtml-user-select: none; 
         -moz-user-select: none; 
         -ms-user-select: none; 
         user-select: none;
+    }
+
+    #add-exercise-link, #add-set-link {
+        text-shadow: 3px 3px 0 blue;
     }
 
     .exercise-form {
@@ -243,14 +247,13 @@ only adding 2.5lbs to weight
         user-select: none;
     }
 
-    #add-exercise-link {
+    #add-exercise-link, #add-sets-link {
         text-wrap: balance;
         text-align: center;
-    }
-
-    #add-sets-link {
-        text-wrap: balance;
-        text-align: center;
+        text-decoration: underline;
+        text-decoration-color: #0000FF;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
     }
 
     .add-underline {

@@ -17,7 +17,7 @@
 // FEATURES SUCH AS WEIGHT LOG, RELEVANT RESOURCES, FILTER EXERCISES, OVERVIEW, 
 // COMPARE TWO WORKOUTS IE WEEK VS WEEK, GRAPHWORKS, PR VIEW
 
-import { convertToDatabaseFormat } from "./convertToDatabaseFormat.js";
+import { convertToDatabaseFormat } from "./utils/convertToDatabaseFormat.js";
 
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
@@ -201,7 +201,11 @@ document.addEventListener("click", (event) => {
         
             localStorage.setItem(targetRowDataID, mobileRowContent[i].classList.contains("hidden"));
         }
-    } 
+    } else if(event.target.id === "mobile-edit-button") {
+        console.log(event.target.parentNode.parentNode.children);
+        let testOne = event.target.parentNode.parentNode.children[1];
+        console.log(testOne.textContent);
+    }
 
     // if isEditing = true 
     // AND event.target.parentNode DOES NOT EQUAL rowToEdit 
