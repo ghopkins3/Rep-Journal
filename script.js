@@ -17,7 +17,7 @@
 // FEATURES SUCH AS WEIGHT LOG, RELEVANT RESOURCES, FILTER EXERCISES, OVERVIEW, 
 // COMPARE TWO WORKOUTS IE WEEK VS WEEK, GRAPHWORKS, PR VIEW
 
-import { convertToDatabaseFormat } from "./utils/convertToDatabaseFormat.js";
+import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "./utils/formatUtils.js";
 
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
@@ -916,20 +916,3 @@ async function deleteWorkoutByDate(date) {
     }
 }
 
-
-// move to utils files, import 
-
-function removeExcessWhiteSpace(str) {
-    return str.replace(/\s{2,}/g,' ').trim();
-}
-
-function toTitleCase(str) {
-    return removeExcessWhiteSpace(str.replace(
-        /\w\S*/g,
-        text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
-    ));
-}
-
-function convertToDisplayFormat(str) {
-    return toTitleCase(str.replaceAll("-", " "));
-}
