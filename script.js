@@ -231,18 +231,34 @@ document.addEventListener("click", (event) => {
             localStorage.setItem(targetRowDataID, "false");
         }
 
+        console.log(event.target.parentNode.children[2].textContent);
+        if(event.target.parentNode.children[2].textContent === "+") {
+            event.target.parentNode.children[2].textContent = "-";
+        }
+
     } else if(event.target.id === "save-entered-data") {
         console.log("row id:", rowID);
+
+        const exerciseInput = document.querySelector("#exercise-search").value;
+        const setsInput = document.querySelector("#sets-input").value;
+        const repsInput = document.querySelector("#reps-input").value;
+        const weightInput = document.querySelector("#weight-input").value;
         
-        for(let i = 0; i < exerciseTableBody.children.length; i++) {
-            if(exerciseTableBody.children[i].getAttribute("data-id") === rowID) {
-                console.log(exerciseTableBody.children[i].children);
-                exerciseTableBody.children[i].children[1].textContent = document.querySelector("#exercise-search").value;
-                exerciseTableBody.children[i].children[2].textContent = document.querySelector("#sets-input").value;
-                exerciseTableBody.children[i].children[3].textContent = document.querySelector("#reps-input").value;
-                exerciseTableBody.children[i].children[4].textContent = document.querySelector("#weight-input").value;
-            }
+        const displayExerciseName = convertToDisplayFormat(exerciseInput);
+        const dbExerciseName = convertToDatabaseFormat(displayExerciseName);
+
+
+        const row = document.querySelector(`[data-id="${rowID}"]`);
+    
+        if(row) {
+            row.children[1].textContent = displayExerciseName;
+            row.children[2].textContent = setsInput;
+            row.children[3].textContent = repsInput;
+            row.children[4].textContent = weightInput;
         }
+
+        updateExerciseByID(rowID, dbExerciseName, setsInput, repsInput, weightInput);
+        removeExerciseFormFromDOM();
     }
 
     // if isEditing = true 
