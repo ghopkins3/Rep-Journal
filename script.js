@@ -315,15 +315,18 @@ addExerciseSetsLink.addEventListener("click", (event) => {
         event.preventDefault();
     } else {
         appendExerciseFormToDOM();
-        document.querySelector("#exercise-search").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(0).textContent;
-        document.querySelector("#sets-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(1).textContent;
-        document.querySelector("#reps-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(2).textContent;
-        document.querySelector("#weight-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(3).textContent;
-        console.log(exerciseTable.rows.length);
-        console.log(exerciseTable.rows[exerciseTable.rows.length - 1]);
-        console.log(exerciseTable.rows[exerciseTable.rows.length - 1].cells);
-        console.log(exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(0));
-        console.log(exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(0).textContent);
+        
+        if(window.screen.width >= 601) {
+            document.querySelector("#exercise-search").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(0).textContent;
+            document.querySelector("#sets-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(1).textContent;
+            document.querySelector("#reps-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(2).textContent;
+            document.querySelector("#weight-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(3).textContent;
+        } else if(window.screen.width <= 600) {
+            document.querySelector("#exercise-search").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(1).textContent;
+            document.querySelector("#sets-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(2).textContent;
+            document.querySelector("#reps-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(3).textContent;
+            document.querySelector("#weight-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(4).textContent;
+        }
     }
 });
 
