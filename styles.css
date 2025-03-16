@@ -47,11 +47,12 @@ only adding 2.5lbs to weight
 .login-dialog, .sign-up-dialog {
     background-color: #19212a;
     color: white;
-    margin: auto;
     width: 20rem;
     height: 30rem;
     border-radius: 0.75rem;
     border-color: #2c3d4f;
+    justify-self: center;
+    margin-top: 5rem;
 }
 
 .hidden {

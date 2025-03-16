@@ -33,8 +33,9 @@ const cells = exerciseTable.getElementsByTagName("td");
 const loginBtn = document.querySelector(".login-button");
 const signUpBtn = document.querySelector(".sign-up-button");
 const loginDialog = document.querySelector(".login-dialog");
-const closeLoginDialogBtn = document.querySelector(".close-dialog-button");
+const closeLoginDialogBtn = document.querySelector(".close-login-dialog-button");
 const signUpDialog = document.querySelector(".sign-up-dialog");
+const closeSignUpDialogBtn = document.querySelector(".close-signup-dialog-button");
 
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
@@ -344,12 +345,11 @@ signUpBtn.addEventListener("click", () => {
 });
 
 closeLoginDialogBtn.addEventListener("click", () => {
-    if(loginDialog.open) {
-        loginDialog.close();
-    } else if(signUpDialog.open) {
-        signUpDialog.close();
-    }
-    
+    loginDialog.close();
+});
+
+closeSignUpDialogBtn.addEventListener("click", () => {
+    signUpDialog.close();
 });
 
 async function createExerciseRow() {
