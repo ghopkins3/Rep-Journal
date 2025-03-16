@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { supabase } from "./lib/supabaseClient.js";
-import { convertToDatabaseFormat } from "./utils/convertToDatabaseFormat.js";
+import { convertToDatabaseFormat } from "./utils/formatUtils.js";
 import { postSignUp } from "./auth/postSignUp.js";
 import { postLogin } from "./auth/postLogin.js";
 import { supabaseAuthMiddleware } from "./auth/supabaseAuthMiddleware.js";

@@ -30,6 +30,11 @@ const exerciseTableContainer = document.querySelector(".exercise-table-container
 const exerciseTable = document.querySelector(".exercise-table");
 const exerciseTableBody = document.querySelector("#exercise-table-body");
 const cells = exerciseTable.getElementsByTagName("td");
+const loginBtn = document.querySelector(".login-button");
+const signUpBtn = document.querySelector(".sign-up-button");
+const loginDialog = document.querySelector(".login-dialog");
+const closeLoginDialogBtn = document.querySelector(".close-dialog-button");
+const signUpDialog = document.querySelector(".sign-up-dialog");
 
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
@@ -259,7 +264,7 @@ document.addEventListener("click", (event) => {
 
         updateExerciseByID(rowID, dbExerciseName, setsInput, repsInput, weightInput);
         removeExerciseFormFromDOM();
-    }
+    } 
 
     // if isEditing = true 
     // AND event.target.parentNode DOES NOT EQUAL rowToEdit 
@@ -328,6 +333,23 @@ addExerciseSetsLink.addEventListener("click", (event) => {
             document.querySelector("#weight-input").value = exerciseTable.rows[exerciseTable.rows.length - 1].cells.item(4).textContent;
         }
     }
+});
+
+loginBtn.addEventListener("click", () => {
+    loginDialog.showModal();
+});
+
+signUpBtn.addEventListener("click", () => {
+    signUpDialog.showModal();
+});
+
+closeLoginDialogBtn.addEventListener("click", () => {
+    if(loginDialog.open) {
+        loginDialog.close();
+    } else if(signUpDialog.open) {
+        signUpDialog.close();
+    }
+    
 });
 
 async function createExerciseRow() {

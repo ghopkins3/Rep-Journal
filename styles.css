@@ -44,6 +44,16 @@ only adding 2.5lbs to weight
     width: 5rem;
 }
 
+.login-dialog, .sign-up-dialog {
+    background-color: #19212a;
+    color: white;
+    margin: auto;
+    width: 20rem;
+    height: 30rem;
+    border-radius: 0.75rem;
+    border-color: #2c3d4f;
+}
+
 .hidden {
     display: none;
 }
@@ -214,8 +224,22 @@ only adding 2.5lbs to weight
         padding-top: 2rem;
     }
 
-    .diary-header-container {
+    .login-signup-container {
+        width: 10rem;
+        display: flex;
+        margin: auto;
         margin-top: 1rem;
+        margin-bottom: 1rem;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .login-button, .sign-up-button {
+        width: 100%;
+        height: 1.5rem;
+    }
+
+    .diary-header-container {
         justify-content: center;
     }
 
