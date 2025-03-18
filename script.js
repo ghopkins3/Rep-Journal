@@ -43,7 +43,6 @@ const signupEmailInput = signUpDialog.querySelector(".email-input");
 const signupUsernameInput = signUpDialog.querySelector(".username-input");
 const signupPasswordInput = signUpDialog.querySelector(".password-input");
 
-const loginEmailInput = loginDialog.querySelector(".email-input");
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
 
@@ -308,6 +307,17 @@ document.addEventListener("keydown", (event) => {
             let addButton = document.querySelector("#add-entered-data");
             addButton.click();
         }
+    } else if(event.key === "Escape") {
+        if(signUpDialog.open) {
+            signupEmailInput.value = "";
+            signupUsernameInput.value = "";
+            signupPasswordInput.value = "";
+            signUpDialog.close();
+        } else if(loginDialog.open) {
+            loginUsernameInput.value = "";
+            loginPasswordInput.value = "";
+            loginDialog.close();
+        }
     }
 
     if(event.target.getAttribute("className") === "entered-number") {
@@ -355,17 +365,27 @@ signUpBtn.addEventListener("click", () => {
 });
 
 closeLoginDialogBtn.addEventListener("click", () => {
+    loginUsernameInput.value = "";
+    loginPasswordInput.value = "";
     loginDialog.close();
 });
 
 closeSignUpDialogBtn.addEventListener("click", () => {
+    signupEmailInput.value = "";
+    signupUsernameInput.value = "";
+    signupPasswordInput.value = "";
     signUpDialog.close();
 });
 
+submitLoginBtn.addEventListener("click", (event) => {
+    console.log("username", loginUsernameInput.value);
+    console.log("password:", loginPasswordInput.value);
+});
+
 submitSignUpBtn.addEventListener("click", (event) => {
-    console.log("email:", emailInput.value);
-    console.log("username", usernameInput.value);
-    console.log("password:", passwordInput.value);
+    console.log("email:", signupEmailInput.value);
+    console.log("username", signupUsernameInput.value);
+    console.log("password:", signupPasswordInput.value);
 });
 
 async function createExerciseRow() {
