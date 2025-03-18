@@ -46,6 +46,9 @@ const signupPasswordInput = signUpDialog.querySelector(".password-input");
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
 
+const storedUserInformation = localStorage.getItem("userInformation");
+const userInformation = JSON.parse(storedUserInformation);
+
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
@@ -480,7 +483,7 @@ async function createExerciseRow() {
     deleteButton.textContent = "X";
 
     console.log("sets from create row:", exerciseSetsInput.value);
-    let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value);
+    let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, userInformation.userID);
     console.log("exercise id:", exerciseID);
     newRow.setAttribute("data-id", exerciseID);
     console.log(dateDisplay.value);
@@ -722,13 +725,14 @@ async function updateDataByID(testInput, id) {
 // functions to post to all tables -> add data to row
 
 // post to exercise table
-async function postExerciseData(exerciseName, sets, repetitions, weight, date) {
+async function postExerciseData(exerciseName, sets, repetitions, weight, date, userID) {
     console.log("sets from exercise data:", sets);
     try {
         const response = await fetch("http://localhost:3000/exercise", {
             method: "POST",
             body: JSON.stringify({
-                exercise_name: exerciseName
+                exercise_name: exerciseName,
+                user_id: userID
             }),
             headers: jsonHeaders,
         });
@@ -761,7 +765,7 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date) {
             console.log("workout id from thing:", workoutID);
             await postWorkoutExerciseJoinData(workoutID, data.exercise_id);
         } else {
-            workoutID = await postWorkoutData(date);
+            workoutID = await postWorkoutData(date, userID);
             await postWorkoutExerciseJoinData(workoutID, data.exercise_id);
         }
 
@@ -828,12 +832,13 @@ async function getWorkoutByDate(date) {
 }
 
 // post to workout table
-async function postWorkoutData(date) {
+async function postWorkoutData(date, userID) {
     try {
         const response = await fetch("http://localhost:3000/workout", {
             method: "POST",
             body: JSON.stringify({
                 date: date,
+                user_id: userID
             }),
             headers: jsonHeaders,
         });
