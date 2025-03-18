@@ -407,6 +407,7 @@ app.get("/", (req, res) => {
 app.get("/signup", async (req, res) => {
     res.send("hello man");
 })
+
 app.post("/signup", postSignUp);
 app.post("/login", postLogin);
 app.get("/auth/user", supabaseAuthMiddleware, getUser);
