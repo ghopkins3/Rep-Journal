@@ -36,6 +36,16 @@ const loginDialog = document.querySelector(".login-dialog");
 const closeLoginDialogBtn = document.querySelector(".close-login-dialog-button");
 const signUpDialog = document.querySelector(".sign-up-dialog");
 const closeSignUpDialogBtn = document.querySelector(".close-signup-dialog-button");
+const submitLoginBtn = document.querySelector(".submit-login-button");
+const submitSignUpBtn = document.querySelector(".submit-sign-up-button");
+
+const signupEmailInput = signUpDialog.querySelector(".email-input");
+const signupUsernameInput = signUpDialog.querySelector(".username-input");
+const signupPasswordInput = signUpDialog.querySelector(".password-input");
+
+const loginEmailInput = loginDialog.querySelector(".email-input");
+const loginUsernameInput = loginDialog.querySelector(".username-input");
+const loginPasswordInput = loginDialog.querySelector(".password-input");
 
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
@@ -350,6 +360,12 @@ closeLoginDialogBtn.addEventListener("click", () => {
 
 closeSignUpDialogBtn.addEventListener("click", () => {
     signUpDialog.close();
+});
+
+submitSignUpBtn.addEventListener("click", (event) => {
+    console.log("email:", emailInput.value);
+    console.log("username", usernameInput.value);
+    console.log("password:", passwordInput.value);
 });
 
 async function createExerciseRow() {
