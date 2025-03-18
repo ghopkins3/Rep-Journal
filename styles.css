@@ -394,6 +394,10 @@ only adding 2.5lbs to weight
         text-transform: capitalize;
     }
 
+    td:nth-child(5)::after {
+        content: " lbs";
+    }
+
     .mobile-hide-button-cell::before {
         display: none;
     }

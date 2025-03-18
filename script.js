@@ -147,6 +147,7 @@ document.addEventListener("click", (event) => {
             deleteWorkoutByDate(dateDisplay.value);
         }
         deleteExerciseByID(rowID);
+        localStorage.removeItem(rowID);
     } else if(event.target.id === "edit-row-button") {
         console.log(rowToEdit);
 
@@ -380,12 +381,25 @@ closeSignUpDialogBtn.addEventListener("click", () => {
 submitLoginBtn.addEventListener("click", (event) => {
     console.log("username", loginUsernameInput.value);
     console.log("password:", loginPasswordInput.value);
+
+    try {
+        loginUser(loginUsernameInput.value, loginPasswordInput.value);
+    } catch(error) {
+        console.error(error);
+    }
 });
 
 submitSignUpBtn.addEventListener("click", (event) => {
     console.log("email:", signupEmailInput.value);
     console.log("username", signupUsernameInput.value);
     console.log("password:", signupPasswordInput.value);
+
+    try {
+        postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
+    } catch(error) {
+        console.error(error);
+    }
+
 });
 
 async function createExerciseRow() {
@@ -974,3 +988,61 @@ async function deleteWorkoutByDate(date) {
     }
 }
 
+async function postUser(email, username, password) {
+    try {
+        const response = await fetch(`http://localhost:3000/signup`, {
+            method: "POST",
+            body: JSON.stringify({
+                email: email,
+                username: username, 
+                password: password
+            }),
+            headers: jsonHeaders,
+        });
+
+        if(!response.ok) {
+            throw new Error(`Could not post user with email: ${email} and password: ${password}`);
+        } else if(response.ok) {
+            signupEmailInput.value = "";
+            signupUsernameInput.value = "";
+            signupPasswordInput.value = "";
+            signUpDialog.close();
+            alert("User successfully created");
+            console.log(`Sign up successful, email: ${email}, username: ${username}, password: ${password}`);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function loginUser(email, password) {
+    try {
+        const response = await fetch(`http://localhost:3000/login`, {
+            method: "POST",
+            body: JSON.stringify({
+                email: email,
+                password: password
+            }),
+            headers: jsonHeaders,
+        });
+
+        if(!response.ok) {
+            throw new Error(`Could not login`);
+        } else if(response.ok) {
+
+            loginDialog.close();
+            const data = await response.json();
+            const userInformation = {
+                userID: data.user.id,
+                userAccessToken: data.session.access_token,
+                userRefreshToken: data.session.refresh_token,
+                userRefreshExpirationTime: data.session.expires_at
+            };
+            console.log(userInformation);
+            localStorage.setItem("userInformation", JSON.stringify(userInformation));
+            console.log(`Login successful, email: ${email}, password: ${password}`);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
