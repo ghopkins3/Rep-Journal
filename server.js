@@ -57,7 +57,7 @@ app.post("/exercise", async (req, res) => {
         .from("exercise")
         .insert({
             exercise_name: exerciseName,
-            user_id: user_id,
+            user_id: req.body.user_id,
         })
         .select("exercise_id");
 
@@ -175,7 +175,7 @@ app.post("/workout", async (req, res) => {
         .from("workout")
         .insert({
             date: req.body.date,
-            user_id: user_id,
+            user_id: req.body.user_id,
         })
         .select("workout_id");
 
