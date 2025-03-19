@@ -69,7 +69,6 @@ if(dateSplitOnSlash[0] < 10) {
 
 let selectedDate = "selectedDate";
 
-
 // if a saved date doesnt exist reset
 // PAGE LOADS HERE
 
