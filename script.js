@@ -17,8 +17,6 @@
 // FEATURES SUCH AS WEIGHT LOG, RELEVANT RESOURCES, FILTER EXERCISES, OVERVIEW, 
 // COMPARE TWO WORKOUTS IE WEEK VS WEEK, GRAPHWORKS, PR VIEW
 
-
-
 import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "./utils/formatUtils.js";
 
 const dateDisplay = document.querySelector("#date-display");
