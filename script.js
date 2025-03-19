@@ -17,6 +17,8 @@
 // FEATURES SUCH AS WEIGHT LOG, RELEVANT RESOURCES, FILTER EXERCISES, OVERVIEW, 
 // COMPARE TWO WORKOUTS IE WEEK VS WEEK, GRAPHWORKS, PR VIEW
 
+
+
 import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "./utils/formatUtils.js";
 
 const dateDisplay = document.querySelector("#date-display");
@@ -48,6 +50,7 @@ const loginPasswordInput = loginDialog.querySelector(".password-input");
 
 const storedUserInformation = localStorage.getItem("userInformation");
 const userInformation = JSON.parse(storedUserInformation);
+console.log(userInformation.userID);
 
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
@@ -94,7 +97,7 @@ dateDisplay.addEventListener("change", () => {
 });
 
 async function checkWorkoutOnDate(date) {
-    const workoutOnDate = await getWorkoutByDate(date);
+    const workoutOnDate = await getWorkoutByDate(date, userInformation.userID);
     if(workoutOnDate !== null && workoutOnDate !== undefined) {
         populateTableFromData(workoutOnDate);
     } 
@@ -753,20 +756,16 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
         } else {
             console.log("HMMM");
         }
-
-
-        // enter first exercise on a date -> check if workout on date exists, if it doesn't, post workout date to
-        // workout table. 
-        // wait for workout data to be posted before posting join data
-        // join data needs to be posted;
         
         let workoutID = await getWorkoutByDate(date);
         if(workoutID) {
             console.log("workout id from thing:", workoutID);
-            await postWorkoutExerciseJoinData(workoutID, data.exercise_id);
+            console.log("user id:", userID);
+            await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID);
         } else {
+            console.log("user id:", userID);
             workoutID = await postWorkoutData(date, userID);
-            await postWorkoutExerciseJoinData(workoutID, data.exercise_id);
+            await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID);
         }
 
         return data.exercise_id;
@@ -858,13 +857,14 @@ async function postWorkoutData(date, userID) {
 }
 
 // post to workout exercises junction table
-async function postWorkoutExerciseJoinData(workoutID, exerciseID) {
+async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID) {
     try {
         const response = await fetch("http://localhost:3000/workout-exercise", {
             method: "POST",
             body: JSON.stringify({
                 workout_id: workoutID,
                 exercise_id: exerciseID,
+                user_id: userID,
             }),
             headers: jsonHeaders,
         });
