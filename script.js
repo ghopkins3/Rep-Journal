@@ -48,10 +48,6 @@ const signupPasswordInput = signUpDialog.querySelector(".password-input");
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
 
-const storedUserInformation = localStorage.getItem("userInformation");
-const userInformation = JSON.parse(storedUserInformation);
-console.log(userInformation.userID);
-
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
@@ -97,7 +93,7 @@ dateDisplay.addEventListener("change", () => {
 });
 
 async function checkWorkoutOnDate(date) {
-    const workoutOnDate = await getWorkoutByDate(date, userInformation.userID);
+    const workoutOnDate = await getWorkoutByDate(date);
     if(workoutOnDate !== null && workoutOnDate !== undefined) {
         populateTableFromData(workoutOnDate);
     } 
@@ -486,7 +482,7 @@ async function createExerciseRow() {
     deleteButton.textContent = "X";
 
     console.log("sets from create row:", exerciseSetsInput.value);
-    let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, userInformation.userID);
+    let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value);
     console.log("exercise id:", exerciseID);
     newRow.setAttribute("data-id", exerciseID);
     console.log(dateDisplay.value);
