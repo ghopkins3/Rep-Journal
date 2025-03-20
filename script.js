@@ -1,10 +1,8 @@
 // TODO 
 
-// login/signup forms
-// authorization/figure out how user sees user specific information
-// MOBILE ACCESSIBLE -> ::before data-cell OR simplify to exercise name and set/reps/weight,
-// bring up form when editing 
-// USER AUTHENTICATION!! 
+// LOGIN REFRESH PAGE
+// LOGIN/LOGOUT CHANGES UI ELEMENTS
+
 // REFACTOR ASAP
 // ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
 
@@ -54,6 +52,7 @@ let rowToEdit;
 let rowID;
 
 const storedUserInformation = localStorage.getItem("userInformation");
+console.log(JSON.parse(storedUserInformation));
 
 if(dateSplitOnSlash[0] < 10) {
     if(dateSplitOnSlash[1] < 10) {
@@ -81,11 +80,9 @@ if(sessionStorage.getItem(selectedDate) === null) {
     dateDisplay.value = sessionStorage.getItem(selectedDate);
 }
 
-
 if(storedUserInformation) {
     await checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
 }
-
 
 dateDisplay.addEventListener("change", () => {
     while(exerciseTableBody.lastElementChild) {
@@ -98,7 +95,6 @@ dateDisplay.addEventListener("change", () => {
         checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
     }
 });
-
 
 async function checkWorkoutOnDate(date, authToken) {
     const workoutOnDate = await getWorkoutByDate(date, authToken);
@@ -498,8 +494,9 @@ async function createExerciseRow() {
 
 }
 
-
 async function populateTableFromData(workoutDate, authToken) {
+    console.log("user:", JSON.parse(storedUserInformation).userID);
+    console.log("auth token:", authToken);
     const exerciseData = await getExerciseDataByWorkoutID(workoutDate, authToken);
 
     exerciseData.forEach(exercise => {
@@ -736,6 +733,8 @@ async function updateDataByID(testInput, id) {
 // post to exercise table
 async function postExerciseData(exerciseName, sets, repetitions, weight, date, userID, authToken) {
     console.log("sets from exercise data:", sets);
+    console.log("user:", userID);
+    console.log("auth:", authToken);
     try {
         const response = await fetch("http://localhost:3000/exercise", {
             method: "POST",
@@ -761,20 +760,20 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
         console.log("sets immediate before:", sets);
 
         if(sets !== null || sets !== undefined) {
-            await postExerciseSetData(data.exercise_id, sets, repetitions, weight);
+            await postExerciseSetData(data.exercise_id, sets, repetitions, weight, authToken);
         } else {
             console.log("HMMM");
         }
         
-        let workoutID = await getWorkoutByDate(date);
+        let workoutID = await getWorkoutByDate(date, authToken);
         if(workoutID) {
             console.log("workout id from thing:", workoutID);
             console.log("user id:", userID);
-            await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID);
+            await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID, authToken);
         } else {
             console.log("user id:", userID);
-            workoutID = await postWorkoutData(date, userID);
-            await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID);
+            workoutID = await postWorkoutData(date, userID, authToken);
+            await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID, authToken);
         }
 
         return data.exercise_id;
@@ -785,7 +784,7 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
 }
 
 // post to exercise sets table
-async function postExerciseSetData(exerciseID, sets, repetitions, weight) {
+async function postExerciseSetData(exerciseID, sets, repetitions, weight, authToken) {
     console.log("before posting sets:", sets);
 
     if (sets === null || sets === undefined) {
@@ -803,7 +802,10 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight) {
                 repetitions: Number(repetitions),
                 weight: Number(weight)
             }),
-            headers: jsonHeaders,
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         if(!response.ok) {
@@ -844,7 +846,7 @@ async function getWorkoutByDate(date, authToken) {
 }
 
 // post to workout table
-async function postWorkoutData(date, userID) {
+async function postWorkoutData(date, userID, authToken) {
     try {
         const response = await fetch("http://localhost:3000/workout", {
             method: "POST",
@@ -852,7 +854,10 @@ async function postWorkoutData(date, userID) {
                 date: date,
                 user_id: userID
             }),
-            headers: jsonHeaders,
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         const result = await response.json();
@@ -870,7 +875,7 @@ async function postWorkoutData(date, userID) {
 }
 
 // post to workout exercises junction table
-async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID) {
+async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authToken) {
     try {
         const response = await fetch("http://localhost:3000/workout-exercise", {
             method: "POST",
@@ -879,7 +884,10 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID) {
                 exercise_id: exerciseID,
                 user_id: userID,
             }),
-            headers: jsonHeaders,
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         if(!response.ok) {
@@ -917,14 +925,17 @@ async function getExerciseDataByWorkoutID(workoutID, authToken) {
 }
 
 // functions to put to appropriate tables -> edit data in row
-async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, weight) {
+async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, weight, authToken) {
     try {
         const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
             method: "PUT",
             body: JSON.stringify({
                 exercise_name: exerciseName
             }),
-            headers: jsonHeaders,
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         if(!response.ok) {
@@ -941,7 +952,7 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
     console.log(`attempting to update exercise with id, ${exerciseID} to new name: ${exerciseName}`);
 }
 
-async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight) {
+async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight, authToken) {
     try {
         const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
             method: "PUT",
@@ -950,7 +961,10 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
                 repetitions: repetitions,
                 weight: weight
             }),
-            headers: jsonHeaders,
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         })
 
         if(!response.ok) {
@@ -963,27 +977,35 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
 }
 
 // functions to delete from appropriate tables -> delete data in row
-async function deleteExerciseByID(exerciseID) {
+async function deleteExerciseByID(exerciseID, authToken) {
     try {
         const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
             method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         if(!response.ok) {
             throw new Error(`Could not delete exercise with id: ${exerciseID}`);
         }
 
-        await deleteExerciseSetDataByID(exerciseID);
+        await deleteExerciseSetDataByID(exerciseID, authToken);
     }
     catch(error) {
         console.error(error);
     }
 }
 
-async function deleteExerciseSetDataByID(exerciseID) {
+async function deleteExerciseSetDataByID(exerciseID, authToken) {
     try {
         const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
             method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         if(!response.ok) {
@@ -995,10 +1017,14 @@ async function deleteExerciseSetDataByID(exerciseID) {
     }
 }
 
-async function deleteWorkoutByDate(date) {
+async function deleteWorkoutByDate(date, authToken) {
     try {
         const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
             method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         if(!response.ok) {
@@ -1051,7 +1077,8 @@ async function loginUser(email, password) {
         if(!response.ok) {
             throw new Error(`Could not login`);
         } else if(response.ok) {
-
+            console.log("information before removal:", localStorage.getItem("userInformation"));
+            localStorage.removeItem("userInformation");
             loginDialog.close();
             const data = await response.json();
             const userInformation = {
@@ -1062,7 +1089,9 @@ async function loginUser(email, password) {
             };
             console.log(userInformation);
             localStorage.setItem("userInformation", JSON.stringify(userInformation));
+            console.log("information before removal:", localStorage.getItem("userInformation"));
             console.log(`Login successful, email: ${email}, password: ${password}`);
+            location.reload();
         }
     } catch (error) {
         console.error(error);
