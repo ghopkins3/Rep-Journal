@@ -53,6 +53,8 @@ let isEditing = false;
 let rowToEdit;
 let rowID;
 
+const storedUserInformation = localStorage.getItem("userInformation");
+
 if(dateSplitOnSlash[0] < 10) {
     if(dateSplitOnSlash[1] < 10) {
         currentDate = `${dateSplitOnSlash[2]}-0${dateSplitOnSlash[0]}-0${dateSplitOnSlash[1]}`;
@@ -79,22 +81,32 @@ if(sessionStorage.getItem(selectedDate) === null) {
     dateDisplay.value = sessionStorage.getItem(selectedDate);
 }
 
-await checkWorkoutOnDate(dateDisplay.value);
+
+if(storedUserInformation) {
+    await checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
+}
+
 
 dateDisplay.addEventListener("change", () => {
     while(exerciseTableBody.lastElementChild) {
         exerciseTableBody.removeChild(exerciseTableBody.lastElementChild);
     }
     sessionStorage.setItem(selectedDate, dateDisplay.value);
-    checkWorkoutOnDate(dateDisplay.value);
+
+
+    if(storedUserInformation) {
+        checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
+    }
 });
 
-async function checkWorkoutOnDate(date) {
-    const workoutOnDate = await getWorkoutByDate(date);
+
+async function checkWorkoutOnDate(date, authToken) {
+    const workoutOnDate = await getWorkoutByDate(date, authToken);
     if(workoutOnDate !== null && workoutOnDate !== undefined) {
-        populateTableFromData(workoutOnDate);
+        populateTableFromData(workoutOnDate, authToken);
     } 
 }
+
 
 document.addEventListener("click", (event) => {
     console.log(event.target);
@@ -479,15 +491,16 @@ async function createExerciseRow() {
     deleteButton.textContent = "X";
 
     console.log("sets from create row:", exerciseSetsInput.value);
-    let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value);
+    let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, JSON.parse(storedUserInformation).userID, JSON.parse(storedUserInformation).userAccessToken);
     console.log("exercise id:", exerciseID);
     newRow.setAttribute("data-id", exerciseID);
     console.log(dateDisplay.value);
 
 }
 
-async function populateTableFromData(workoutDate) {
-    const exerciseData = await getExerciseDataByWorkoutID(workoutDate);
+
+async function populateTableFromData(workoutDate, authToken) {
+    const exerciseData = await getExerciseDataByWorkoutID(workoutDate, authToken);
 
     exerciseData.forEach(exercise => {
         let newRow = exerciseTableBody.insertRow();
@@ -721,7 +734,7 @@ async function updateDataByID(testInput, id) {
 // functions to post to all tables -> add data to row
 
 // post to exercise table
-async function postExerciseData(exerciseName, sets, repetitions, weight, date, userID) {
+async function postExerciseData(exerciseName, sets, repetitions, weight, date, userID, authToken) {
     console.log("sets from exercise data:", sets);
     try {
         const response = await fetch("http://localhost:3000/exercise", {
@@ -730,7 +743,10 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
                 exercise_name: exerciseName,
                 user_id: userID
             }),
-            headers: jsonHeaders,
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         if(!response.ok) {
@@ -802,10 +818,14 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight) {
     console.log(`Posted exercise with exercise id: ${exerciseID} and sets: ${sets}`);
 }
 
-async function getWorkoutByDate(date) {
+async function getWorkoutByDate(date, authToken) {
     try {
         const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
             method: "GET",
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         if(!response.ok) {
@@ -874,10 +894,14 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID) {
 }
 
 // function to get data to popoulate table
-async function getExerciseDataByWorkoutID(workoutID) {
+async function getExerciseDataByWorkoutID(workoutID, authToken) {
     try {
         const response = await fetch(`http://localhost:3000/workout-exercise/workout-id=${workoutID}`, {
             method: "GET",
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
         });
 
         if(!response.ok) {

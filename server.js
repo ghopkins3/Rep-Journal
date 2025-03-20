@@ -200,7 +200,7 @@ app.post("/workout", supabaseAuthMiddleware, async (req, res) => {
 });
 
 app.put("/workout/id=:id", supabaseAuthMiddleware, async (req, res) => {
-    const {error} = await supabase
+    const { error } = await supabase
         .from("workout")
         .update({
             date: req.body.date
@@ -237,8 +237,8 @@ app.get("/workout-exercise", supabaseAuthMiddleware, async (req, res) => {
 });
 
 app.get("/workout-exercise/workout-id=:id", supabaseAuthMiddleware, async (req, res) => {
+    console.log(req.user);
     try {
-
         // select exercise id and exercise name from exercise equal to workout id
         const { data: workoutExercises, error: exerciseError } = await supabase
             .from("workout_exercise")
