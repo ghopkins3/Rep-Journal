@@ -103,6 +103,9 @@ async function checkWorkoutOnDate(date, authToken) {
     } 
 }
 
+const workoutToday = await getWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
+console.log("workout:", workoutToday);
+
 
 document.addEventListener("click", (event) => {
     console.log(event.target);
@@ -149,11 +152,13 @@ document.addEventListener("click", (event) => {
         console.log("here here:", rowToDelete);
         console.log("closest tr:", exerciseTableBody.closest("tr"));
         console.log(exerciseTableBody.children);
+        console.log("workout:");
         if(exerciseTableBody.childElementCount === 0) {
             console.log("current date delete:", dateDisplay.value);
-            deleteWorkoutByDate(dateDisplay.value);
+            console.log("deleting workout");
+            deleteWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
         }
-        deleteExerciseByID(rowID);
+        deleteExerciseByID(rowID, JSON.parse(storedUserInformation).userAccessToken);
         localStorage.removeItem(rowID);
     } else if(event.target.id === "edit-row-button") {
         console.log(rowToEdit);
@@ -201,7 +206,7 @@ document.addEventListener("click", (event) => {
 
             console.log("exercies name:", editableCell[0].textContent);
             console.log("row id when save:", rowID);
-            updateExerciseByID(rowToEdit.getAttribute("data-id"), convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent);
+            updateExerciseByID(rowToEdit.getAttribute("data-id"), convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent, JSON.parse(storedUserInformation).userAccessToken);
             isEditing = false;
         } else {
             event.preventDefault();
@@ -280,7 +285,7 @@ document.addEventListener("click", (event) => {
             row.children[4].textContent = weightInput;
         }
 
-        updateExerciseByID(rowID, dbExerciseName, setsInput, repsInput, weightInput);
+        updateExerciseByID(rowID, dbExerciseName, setsInput, repsInput, weightInput, JSON.parse(storedUserInformation).userAccessToken);
         removeExerciseFormFromDOM();
     } 
 
@@ -942,7 +947,7 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
             console.log("Failure to update exercise by id");
         }
 
-        await updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight);
+        await updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight, authToken);
 
     }
     catch(error) {

@@ -168,13 +168,14 @@ app.get("/workout", supabaseAuthMiddleware, async (req, res) => {
 app.get("/workout/date=:date", supabaseAuthMiddleware, async (req, res) => {
     console.log("User", req.user);
     try {
-        const {data, error} = await supabase
+        const { data, error } = await supabase
             .from("workout")
             .select("workout_id")
             .eq("date", req.params.date)
             .eq("user_id", req.user.auth_id)
             .limit(1);
-        console.log(data);
+        console.log("data:", data);
+        console.log("auth:", req.user.auth_id);
         return res.send(data);
     } catch (error) {
         return res.send({error});
