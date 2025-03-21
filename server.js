@@ -217,7 +217,8 @@ app.delete("/workout/date=:date", supabaseAuthMiddleware, async (req, res) => {
     const { error } = await supabase
         .from("workout")
         .delete()
-        .eq("date", req.params.date)
+        .eq("user_id", req.user.auth_id)
+        .eq("date", req.params.date);
     if(error) {
         return res.status(400).json({error: error.message});
     }
