@@ -2,9 +2,16 @@ import { supabase } from "../lib/supabaseClient";
 
 export const signOutUser = async (req, res) => {
     try {
-        await supabase.auth.signOut();
-        res.status(200).send("Successfully signed user out.");
+        const { error } = await supabase.auth.signOut();
+
+        if(error) {
+            throw error;
+        }
+
+        res.status(200).send("Successfully signed out user.");
+
     } catch(error) {
-        res.status(500).send("Error signing out user.");
+        res.status(500).send("Error signing out user:", error.message);
+        throw error;
     }
-}
+};
