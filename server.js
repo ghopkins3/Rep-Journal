@@ -8,6 +8,7 @@ import { supabaseAuthMiddleware } from "./auth/supabaseAuthMiddleware.js";
 import { getUser } from "./auth/getUser.js";
 import { putUser } from "./auth/putUser.js";
 import { deleteUser } from "./auth/deleteUser.js";
+import { signOutUser } from "./auth/signOutUser.js";
 
 const app = express();
 let PORT = process.env.PORT;
@@ -432,6 +433,8 @@ app.post("/login", postLogin);
 app.get("/auth/user", supabaseAuthMiddleware, getUser);
 app.put("/auth/user", supabaseAuthMiddleware, putUser);
 app.delete("/auth/user", supabaseAuthMiddleware, deleteUser);
+
+app.get("/sign-out", supabaseAuthMiddleware ,signOutUser);
 
 app.listen(PORT, () => {
     console.log(

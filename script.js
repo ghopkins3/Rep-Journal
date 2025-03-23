@@ -2,6 +2,7 @@
 
 
 // PREVENT ANY ACTION LOGGED OUT
+// CHECK FOR LOGIN BEFORE FETCHING RESOURCES
 // LOGIN/LOGOUT CHANGES UI ELEMENTS
 
 // REFACTOR ASAP
@@ -51,6 +52,12 @@ let currentDate;
 let isEditing = false;
 let rowToEdit;
 let rowID;
+
+if(localStorage.getItem("loggedIn")) {
+    loginBtn.textContent = "Log Out";
+} else {
+    loginBtn.textContent = "Log In";
+}
 
 const storedUserInformation = localStorage.getItem("userInformation");
 console.log(JSON.parse(storedUserInformation));
@@ -371,7 +378,11 @@ addExerciseSetsLink.addEventListener("click", (event) => {
 });
 
 loginBtn.addEventListener("click", () => {
-    loginDialog.showModal();
+    if(loginBtn.textContent === "Log In") {
+        loginDialog.showModal();
+    } else {
+        signOutUser(JSON.parse(storedUserInformation).userAccessToken);
+    }
 });
 
 signUpBtn.addEventListener("click", () => {
@@ -1095,11 +1106,33 @@ async function loginUser(email, password) {
             };
             console.log(userInformation);
             localStorage.setItem("userInformation", JSON.stringify(userInformation));
+            localStorage.setItem("loggedIn", true);
             console.log("information before removal:", localStorage.getItem("userInformation"));
             console.log(`Login successful, email: ${email}, password: ${password}`);
             location.reload();
         }
     } catch (error) {
+        console.error(error);
+    }
+}
+
+async function signOutUser(authToken) {
+    try {
+        const response = await fetch(`http://localhost:3000/sign-out`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json"
+            },
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not sign out user.");
+        }
+
+        console.log("signed out");
+    }
+    catch(error) {
         console.error(error);
     }
 }
