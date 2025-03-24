@@ -1,6 +1,6 @@
-import { supabase } from "../lib/supabaseClient.js";
+import { supabase } from "../lib/backendSupabaseClient.js";
 
-export const signOutUser = async (req, res) => {
+export const postSignOut = async (req, res) => {
     try {
         const { error } = await supabase.auth.signOut();
 
@@ -12,6 +12,5 @@ export const signOutUser = async (req, res) => {
 
     } catch(error) {
         res.status(500).send("Error signing out user:", error.message);
-        throw error;
     }
 };

@@ -18,6 +18,19 @@
 // COMPARE TWO WORKOUTS IE WEEK VS WEEK, GRAPHWORKS, PR VIEW
 
 import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "./utils/formatUtils.js";
+import { supabase } from "./lib/frontendSupabaseClient.js";
+
+supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN") {
+        console.log("SIGNED_IN", session);
+        loginBtn.textContent = "Log Out";
+    } else if(event === "SIGNED_OUT") {
+        console.log("SIGNED_OUT", session);
+        loginBtn.textContent = "Log In";
+        localStorage.clear();
+        location.reload();
+    }
+});
 
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
@@ -32,6 +45,7 @@ const exerciseTableBody = document.querySelector("#exercise-table-body");
 const cells = exerciseTable.getElementsByTagName("td");
 const loginBtn = document.querySelector(".login-button");
 const signUpBtn = document.querySelector(".sign-up-button");
+const signOutBtn = document.querySelector(".sign-out-button");
 const loginDialog = document.querySelector(".login-dialog");
 const closeLoginDialogBtn = document.querySelector(".close-login-dialog-button");
 const signUpDialog = document.querySelector(".sign-up-dialog");
@@ -53,14 +67,7 @@ let isEditing = false;
 let rowToEdit;
 let rowID;
 
-if(localStorage.getItem("loggedIn")) {
-    loginBtn.textContent = "Log Out";
-} else {
-    loginBtn.textContent = "Log In";
-}
-
 const storedUserInformation = localStorage.getItem("userInformation");
-console.log(JSON.parse(storedUserInformation));
 
 if(dateSplitOnSlash[0] < 10) {
     if(dateSplitOnSlash[1] < 10) {
@@ -111,8 +118,10 @@ async function checkWorkoutOnDate(date, authToken) {
     } 
 }
 
-const workoutToday = await getWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
-console.log("workout:", workoutToday);
+if(storedUserInformation) {
+    const workoutToday = await getWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
+    console.log("workout:", workoutToday);
+}
 
 
 document.addEventListener("click", (event) => {
@@ -380,13 +389,18 @@ addExerciseSetsLink.addEventListener("click", (event) => {
 loginBtn.addEventListener("click", () => {
     if(loginBtn.textContent === "Log In") {
         loginDialog.showModal();
-    } else {
-        signOutUser(JSON.parse(storedUserInformation).userAccessToken);
+    } else if(loginBtn.textContent === "Log Out") {
+        logout();
+        console.log("Logging out button clicked.");
     }
 });
 
 signUpBtn.addEventListener("click", () => {
     signUpDialog.showModal();
+});
+
+signOutBtn.addEventListener("click", () => {
+    logout();
 });
 
 closeLoginDialogBtn.addEventListener("click", () => {
@@ -512,8 +526,6 @@ async function createExerciseRow() {
 }
 
 async function populateTableFromData(workoutDate, authToken) {
-    console.log("user:", JSON.parse(storedUserInformation).userID);
-    console.log("auth token:", authToken);
     const exerciseData = await getExerciseDataByWorkoutID(workoutDate, authToken);
 
     exerciseData.forEach(exercise => {
@@ -1093,46 +1105,64 @@ async function loginUser(email, password) {
 
         if(!response.ok) {
             throw new Error(`Could not login`);
-        } else if(response.ok) {
-            console.log("information before removal:", localStorage.getItem("userInformation"));
-            localStorage.removeItem("userInformation");
-            loginDialog.close();
-            const data = await response.json();
-            const userInformation = {
-                userID: data.user.id,
-                userAccessToken: data.session.access_token,
-                userRefreshToken: data.session.refresh_token,
-                userRefreshExpirationTime: data.session.expires_at
-            };
-            console.log(userInformation);
-            localStorage.setItem("userInformation", JSON.stringify(userInformation));
-            localStorage.setItem("loggedIn", true);
-            console.log("information before removal:", localStorage.getItem("userInformation"));
-            console.log(`Login successful, email: ${email}, password: ${password}`);
-            location.reload();
         }
+
+        const data = await response.json();
+        console.log("Backend login response:", data);
+
+        const { user, session } = data;
+        await supabase.auth.setSession({
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+        });
+
+        localStorage.setItem("userInformation", JSON.stringify({
+            userID: user.id,
+            userAccessToken: session.access_token,
+            userRefreshToken: session.refresh_token,
+            userRefreshExpirationTime: session.expires_at
+        }));
+
+        console.log("Login successful.");
+        loginDialog.close();
+        location.reload();
     } catch (error) {
         console.error(error);
     }
 }
 
-async function signOutUser(authToken) {
+async function checkSession() {
     try {
-        const response = await fetch(`http://localhost:3000/sign-out`, {
+        const response = await fetch("http://localhost:3000/session", {
             method: "GET",
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
+            headers: jsonHeaders,
         });
 
         if(!response.ok) {
-            throw new Error("Could not sign out user.");
+            throw new Error("No active session");
         }
 
-        console.log("signed out");
+        const data = await response.json();
+        console.log("session data:", data);
+
+    } catch(error) {
+        console.log("No user session:", error.message);
     }
-    catch(error) {
-        console.error(error);
+}
+
+async function logout() {
+    try {
+        const response = await fetch("http://localhost:3000/logout", {
+            method: "POST",
+            headers: jsonHeaders,
+        });
+
+        if(!response.ok) {
+            throw new Error("Failed to logout.");
+        }
+
+        console.log("Logged out user.");
+    } catch(error) {
+        console.error("Logout error:", error.message);
     }
 }

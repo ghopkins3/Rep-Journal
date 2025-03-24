@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabaseClient.js";
+import { supabase } from "../lib/backendSupabaseClient.js";
 
 export const createDbUser = async (userData) => {
     try {

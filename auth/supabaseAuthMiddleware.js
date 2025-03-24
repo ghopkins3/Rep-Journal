@@ -1,5 +1,5 @@
 import { getUserByAuthID } from "./getUserByAuthID.js";
-import { supabase } from "../lib/supabaseClient.js";
+import { supabase } from "../lib/backendSupabaseClient.js";
 
 export const supabaseAuthMiddleware = async (req, res, next) => {
     let authHeader = req.headers.authorization;

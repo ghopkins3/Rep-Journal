@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { supabase } from "./lib/supabaseClient.js";
+import { supabase } from "./lib/backendSupabaseClient.js";
 import { convertToDatabaseFormat } from "./utils/formatUtils.js";
 import { postSignUp } from "./auth/postSignUp.js";
 import { postLogin } from "./auth/postLogin.js";
@@ -8,7 +8,8 @@ import { supabaseAuthMiddleware } from "./auth/supabaseAuthMiddleware.js";
 import { getUser } from "./auth/getUser.js";
 import { putUser } from "./auth/putUser.js";
 import { deleteUser } from "./auth/deleteUser.js";
-import { signOutUser } from "./auth/signOutUser.js";
+import { postSignOut } from "./auth/postSignOut.js";
+import { getSession } from "./auth/getSession.js";
 
 const app = express();
 let PORT = process.env.PORT;
@@ -429,12 +430,14 @@ app.get("/signup", async (req, res) => {
 
 app.post("/signup", postSignUp);
 app.post("/login", postLogin);
+app.post("/logout", postSignOut);
+app.get("/session", getSession);
 
 app.get("/auth/user", supabaseAuthMiddleware, getUser);
 app.put("/auth/user", supabaseAuthMiddleware, putUser);
 app.delete("/auth/user", supabaseAuthMiddleware, deleteUser);
 
-app.get("/sign-out", supabaseAuthMiddleware ,signOutUser);
+
 
 app.listen(PORT, () => {
     console.log(
