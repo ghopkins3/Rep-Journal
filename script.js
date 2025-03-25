@@ -20,18 +20,6 @@
 import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "./utils/formatUtils.js";
 import { supabase } from "./lib/frontendSupabaseClient.js";
 
-supabase.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_IN") {
-        console.log("SIGNED_IN", session);
-        loginBtn.textContent = "Log Out";
-    } else if(event === "SIGNED_OUT") {
-        console.log("SIGNED_OUT", session);
-        loginBtn.textContent = "Log In";
-        localStorage.clear();
-        location.reload();
-    }
-});
-
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
 const addExerciseSetsLink = document.querySelector("#add-sets-link");
@@ -45,7 +33,6 @@ const exerciseTableBody = document.querySelector("#exercise-table-body");
 const cells = exerciseTable.getElementsByTagName("td");
 const loginBtn = document.querySelector(".login-button");
 const signUpBtn = document.querySelector(".sign-up-button");
-const signOutBtn = document.querySelector(".sign-out-button");
 const loginDialog = document.querySelector(".login-dialog");
 const closeLoginDialogBtn = document.querySelector(".close-login-dialog-button");
 const signUpDialog = document.querySelector(".sign-up-dialog");
@@ -67,7 +54,17 @@ let isEditing = false;
 let rowToEdit;
 let rowID;
 
-const storedUserInformation = localStorage.getItem("userInformation");
+const storedUserInformation = localStorage.getItem("sb-telbbmbnfwazsageyezo-auth-token");
+
+supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN") {
+        console.log("SIGNED_IN", session);
+        loginBtn.textContent = "Log Out";
+    } else if(event === "SIGNED_OUT") {
+        console.log("SIGNED_OUT", session);
+        loginBtn.textContent = "Log In";
+    }
+});
 
 if(dateSplitOnSlash[0] < 10) {
     if(dateSplitOnSlash[1] < 10) {
@@ -96,7 +93,7 @@ if(sessionStorage.getItem(selectedDate) === null) {
 }
 
 if(storedUserInformation) {
-    await checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
+    await checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).access_token);
 }
 
 dateDisplay.addEventListener("change", () => {
@@ -107,7 +104,7 @@ dateDisplay.addEventListener("change", () => {
 
 
     if(storedUserInformation) {
-        checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
+        checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).access_token);
     }
 });
 
@@ -119,7 +116,7 @@ async function checkWorkoutOnDate(date, authToken) {
 }
 
 if(storedUserInformation) {
-    const workoutToday = await getWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
+    const workoutToday = await getWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).access_token);
     console.log("workout:", workoutToday);
 }
 
@@ -173,9 +170,9 @@ document.addEventListener("click", (event) => {
         if(exerciseTableBody.childElementCount === 0) {
             console.log("current date delete:", dateDisplay.value);
             console.log("deleting workout");
-            deleteWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).userAccessToken);
+            deleteWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).access_token);
         }
-        deleteExerciseByID(rowID, JSON.parse(storedUserInformation).userAccessToken);
+        deleteExerciseByID(rowID, JSON.parse(storedUserInformation).access_token);
         localStorage.removeItem(rowID);
     } else if(event.target.id === "edit-row-button") {
         console.log(rowToEdit);
@@ -223,7 +220,7 @@ document.addEventListener("click", (event) => {
 
             console.log("exercies name:", editableCell[0].textContent);
             console.log("row id when save:", rowID);
-            updateExerciseByID(rowToEdit.getAttribute("data-id"), convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent, JSON.parse(storedUserInformation).userAccessToken);
+            updateExerciseByID(rowToEdit.getAttribute("data-id"), convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent, JSON.parse(storedUserInformation).access_token);
             isEditing = false;
         } else {
             event.preventDefault();
@@ -302,7 +299,7 @@ document.addEventListener("click", (event) => {
             row.children[4].textContent = weightInput;
         }
 
-        updateExerciseByID(rowID, dbExerciseName, setsInput, repsInput, weightInput, JSON.parse(storedUserInformation).userAccessToken);
+        updateExerciseByID(rowID, dbExerciseName, setsInput, repsInput, weightInput, JSON.parse(storedUserInformation).access_token);
         removeExerciseFormFromDOM();
     } 
 
@@ -399,10 +396,6 @@ signUpBtn.addEventListener("click", () => {
     signUpDialog.showModal();
 });
 
-signOutBtn.addEventListener("click", () => {
-    logout();
-});
-
 closeLoginDialogBtn.addEventListener("click", () => {
     loginUsernameInput.value = "";
     loginPasswordInput.value = "";
@@ -441,91 +434,101 @@ submitSignUpBtn.addEventListener("click", (event) => {
 });
 
 async function createExerciseRow() {
-    let exerciseNameInput = document.querySelector("#exercise-search");
-    let exerciseSetsInput = document.querySelector("#sets-input");
-    let exerciseRepsInput = document.querySelector("#reps-input");
-    let exerciseWeightInput = document.querySelector("#weight-input");
+    await checkUserAuthenticationStatus();
 
-    console.log(exerciseNameInput.value);
-    console.log(exerciseSetsInput.value);
-    console.log(exerciseRepsInput.value);
-    console.log(exerciseWeightInput.value);
+    const { data } = await supabase.auth.getUser();
+    if(!data.user) {
+        console.error("User not authenticated");
+        return;
+    } else {
+        console.log("User authenticated to perform this action");
+        let exerciseNameInput = document.querySelector("#exercise-search");
+        let exerciseSetsInput = document.querySelector("#sets-input");
+        let exerciseRepsInput = document.querySelector("#reps-input");
+        let exerciseWeightInput = document.querySelector("#weight-input");
 
-    let newRow = exerciseTableBody.insertRow();
-    let mobileHideBtnCell = newRow.insertCell(0);
-    let exerciseNameCell = newRow.insertCell(1);
-    let exerciseSetsCell = newRow.insertCell(2);
-    let exerciseRepsCell = newRow.insertCell(3);
-    let exerciseWeightCell = newRow.insertCell(4);
-    let editRowCell = newRow.insertCell(5);
-    let saveRowCell = newRow.insertCell(6);
-    let deleteRowCell = newRow.insertCell(7);
+        console.log(exerciseNameInput.value);
+        console.log(exerciseSetsInput.value);
+        console.log(exerciseRepsInput.value);
+        console.log(exerciseWeightInput.value);
 
-    mobileHideBtnCell.className = "mobile-hide-button-cell";
+        let newRow = exerciseTableBody.insertRow();
+        let mobileHideBtnCell = newRow.insertCell(0);
+        let exerciseNameCell = newRow.insertCell(1);
+        let exerciseSetsCell = newRow.insertCell(2);
+        let exerciseRepsCell = newRow.insertCell(3);
+        let exerciseWeightCell = newRow.insertCell(4);
+        let editRowCell = newRow.insertCell(5);
+        let saveRowCell = newRow.insertCell(6);
+        let deleteRowCell = newRow.insertCell(7);
 
-    let mobileDeleteBtn = document.createElement("button");
-    let mobileEditBtn = document.createElement("button");   
-    let mobileHideBtn = document.createElement("button");
+        mobileHideBtnCell.className = "mobile-hide-button-cell";
 
-    mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
-    mobileEditBtn.setAttribute("id", "mobile-edit-button");
-    mobileHideBtn.setAttribute("id", "mobile-hide-button");
+        let mobileDeleteBtn = document.createElement("button");
+        let mobileEditBtn = document.createElement("button");   
+        let mobileHideBtn = document.createElement("button");
 
-    mobileHideBtnCell.appendChild(mobileDeleteBtn);
-    mobileHideBtnCell.appendChild(mobileEditBtn);
-    mobileHideBtnCell.appendChild(mobileHideBtn);
+        mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
+        mobileEditBtn.setAttribute("id", "mobile-edit-button");
+        mobileHideBtn.setAttribute("id", "mobile-hide-button");
 
-    editRowCell.className = "edit-button-cell";
+        mobileHideBtnCell.appendChild(mobileDeleteBtn);
+        mobileHideBtnCell.appendChild(mobileEditBtn);
+        mobileHideBtnCell.appendChild(mobileHideBtn);
 
-    let editButton = document.createElement("button");
-    editButton.setAttribute("id", "edit-row-button");
-    editRowCell.appendChild(editButton);
+        editRowCell.className = "edit-button-cell";
 
-    saveRowCell.className = "save-button-cell";
+        let editButton = document.createElement("button");
+        editButton.setAttribute("id", "edit-row-button");
+        editRowCell.appendChild(editButton);
 
-    let saveButton = document.createElement("button");
-    saveButton.setAttribute("id", "save-row-button");
-    saveRowCell.appendChild(saveButton);
-    
-    deleteRowCell.className = "delete-button-cell";
+        saveRowCell.className = "save-button-cell";
 
-    let deleteButton = document.createElement("button");
-    deleteButton.setAttribute("id", "delete-row-button");
-    deleteRowCell.appendChild(deleteButton);
-    
-    exerciseNameCell.textContent = convertToDisplayFormat(exerciseNameInput.value);
-    exerciseNameCell.setAttribute("className", "entered-exercise-name");
-    exerciseNameCell.setAttribute("data-cell", "name");
+        let saveButton = document.createElement("button");
+        saveButton.setAttribute("id", "save-row-button");
+        saveRowCell.appendChild(saveButton);
+
+        deleteRowCell.className = "delete-button-cell";
+
+        let deleteButton = document.createElement("button");
+        deleteButton.setAttribute("id", "delete-row-button");
+        deleteRowCell.appendChild(deleteButton);
+
+        exerciseNameCell.textContent = convertToDisplayFormat(exerciseNameInput.value);
+        exerciseNameCell.setAttribute("className", "entered-exercise-name");
+        exerciseNameCell.setAttribute("data-cell", "name");
 
 
-    exerciseSetsCell.textContent = exerciseSetsInput.value;
-    exerciseSetsCell.setAttribute("className", "entered-number");
-    exerciseSetsCell.setAttribute("data-cell", "sets");
+        exerciseSetsCell.textContent = exerciseSetsInput.value;
+        exerciseSetsCell.setAttribute("className", "entered-number");
+        exerciseSetsCell.setAttribute("data-cell", "sets");
 
-    exerciseRepsCell.textContent = exerciseRepsInput.value;
-    exerciseRepsCell.setAttribute("className", "entered-number");
-    exerciseRepsCell.setAttribute("data-cell", "reps");
+        exerciseRepsCell.textContent = exerciseRepsInput.value;
+        exerciseRepsCell.setAttribute("className", "entered-number");
+        exerciseRepsCell.setAttribute("data-cell", "reps");
 
-    exerciseWeightCell.textContent = exerciseWeightInput.value;
-    exerciseWeightCell.setAttribute("className", "entered-number");
-    exerciseWeightCell.setAttribute("data-cell", "weight");
+        exerciseWeightCell.textContent = exerciseWeightInput.value;
+        exerciseWeightCell.setAttribute("className", "entered-number");
+        exerciseWeightCell.setAttribute("data-cell", "weight");
 
-    mobileDeleteBtn.textContent = "Del";
-    mobileEditBtn.textContent = "Edit";
-    mobileHideBtn.textContent = "-";
-    editButton.textContent = "Edit";
-    saveButton.textContent = "Save";
-    deleteButton.textContent = "X";
+        mobileDeleteBtn.textContent = "Del";
+        mobileEditBtn.textContent = "Edit";
+        mobileHideBtn.textContent = "-";
+        editButton.textContent = "Edit";
+        saveButton.textContent = "Save";
+        deleteButton.textContent = "X";
 
-    console.log("sets from create row:", exerciseSetsInput.value);
-    let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, JSON.parse(storedUserInformation).userID, JSON.parse(storedUserInformation).userAccessToken);
-    console.log("exercise id:", exerciseID);
-    newRow.setAttribute("data-id", exerciseID);
-    console.log(dateDisplay.value);
+        console.log("sets from create row:", exerciseSetsInput.value);
+        let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, JSON.parse(storedUserInformation).user.id, JSON.parse(storedUserInformation).access_token);
+        console.log("exercise id:", exerciseID);
+        newRow.setAttribute("data-id", exerciseID);
+        console.log(dateDisplay.value);   
+    }
 
 }
 
 async function populateTableFromData(workoutDate, authToken) {
+    await checkUserAuthenticationStatus();
     const exerciseData = await getExerciseDataByWorkoutID(workoutDate, authToken);
 
     exerciseData.forEach(exercise => {
@@ -614,12 +617,14 @@ async function populateTableFromData(workoutDate, authToken) {
     });
 }
 
-function removeExerciseFormFromDOM() {
+async function removeExerciseFormFromDOM() {
+    await checkUserAuthenticationStatus();
     let exerciseFormToRemove = document.querySelector(".exercise-form");
     exerciseFormContainer.removeChild(exerciseFormToRemove);
 }
 
-function appendExerciseFormToDOM() {
+async function appendExerciseFormToDOM() {
+    await checkUserAuthenticationStatus();
     console.log(strengthContainer.children);
     let existingExerciseForms = document.getElementsByClassName("exercise-form");
     if(existingExerciseForms.length === 0) {
@@ -629,7 +634,8 @@ function appendExerciseFormToDOM() {
     }
 }
 
-function appendEditExerciseFormToDOM() {
+async function appendEditExerciseFormToDOM() {
+    await checkUserAuthenticationStatus();
     let existingExerciseForms = document.getElementsByClassName("exercise-form");
     if(existingExerciseForms.length === 0) {
         let exerciseFormToAppend = editExerciseFormTemplate.content.cloneNode(true);
@@ -640,130 +646,8 @@ function appendEditExerciseFormToDOM() {
 const jsonHeaders = new Headers();
 jsonHeaders.append("Content-Type", "application/json");
 
-async function getAllExercises() {
-    try {
-        const response = await fetch("http://localhost:3000/exercise", {
-            method: "GET",
-        });
-
-        if(!response.ok) {
-            throw new Error("Could not fetch resource");
-        }
-
-        const data = await response.json();
-        console.log(data);
-    }
-    catch(error) {
-        console.error(error);
-    }
-}
-
-async function getExerciseByName(exerciseName) {
-    exerciseName = convertToDatabaseFormat(exerciseName);
-    console.log("exercise name: ", exerciseName);
-    try {
-        const response = await fetch(`http://localhost:3000/exercise/name=${exerciseName}`, {
-            method: "GET",
-        });
-
-        if(!response.ok) {
-            throw new Error("Could not fetch resource");
-        }
-
-        const data = await response.json();
-        console.log("data: ", data);
-        console.log("id: ", data[0].exercise_id);
-    }
-    catch(error) {
-        console.error(error);
-    }
-}
-
-async function getDataByDate(selectedDate) {
-    try {
-        const response = await fetch(`http://localhost:3000/test/date=${selectedDate}`, {
-            method: "GET",
-        });
-
-        if(!response.ok) {
-            throw new Error("Could not fetch resource");
-        }
-
-        const data = await response.json();
-        console.log("Data by date: ", data);
-    }
-    catch(error) {
-        console.error(error);
-    }
-}
-
-async function postData(testInput, dateInput) {
-    try {
-        const response = await fetch("http://localhost:3000/test", {
-            method: "POST",
-            body: JSON.stringify({
-                test: testInput,
-                date: dateInput
-            }),
-            headers: jsonHeaders,
-        });
-
-        if(!response.ok) {
-            throw new Error("Could not post");
-        }
-    }
-    catch(error) {
-        console.error(error);
-    }
-
-    console.log("posted");
-}
-
-async function deleteDataByID(id) {
-    try {
-        const response = await fetch(`http://localhost:3000/test/id=${id}`, {
-            method: "DELETE"
-        })
-
-        if(!response.ok) {
-            throw new Error(`Could not delete data with id: ${id}`);
-        }
-    }
-    catch(error) {
-        console.error(error);
-    }
-
-    console.log(`Deleted data with id: ${id}`);
-}
-
-async function updateDataByID(testInput, id) {
-    try {
-        const response = await fetch(`http://localhost:3000/test/id=${id}`, {
-            method: "PUT",
-            body: JSON.stringify({
-                test: testInput,
-            }),
-            headers: jsonHeaders,
-        });
-
-        if(!response.ok) {
-            throw new Error("Could not put");
-        }
-    }
-    catch(error) {
-        console.error(error);
-    }
-
-    console.log(`Updated data with id: ${id}`);
-}
-
-// functions to post to all tables -> add data to row
-
-// post to exercise table
 async function postExerciseData(exerciseName, sets, repetitions, weight, date, userID, authToken) {
-    console.log("sets from exercise data:", sets);
-    console.log("user:", userID);
-    console.log("auth:", authToken);
+    await checkUserAuthenticationStatus();
     try {
         const response = await fetch("http://localhost:3000/exercise", {
             method: "POST",
@@ -850,6 +734,7 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight, authTo
 }
 
 async function getWorkoutByDate(date, authToken) {
+    await checkUserAuthenticationStatus();
     try {
         const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
             method: "GET",
@@ -876,6 +761,7 @@ async function getWorkoutByDate(date, authToken) {
 
 // post to workout table
 async function postWorkoutData(date, userID, authToken) {
+    await checkUserAuthenticationStatus();
     try {
         const response = await fetch("http://localhost:3000/workout", {
             method: "POST",
@@ -905,6 +791,7 @@ async function postWorkoutData(date, userID, authToken) {
 
 // post to workout exercises junction table
 async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authToken) {
+    await checkUserAuthenticationStatus();
     try {
         const response = await fetch("http://localhost:3000/workout-exercise", {
             method: "POST",
@@ -932,6 +819,7 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authTo
 
 // function to get data to popoulate table
 async function getExerciseDataByWorkoutID(workoutID, authToken) {
+    await checkUserAuthenticationStatus();
     try {
         const response = await fetch(`http://localhost:3000/workout-exercise/workout-id=${workoutID}`, {
             method: "GET",
@@ -955,6 +843,7 @@ async function getExerciseDataByWorkoutID(workoutID, authToken) {
 
 // functions to put to appropriate tables -> edit data in row
 async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, weight, authToken) {
+    await checkUserAuthenticationStatus();
     try {
         const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
             method: "PUT",
@@ -982,6 +871,7 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
 }
 
 async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight, authToken) {
+    await checkUserAuthenticationStatus();
     try {
         const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
             method: "PUT",
@@ -1007,6 +897,7 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
 
 // functions to delete from appropriate tables -> delete data in row
 async function deleteExerciseByID(exerciseID, authToken) {
+    await checkUserAuthenticationStatus();
     try {
         const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
             method: "DELETE",
@@ -1047,6 +938,7 @@ async function deleteExerciseSetDataByID(exerciseID, authToken) {
 }
 
 async function deleteWorkoutByDate(date, authToken) {
+    await checkUserAuthenticationStatus();
     try {
         const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
             method: "DELETE",
@@ -1123,7 +1015,6 @@ async function loginUser(email, password) {
             userRefreshExpirationTime: session.expires_at
         }));
 
-        console.log("Login successful.");
         loginDialog.close();
         location.reload();
     } catch (error) {
@@ -1133,16 +1024,12 @@ async function loginUser(email, password) {
 
 async function checkSession() {
     try {
-        const response = await fetch("http://localhost:3000/session", {
-            method: "GET",
-            headers: jsonHeaders,
-        });
-
-        if(!response.ok) {
-            throw new Error("No active session");
+        const { data, error } = await supabase.auth.getSession();
+        
+        if(error) {
+            throw error;
         }
 
-        const data = await response.json();
         console.log("session data:", data);
 
     } catch(error) {
@@ -1152,17 +1039,21 @@ async function checkSession() {
 
 async function logout() {
     try {
-        const response = await fetch("http://localhost:3000/logout", {
-            method: "POST",
-            headers: jsonHeaders,
-        });
+        const { error } = await supabase.auth.signOut();
+        if(error) throw error;
 
-        if(!response.ok) {
-            throw new Error("Failed to logout.");
-        }
-
+        location.reload();
         console.log("Logged out user.");
     } catch(error) {
         console.error("Logout error:", error.message);
     }
+}
+
+async function checkUserAuthenticationStatus() {
+    const { data } = await supabase.auth.getUser();
+    if(!data.user) {
+        console.error("User not authenticated");
+        return;
+    }
+    console.log("User authenticated to perform this action");
 }
