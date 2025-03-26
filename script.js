@@ -26,15 +26,6 @@ const signupPasswordInput = signUpDialog.querySelector(".password-input");
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
 
-const unauthorizedHeaders = new Headers({
-    "Content-Type": "application/json"
-});
-
-const authorizedHeaders = new Headers({
-    "Authorization": `Bearer ${authToken}`,
-    "Content-Type": "application/json",
-})
-
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
@@ -48,6 +39,7 @@ supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
         loginBtn.textContent = "Log Out";
     } else if(event === "SIGNED_OUT") {
+        localStorage.clear();
         loginBtn.textContent = "Log In";
     }
 });
@@ -575,7 +567,7 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
                     exercise_name: exerciseName,
                     user_id: userID
                 }),
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             if(!response.ok) {
@@ -632,7 +624,7 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight, authTo
                     repetitions: Number(repetitions),
                     weight: Number(weight)
                 }),
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             if(!response.ok) {
@@ -653,7 +645,7 @@ async function getWorkoutByDate(date, authToken) {
         try {
             const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
                 method: "GET",
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             if(!response.ok) {
@@ -684,7 +676,7 @@ async function postWorkoutData(date, userID, authToken) {
                     date: date,
                     user_id: userID
                 }),
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             const result = await response.json();
@@ -713,7 +705,7 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authTo
                     exercise_id: exerciseID,
                     user_id: userID,
                 }),
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             if(!response.ok) {
@@ -734,7 +726,7 @@ async function getExerciseDataByWorkoutID(workoutID, authToken) {
         try {
             const response = await fetch(`http://localhost:3000/workout-exercise/workout-id=${workoutID}`, {
                 method: "GET",
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             if(!response.ok) {
@@ -761,7 +753,7 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
                 body: JSON.stringify({
                     exercise_name: exerciseName
                 }),
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             if(!response.ok) {
@@ -788,7 +780,7 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
                     repetitions: repetitions,
                     weight: weight
                 }),
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             })
 
             if(!response.ok) {
@@ -809,7 +801,7 @@ async function deleteExerciseByID(exerciseID, authToken) {
         try {
             const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
                 method: "DELETE",
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             if(!response.ok) {
@@ -831,7 +823,7 @@ async function deleteExerciseSetDataByID(exerciseID, authToken) {
         try {
             const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
                 method: "DELETE",
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             if(!response.ok) {
@@ -851,7 +843,7 @@ async function deleteWorkoutByDate(date, authToken) {
         try {
             const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
                 method: "DELETE",
-                headers: authorizedHeaders,
+                headers: getHeaders(authToken),
             });
 
             if(!response.ok) {
@@ -876,7 +868,7 @@ async function postUser(email, username, password) {
                     username: username, 
                     password: password
                 }),
-                headers: unauthorizedHeaders,
+                headers: getHeaders(),
             });
 
             if(!response.ok) {
@@ -903,7 +895,7 @@ async function loginUser(email, password) {
                 email: email,
                 password: password
             }),
-            headers: unauthorizedHeaders,
+            headers: getHeaders(),
         });
 
         if(!response.ok) {
@@ -919,6 +911,8 @@ async function loginUser(email, password) {
         });
 
         loginDialog.close();
+        loginUsernameInput.value = "";
+        loginPasswordInput.value = "";
         location.reload();
     } catch (error) {
         console.error(error);
@@ -934,3 +928,15 @@ async function logout() {
         console.error("Logout error:", error.message);
     }
 }
+
+function getHeaders(authToken = null) {
+    const headers = {
+        "Content-Type": "application/json",
+    };
+
+    if(authToken) {
+        headers["Authorization"] = `Bearer ${authToken}`;
+    };
+
+    return headers;
+};
