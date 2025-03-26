@@ -55,6 +55,16 @@ only adding 2.5lbs to weight
     margin-top: 5rem;
 }
 
+footer {
+    background-color: #19212a;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 2rem;
+    line-height: 2rem;
+}
+
 .hidden {
     display: none;
 }
@@ -279,7 +289,6 @@ only adding 2.5lbs to weight
         text-decoration-color: #0000FF;
         text-decoration-thickness: 1px;
         text-underline-offset: 2px;
-        border: 0.5px solid blue;
     }
 
     #add-sets-link {
