@@ -21,7 +21,7 @@ app.get("/exercise/id=:id", supabaseAuthMiddleware, async (req, res) => {
             .select()
             .eq("exercise_id", req.params.id)
             .eq("user_id", req.user.id);
-        console.log(data);
+        
         return res.send(data);
     } catch (error) {
         return res.send({error});
@@ -36,7 +36,7 @@ app.get("/exercise/name=:name", supabaseAuthMiddleware,  async (req, res) => {
             .select()
             .eq("exercise_name", exerciseName)
             .eq("user_id", req.user.id);
-        console.log(data);
+        
         return res.send(data);
     } catch (error) {
         return res.send({error});
@@ -49,7 +49,7 @@ app.get("/exercise", supabaseAuthMiddleware, async (req, res) => {
             .from("exercise")
             .select()
             .eq("user_id", req.user.auth_id);
-        console.log(data);
+        
         return res.status(200).send(data);
     } catch (error) {
         return res.status(500).send({ error });
@@ -102,7 +102,7 @@ app.delete("/exercise/id=:id", supabaseAuthMiddleware, async (req, res) => {
 app.get("/exercise-set", async (req, res) => {
     try {
         let { data, error } = await supabase.from("exercise_set").select();
-        console.log(data);
+        
         return res.send(data);
     } catch (error) {
         return res.send({error});
@@ -152,13 +152,13 @@ app.delete("/exercise-set/id=:id", supabaseAuthMiddleware, async (req, res) => {
 });
 
 app.get("/workout", supabaseAuthMiddleware, async (req, res) => {
-    console.log("user:", req.user);
+    
     try {
         let { data, error } = await supabase
         .from("workout")
         .select()
         .eq("user_id", req.user.auth_id);
-        console.log(data);
+        
         return res.send(data);
     } catch (error) {
         return res.send({ error });
@@ -166,7 +166,7 @@ app.get("/workout", supabaseAuthMiddleware, async (req, res) => {
 });
 
 app.get("/workout/date=:date", supabaseAuthMiddleware, async (req, res) => {
-    console.log("User", req.user);
+    
     try {
         const { data, error } = await supabase
             .from("workout")
@@ -174,8 +174,8 @@ app.get("/workout/date=:date", supabaseAuthMiddleware, async (req, res) => {
             .eq("date", req.params.date)
             .eq("user_id", req.user.auth_id)
             .limit(1);
-        console.log("data:", data);
-        console.log("auth:", req.user.auth_id);
+        
+        
         return res.send(data);
     } catch (error) {
         return res.send({error});
@@ -231,7 +231,7 @@ app.get("/workout-exercise", supabaseAuthMiddleware, async (req, res) => {
         .from("workout_exercise")
         .select()
         .eq("user_id", req.user.auth_id);
-        console.log(data);
+        
         return res.send(data);
     } catch (error) {
         return res.send({error});
@@ -239,7 +239,7 @@ app.get("/workout-exercise", supabaseAuthMiddleware, async (req, res) => {
 });
 
 app.get("/workout-exercise/workout-id=:id", supabaseAuthMiddleware, async (req, res) => {
-    console.log(req.user);
+    
     try {
         // select exercise id and exercise name from exercise equal to workout id
         const { data: workoutExercises, error: exerciseError } = await supabase
@@ -321,7 +321,7 @@ app.delete("/workout-exercise/id=:id", supabaseAuthMiddleware, async (req, res) 
 app.get("/exercise_library", async (req, res) => {
     try {
         let {data, error} = await supabase.from("exercise_library").select();
-        console.log(data);
+        
         return res.send(data);
     } catch(error) {
         return res.send({error});
@@ -333,7 +333,7 @@ app.get("/exercise_library/name", async (req, res) => {
         let {data, error} = await supabase
         .from("exercise_library")
         .select("name")
-        console.log(data);
+        
         return res.send(data);
     } catch (error) {
         return res.send({error});
@@ -349,7 +349,7 @@ app.delete("/auth/user", supabaseAuthMiddleware, deleteUser);
 
 
 app.listen(PORT, () => {
-    console.log(
+    
         new Date().toLocaleTimeString() + `: Server is running on port ${PORT}...`
     )
 });

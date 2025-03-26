@@ -66,13 +66,13 @@ app.put("/test/id=:id", async (req, res) => {
 });
 
 dateDisplay.addEventListener("change", () => {
-    console.log("CHANGE");
+    
     while(exerciseTableBody.lastElementChild) {
         exerciseTableBody.removeChild(exerciseTableBody.lastElementChild);
     }
-    console.log("date selected: " + dateDisplay.value);
+    
     sessionStorage.setItem("key", dateDisplay.value);
-    console.log(sessionStorage.getItem("key"));
+    
     checkWorkoutOnDate(dateDisplay.value);
     
 });
@@ -90,7 +90,7 @@ if(sessionStorage.getItem("key") === null) {
 async function checkWorkoutOnDate(date) {
     const workoutOnDate = await getWorkoutByDate(date);
     if(workoutOnDate !== null && workoutOnDate !== undefined) {
-        console.log("here:", workoutOnDate);
+        
         populateTableFromData(workoutOnDate);
     }
 }
