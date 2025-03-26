@@ -53,18 +53,30 @@ let currentDate;
 let isEditing = false;
 let rowToEdit;
 let rowID;
-
-const storedUserInformation = localStorage.getItem("sb-telbbmbnfwazsageyezo-auth-token");
+let storedUserInformation;
+let userAccessToken;
+let userID;
 
 supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
-        console.log("SIGNED_IN", session);
+        console.log("SIGNED_IN");
         loginBtn.textContent = "Log Out";
     } else if(event === "SIGNED_OUT") {
-        console.log("SIGNED_OUT", session);
+        console.log("SIGNED_OUT");
         loginBtn.textContent = "Log In";
     }
 });
+
+const userData = await supabase.auth.getUser();
+console.log(userData);
+console.log(userData.data.user);
+if(!userData.data.user) {
+    console.log("Not logged in from user data.");
+} else if(userData.data.user) {
+    const userSession = await supabase.auth.getSession();
+    userAccessToken = userSession.data.session.access_token;
+    userID = userData.data.user.id;
+}
 
 if(dateSplitOnSlash[0] < 10) {
     if(dateSplitOnSlash[1] < 10) {
@@ -92,8 +104,8 @@ if(sessionStorage.getItem(selectedDate) === null) {
     dateDisplay.value = sessionStorage.getItem(selectedDate);
 }
 
-if(storedUserInformation) {
-    await checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).access_token);
+if(userData.data.user) {
+    await checkWorkoutOnDate(dateDisplay.value, userAccessToken);
 }
 
 dateDisplay.addEventListener("change", () => {
@@ -103,20 +115,22 @@ dateDisplay.addEventListener("change", () => {
     sessionStorage.setItem(selectedDate, dateDisplay.value);
 
 
-    if(storedUserInformation) {
-        checkWorkoutOnDate(dateDisplay.value, JSON.parse(storedUserInformation).access_token);
+    if(userData.data.user) {
+        checkWorkoutOnDate(dateDisplay.value, userAccessToken);
     }
 });
 
 async function checkWorkoutOnDate(date, authToken) {
-    const workoutOnDate = await getWorkoutByDate(date, authToken);
-    if(workoutOnDate !== null && workoutOnDate !== undefined) {
-        populateTableFromData(workoutOnDate, authToken);
-    } 
+    if(userData.data.user) {
+        const workoutOnDate = await getWorkoutByDate(date, authToken);
+        if(workoutOnDate !== null && workoutOnDate !== undefined) {
+            populateTableFromData(workoutOnDate, authToken);
+        } 
+    }
 }
 
-if(storedUserInformation) {
-    const workoutToday = await getWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).access_token);
+if(userData.data.user) {
+    const workoutToday = await getWorkoutByDate(dateDisplay.value, userAccessToken);
     console.log("workout:", workoutToday);
 }
 
@@ -170,9 +184,9 @@ document.addEventListener("click", (event) => {
         if(exerciseTableBody.childElementCount === 0) {
             console.log("current date delete:", dateDisplay.value);
             console.log("deleting workout");
-            deleteWorkoutByDate(dateDisplay.value, JSON.parse(storedUserInformation).access_token);
+            deleteWorkoutByDate(dateDisplay.value, userAccessToken);
         }
-        deleteExerciseByID(rowID, JSON.parse(storedUserInformation).access_token);
+        deleteExerciseByID(rowID, userAccessToken);
         localStorage.removeItem(rowID);
     } else if(event.target.id === "edit-row-button") {
         console.log(rowToEdit);
@@ -220,7 +234,7 @@ document.addEventListener("click", (event) => {
 
             console.log("exercies name:", editableCell[0].textContent);
             console.log("row id when save:", rowID);
-            updateExerciseByID(rowToEdit.getAttribute("data-id"), convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent, JSON.parse(storedUserInformation).access_token);
+            updateExerciseByID(rowToEdit.getAttribute("data-id"), convertToDatabaseFormat(editableCell[0].textContent), editableCell[1].textContent, editableCell[2].textContent, editableCell[3].textContent, userAccessToken);
             isEditing = false;
         } else {
             event.preventDefault();
@@ -299,7 +313,7 @@ document.addEventListener("click", (event) => {
             row.children[4].textContent = weightInput;
         }
 
-        updateExerciseByID(rowID, dbExerciseName, setsInput, repsInput, weightInput, JSON.parse(storedUserInformation).access_token);
+        updateExerciseByID(rowID, dbExerciseName, setsInput, repsInput, weightInput, userAccessToken);
         removeExerciseFormFromDOM();
     } 
 
@@ -434,10 +448,7 @@ submitSignUpBtn.addEventListener("click", (event) => {
 });
 
 async function createExerciseRow() {
-    await checkUserAuthenticationStatus();
-
-    const { data } = await supabase.auth.getUser();
-    if(!data.user) {
+    if(!userData.data.user) {
         console.error("User not authenticated");
         return;
     } else {
@@ -519,7 +530,7 @@ async function createExerciseRow() {
         deleteButton.textContent = "X";
 
         console.log("sets from create row:", exerciseSetsInput.value);
-        let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, JSON.parse(storedUserInformation).user.id, JSON.parse(storedUserInformation).access_token);
+        let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, userID, userAccessToken);
         console.log("exercise id:", exerciseID);
         newRow.setAttribute("data-id", exerciseID);
         console.log(dateDisplay.value);   
@@ -528,118 +539,126 @@ async function createExerciseRow() {
 }
 
 async function populateTableFromData(workoutDate, authToken) {
-    await checkUserAuthenticationStatus();
-    const exerciseData = await getExerciseDataByWorkoutID(workoutDate, authToken);
+    if(!userData.data.user) {
+        return;
+    } else {
+        const exerciseData = await getExerciseDataByWorkoutID(workoutDate, authToken);
 
-    exerciseData.forEach(exercise => {
-        let newRow = exerciseTableBody.insertRow();
-        newRow.setAttribute("data-id", exercise.exercise_id);
+        exerciseData.forEach(exercise => {
+            let newRow = exerciseTableBody.insertRow();
+            newRow.setAttribute("data-id", exercise.exercise_id);
+            
+            let mobileHideBtnCell = newRow.insertCell(0);
+            let exerciseNameCell = newRow.insertCell(1);
+            let exerciseSetsCell = newRow.insertCell(2);
+            let exerciseRepsCell = newRow.insertCell(3);
+            let exerciseWeightCell = newRow.insertCell(4);
+            let editRowCell = newRow.insertCell(5);
+            let saveRowCell = newRow.insertCell(6);
+            let deleteRowCell = newRow.insertCell(7);
+
+            mobileHideBtnCell.className = "mobile-hide-button-cell";
+
+            let mobileDeleteBtn = document.createElement("button");
+            let mobileEditBtn = document.createElement("button");   
+            let mobileHideBtn = document.createElement("button");
+
+            mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
+            mobileEditBtn.setAttribute("id", "mobile-edit-button");
+            mobileHideBtn.setAttribute("id", "mobile-hide-button");
+
+            mobileHideBtnCell.appendChild(mobileDeleteBtn);
+            mobileHideBtnCell.appendChild(mobileEditBtn);
+            mobileHideBtnCell.appendChild(mobileHideBtn);
+
+            editRowCell.className = "edit-button-cell";
+
+            let editButton = document.createElement("button");
+            editButton.setAttribute("id", "edit-row-button");
+            editRowCell.appendChild(editButton);
+
+            saveRowCell.className = "save-button-cell";
+
+            let saveButton = document.createElement("button");
+            saveButton.setAttribute("id", "save-row-button");
+            saveRowCell.appendChild(saveButton);
         
-        let mobileHideBtnCell = newRow.insertCell(0);
-        let exerciseNameCell = newRow.insertCell(1);
-        let exerciseSetsCell = newRow.insertCell(2);
-        let exerciseRepsCell = newRow.insertCell(3);
-        let exerciseWeightCell = newRow.insertCell(4);
-        let editRowCell = newRow.insertCell(5);
-        let saveRowCell = newRow.insertCell(6);
-        let deleteRowCell = newRow.insertCell(7);
+            deleteRowCell.className = "delete-button-cell";
 
-        mobileHideBtnCell.className = "mobile-hide-button-cell";
+            let deleteButton = document.createElement("button");
+            deleteButton.setAttribute("id", "delete-row-button");
+            deleteRowCell.appendChild(deleteButton);
+        
+            exerciseNameCell.textContent = convertToDisplayFormat(exercise.exercise_name);
+            exerciseNameCell.setAttribute("className", "entered-exercise-name");
+            exerciseNameCell.setAttribute("data-cell", "name");
 
-        let mobileDeleteBtn = document.createElement("button");
-        let mobileEditBtn = document.createElement("button");   
-        let mobileHideBtn = document.createElement("button");
+            exerciseSetsCell.textContent = exercise.sets[0].amount_of_sets;
+            exerciseSetsCell.setAttribute("className", "entered-number");
+            exerciseSetsCell.setAttribute("data-cell", "sets");
 
-        mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
-        mobileEditBtn.setAttribute("id", "mobile-edit-button");
-        mobileHideBtn.setAttribute("id", "mobile-hide-button");
+            exerciseRepsCell.textContent = exercise.sets[0].repetitions;
+            exerciseRepsCell.setAttribute("className", "entered-number");
+            exerciseRepsCell.setAttribute("data-cell", "reps");
 
-        mobileHideBtnCell.appendChild(mobileDeleteBtn);
-        mobileHideBtnCell.appendChild(mobileEditBtn);
-        mobileHideBtnCell.appendChild(mobileHideBtn);
+            exerciseWeightCell.textContent = exercise.sets[0].weight;
+            exerciseWeightCell.setAttribute("className", "entered-number");
+            exerciseWeightCell.setAttribute("data-cell", "weight");
 
-        editRowCell.className = "edit-button-cell";
+            mobileDeleteBtn.textContent = "Del";
+            mobileEditBtn.textContent = "Edit";
 
-        let editButton = document.createElement("button");
-        editButton.setAttribute("id", "edit-row-button");
-        editRowCell.appendChild(editButton);
+            editButton.textContent = "Edit";
+            saveButton.textContent = "Save";
+            deleteButton.textContent = "X";
+        
+            console.log("test:", exercise.exercise_id);
+            console.log(exercise);
+            console.log("data received");
 
-        saveRowCell.className = "save-button-cell";
-
-        let saveButton = document.createElement("button");
-        saveButton.setAttribute("id", "save-row-button");
-        saveRowCell.appendChild(saveButton);
-    
-        deleteRowCell.className = "delete-button-cell";
-
-        let deleteButton = document.createElement("button");
-        deleteButton.setAttribute("id", "delete-row-button");
-        deleteRowCell.appendChild(deleteButton);
-    
-        exerciseNameCell.textContent = convertToDisplayFormat(exercise.exercise_name);
-        exerciseNameCell.setAttribute("className", "entered-exercise-name");
-        exerciseNameCell.setAttribute("data-cell", "name");
-
-        exerciseSetsCell.textContent = exercise.sets[0].amount_of_sets;
-        exerciseSetsCell.setAttribute("className", "entered-number");
-        exerciseSetsCell.setAttribute("data-cell", "sets");
-
-        exerciseRepsCell.textContent = exercise.sets[0].repetitions;
-        exerciseRepsCell.setAttribute("className", "entered-number");
-        exerciseRepsCell.setAttribute("data-cell", "reps");
-
-        exerciseWeightCell.textContent = exercise.sets[0].weight;
-        exerciseWeightCell.setAttribute("className", "entered-number");
-        exerciseWeightCell.setAttribute("data-cell", "weight");
-
-        mobileDeleteBtn.textContent = "Del";
-        mobileEditBtn.textContent = "Edit";
-
-        editButton.textContent = "Edit";
-        saveButton.textContent = "Save";
-        deleteButton.textContent = "X";
-    
-        console.log("test:", exercise.exercise_id);
-        console.log(exercise);
-        console.log("data received");
-
-        for(const cell of cells) {
-            console.log("checking...");
-            if(localStorage.getItem(cell.parentNode.getAttribute("data-id")) === "true" 
-                                && (cell !== cell.parentNode.firstElementChild)
-                                && (cell !== cell.parentNode.firstElementChild.nextElementSibling)) {
-                cell.classList.add("hidden");
-                mobileHideBtn.textContent = "+";
-            } else {
-                mobileHideBtn.textContent = "-";
+            for(const cell of cells) {
+                console.log("checking...");
+                if(localStorage.getItem(cell.parentNode.getAttribute("data-id")) === "true" 
+                                    && (cell !== cell.parentNode.firstElementChild)
+                                    && (cell !== cell.parentNode.firstElementChild.nextElementSibling)) {
+                    cell.classList.add("hidden");
+                    mobileHideBtn.textContent = "+";
+                } else {
+                    mobileHideBtn.textContent = "-";
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 async function removeExerciseFormFromDOM() {
-    await checkUserAuthenticationStatus();
     let exerciseFormToRemove = document.querySelector(".exercise-form");
     exerciseFormContainer.removeChild(exerciseFormToRemove);
 }
 
 async function appendExerciseFormToDOM() {
-    await checkUserAuthenticationStatus();
-    console.log(strengthContainer.children);
-    let existingExerciseForms = document.getElementsByClassName("exercise-form");
-    if(existingExerciseForms.length === 0) {
-        console.log("HERE");
-        let exerciseFormToAppend = exerciseFormTemplate.content.cloneNode(true);
-        exerciseFormContainer.appendChild(exerciseFormToAppend);
+    if(!userData.data.user) {
+        return;    
+    } else {
+        console.log(strengthContainer.children);
+        let existingExerciseForms = document.getElementsByClassName("exercise-form");
+        if(existingExerciseForms.length === 0) {
+            console.log("HERE");
+            let exerciseFormToAppend = exerciseFormTemplate.content.cloneNode(true);
+            exerciseFormContainer.appendChild(exerciseFormToAppend);
+        }
     }
 }
 
 async function appendEditExerciseFormToDOM() {
-    await checkUserAuthenticationStatus();
-    let existingExerciseForms = document.getElementsByClassName("exercise-form");
-    if(existingExerciseForms.length === 0) {
-        let exerciseFormToAppend = editExerciseFormTemplate.content.cloneNode(true);
-        exerciseFormContainer.appendChild(exerciseFormToAppend);
+    if(!userData.data.user) {
+        return;
+    } else {
+        let existingExerciseForms = document.getElementsByClassName("exercise-form");
+        if(existingExerciseForms.length === 0) {
+            let exerciseFormToAppend = editExerciseFormTemplate.content.cloneNode(true);
+            exerciseFormContainer.appendChild(exerciseFormToAppend);
+        }
     }
 }
 
@@ -647,52 +666,55 @@ const jsonHeaders = new Headers();
 jsonHeaders.append("Content-Type", "application/json");
 
 async function postExerciseData(exerciseName, sets, repetitions, weight, date, userID, authToken) {
-    await checkUserAuthenticationStatus();
-    try {
-        const response = await fetch("http://localhost:3000/exercise", {
-            method: "POST",
-            body: JSON.stringify({
-                exercise_name: exerciseName,
-                user_id: userID
-            }),
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+    if(!userData.data.user) {
+        return;
+    } else {
+        try {
+            const response = await fetch("http://localhost:3000/exercise", {
+                method: "POST",
+                body: JSON.stringify({
+                    exercise_name: exerciseName,
+                    user_id: userID
+                }),
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        if(!response.ok) {
-            throw new Error("Could not post exercise");
+            if(!response.ok) {
+                throw new Error("Could not post exercise");
+            }
+
+            const data = await response.json();
+            if(!data.exercise_id) {
+                throw new Error("Exercise ID is missing");
+            }
+
+            console.log("sets immediate before:", sets);
+
+            if(sets !== null || sets !== undefined) {
+                await postExerciseSetData(data.exercise_id, sets, repetitions, weight, authToken);
+            } else {
+                console.log("HMMM");
+            }
+            
+            let workoutID = await getWorkoutByDate(date, authToken);
+            if(workoutID) {
+                console.log("workout id from thing:", workoutID);
+                console.log("user id:", userID);
+                await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID, authToken);
+            } else {
+                console.log("user id:", userID);
+                workoutID = await postWorkoutData(date, userID, authToken);
+                await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID, authToken);
+            }
+
+            return data.exercise_id;
         }
-
-        const data = await response.json();
-        if(!data.exercise_id) {
-            throw new Error("Exercise ID is missing");
+        catch(error) {
+            console.error(error);
         }
-
-        console.log("sets immediate before:", sets);
-
-        if(sets !== null || sets !== undefined) {
-            await postExerciseSetData(data.exercise_id, sets, repetitions, weight, authToken);
-        } else {
-            console.log("HMMM");
-        }
-        
-        let workoutID = await getWorkoutByDate(date, authToken);
-        if(workoutID) {
-            console.log("workout id from thing:", workoutID);
-            console.log("user id:", userID);
-            await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID, authToken);
-        } else {
-            console.log("user id:", userID);
-            workoutID = await postWorkoutData(date, userID, authToken);
-            await postWorkoutExerciseJoinData(workoutID, data.exercise_id, userID, authToken);
-        }
-
-        return data.exercise_id;
-    }
-    catch(error) {
-        console.error(error);
     }
 }
 
@@ -700,287 +722,325 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
 async function postExerciseSetData(exerciseID, sets, repetitions, weight, authToken) {
     console.log("before posting sets:", sets);
 
-    if (sets === null || sets === undefined) {
-        console.error("Error: sets is null or undefined before posting");
-        return;
-    }
-
-    try {
-        console.log("sets from within try:", sets);
-        const response = await fetch("http://localhost:3000/exercise-set", {
-            method: "POST",
-            body: JSON.stringify({
-                exercise_id: exerciseID,
-                sets: Number(sets),
-                repetitions: Number(repetitions),
-                weight: Number(weight)
-            }),
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
-
-        if(!response.ok) {
-            console.log("sets from error:", sets);
-            throw new Error("Could not post exercise set data");
+    if(!userData.data.user) {
+        return; 
+    } else{
+        if (sets === null || sets === undefined) {
+            console.error("Error: sets is null or undefined before posting");
+            return;
         }
-    }
-    catch(error) {
-        console.error(error);
-    }
 
-    console.log(`Posted exercise with exercise id: ${exerciseID} and sets: ${sets}`);
+        try {
+            console.log("sets from within try:", sets);
+            const response = await fetch("http://localhost:3000/exercise-set", {
+                method: "POST",
+                body: JSON.stringify({
+                    exercise_id: exerciseID,
+                    sets: Number(sets),
+                    repetitions: Number(repetitions),
+                    weight: Number(weight)
+                }),
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
+
+            if(!response.ok) {
+                console.log("sets from error:", sets);
+                throw new Error("Could not post exercise set data");
+            }
+        }
+        catch(error) {
+            console.error(error);
+        }
+
+        console.log(`Posted exercise with exercise id: ${exerciseID} and sets: ${sets}`);
+    }
 }
 
 async function getWorkoutByDate(date, authToken) {
-    await checkUserAuthenticationStatus();
-    try {
-        const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+    if(!userData.data.user) {
+        return;
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        if(!response.ok) {
-            throw new Error("Could not fetch resource");
-        }
+            if(!response.ok) {
+                throw new Error("Could not fetch resource");
+            }
 
-        const data = await response.json();
-        console.log("Workout by date: ", data);
-        if(data.length > 0) {
-            return data[0].workout_id;
+            const data = await response.json();
+            console.log("Workout by date: ", data);
+            if(data.length > 0) {
+                return data[0].workout_id;
+            }
         }
-    }
-    catch(error) {
-        console.error(error);
+        catch(error) {
+            console.error(error);
+        }
     }
 }
 
 // post to workout table
 async function postWorkoutData(date, userID, authToken) {
-    await checkUserAuthenticationStatus();
-    try {
-        const response = await fetch("http://localhost:3000/workout", {
-            method: "POST",
-            body: JSON.stringify({
-                date: date,
-                user_id: userID
-            }),
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+    if(!userData.data.user) {
+        return;
+    } else {
+    
+        try {
+            const response = await fetch("http://localhost:3000/workout", {
+                method: "POST",
+                body: JSON.stringify({
+                    date: date,
+                    user_id: userID
+                }),
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        const result = await response.json();
-        if(response.ok) {
-            return result.workout_id;
-        } else {
-            throw new Error(result.error);
+            const result = await response.json();
+            if(response.ok) {
+                return result.workout_id;
+            } else {
+                throw new Error(result.error);
+            }
         }
-    }
-    catch(error) {
-        console.error(error);
-    }
+        catch(error) {
+            console.error(error);
+        }
 
-    console.log(`Posted workout with date: ${date}`);
+        console.log(`Posted workout with date: ${date}`);
+    }
 }
 
 // post to workout exercises junction table
 async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authToken) {
-    await checkUserAuthenticationStatus();
-    try {
-        const response = await fetch("http://localhost:3000/workout-exercise", {
-            method: "POST",
-            body: JSON.stringify({
-                workout_id: workoutID,
-                exercise_id: exerciseID,
-                user_id: userID,
-            }),
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+    if(!userData.data.user) {
+        return;
+    } else {
 
-        if(!response.ok) {
-            throw new Error("Could not post workout data");
+        try {
+            const response = await fetch("http://localhost:3000/workout-exercise", {
+                method: "POST",
+                body: JSON.stringify({
+                    workout_id: workoutID,
+                    exercise_id: exerciseID,
+                    user_id: userID,
+                }),
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
+
+            if(!response.ok) {
+                throw new Error("Could not post workout data");
+            }
         }
-    }
-    catch(error) {
-        console.error(error);
-    }
+        catch(error) {
+            console.error(error);
+        }
 
-    console.log(`Posted junction with ids: ${workoutID}, ${exerciseID}`);
+        console.log(`Posted junction with ids: ${workoutID}, ${exerciseID}`);
+    }
 }
 
 // function to get data to popoulate table
 async function getExerciseDataByWorkoutID(workoutID, authToken) {
-    await checkUserAuthenticationStatus();
-    try {
-        const response = await fetch(`http://localhost:3000/workout-exercise/workout-id=${workoutID}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+    if(!userData.data.user) {
+        return;
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3000/workout-exercise/workout-id=${workoutID}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        if(!response.ok) {
-            throw new Error("Could not fetch exercise data by workout ID");
+            if(!response.ok) {
+                throw new Error("Could not fetch exercise data by workout ID");
+            }
+
+            const data = await response.json();
+            return data;
         }
-
-        const data = await response.json();
-        return data;
-    }
-    catch(error) {
-        console.error(error);
+        catch(error) {
+            console.error(error);
+        }
     }
 }
 
 // functions to put to appropriate tables -> edit data in row
 async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, weight, authToken) {
-    await checkUserAuthenticationStatus();
-    try {
-        const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
-            method: "PUT",
-            body: JSON.stringify({
-                exercise_name: exerciseName
-            }),
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+    if(!userData.data.user) {
+        return; 
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    exercise_name: exerciseName
+                }),
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        if(!response.ok) {
-            console.log("Failure to update exercise by id");
+            if(!response.ok) {
+                console.log("Failure to update exercise by id");
+            }
+
+            await updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight, authToken);
+
+        }
+        catch(error) {
+            console.error(error);
         }
 
-        await updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight, authToken);
-
+        console.log(`attempting to update exercise with id, ${exerciseID} to new name: ${exerciseName}`);
     }
-    catch(error) {
-        console.error(error);
-    }
-
-    console.log(`attempting to update exercise with id, ${exerciseID} to new name: ${exerciseName}`);
 }
 
 async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight, authToken) {
-    await checkUserAuthenticationStatus();
-    try {
-        const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
-            method: "PUT",
-            body: JSON.stringify({
-                sets: sets,
-                repetitions: repetitions,
-                weight: weight
-            }),
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        })
+    if(!userData.data.user) {
+        return;
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    sets: sets,
+                    repetitions: repetitions,
+                    weight: weight
+                }),
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            })
 
-        if(!response.ok) {
-            console.log("Failure to update exercise_set by exerciseid");
+            if(!response.ok) {
+                console.log("Failure to update exercise_set by exerciseid");
+            }
         }
-    }
-    catch(error) {
-        console.error(error);
+        catch(error) {
+            console.error(error);
+        }
     }
 }
 
 // functions to delete from appropriate tables -> delete data in row
 async function deleteExerciseByID(exerciseID, authToken) {
-    await checkUserAuthenticationStatus();
-    try {
-        const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+    if(!userData.data.user) {
+        return;
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        if(!response.ok) {
-            throw new Error(`Could not delete exercise with id: ${exerciseID}`);
+            if(!response.ok) {
+                throw new Error(`Could not delete exercise with id: ${exerciseID}`);
+            }
+
+            await deleteExerciseSetDataByID(exerciseID, authToken);
         }
-
-        await deleteExerciseSetDataByID(exerciseID, authToken);
-    }
-    catch(error) {
-        console.error(error);
+        catch(error) {
+            console.error(error);
+        }
     }
 }
 
 async function deleteExerciseSetDataByID(exerciseID, authToken) {
-    try {
-        const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+    if(!userData.data.user) {
+        return;
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        if(!response.ok) {
-            throw new Error(`Could not delete exercise set data with id: ${exerciseID}`);
+            if(!response.ok) {
+                throw new Error(`Could not delete exercise set data with id: ${exerciseID}`);
+            }
         }
-    }
-    catch(error) {
-        console.error(error);
+        catch(error) {
+            console.error(error);
+        }
     }
 }
 
 async function deleteWorkoutByDate(date, authToken) {
-    await checkUserAuthenticationStatus();
-    try {
-        const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${authToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+    if(!userData.data.user) {
+        return;
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        if(!response.ok) {
-            throw new Error(`Could not delete workout on date: ${date}`);
+            if(!response.ok) {
+                throw new Error(`Could not delete workout on date: ${date}`);
+            }
         }
-    }
-    catch(error) {
-        console.error(error);
+        catch(error) {
+            console.error(error);
+        }
     }
 }
 
 async function postUser(email, username, password) {
-    try {
-        const response = await fetch(`http://localhost:3000/signup`, {
-            method: "POST",
-            body: JSON.stringify({
-                email: email,
-                username: username, 
-                password: password
-            }),
-            headers: jsonHeaders,
-        });
+    if(!userData.data.user) {
+        return;
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3000/signup`, {
+                method: "POST",
+                body: JSON.stringify({
+                    email: email,
+                    username: username, 
+                    password: password
+                }),
+                headers: jsonHeaders,
+            });
 
-        if(!response.ok) {
-            throw new Error(`Could not post user with email: ${email} and password: ${password}`);
-        } else if(response.ok) {
-            signupEmailInput.value = "";
-            signupUsernameInput.value = "";
-            signupPasswordInput.value = "";
-            signUpDialog.close();
-            alert("User successfully created");
-            console.log(`Sign up successful, email: ${email}, username: ${username}, password: ${password}`);
+            if(!response.ok) {
+                throw new Error(`Could not post user with email: ${email} and password: ${password}`);
+            } else if(response.ok) {
+                signupEmailInput.value = "";
+                signupUsernameInput.value = "";
+                signupPasswordInput.value = "";
+                signUpDialog.close();
+                alert("User successfully created");
+                console.log(`Sign up successful, email: ${email}, username: ${username}, password: ${password}`);
+            }
+        } catch (error) {
+            console.error(error);
         }
-    } catch (error) {
-        console.error(error);
     }
 }
 
@@ -1008,32 +1068,10 @@ async function loginUser(email, password) {
             refresh_token: session.refresh_token,
         });
 
-        localStorage.setItem("userInformation", JSON.stringify({
-            userID: user.id,
-            userAccessToken: session.access_token,
-            userRefreshToken: session.refresh_token,
-            userRefreshExpirationTime: session.expires_at
-        }));
-
         loginDialog.close();
         location.reload();
     } catch (error) {
         console.error(error);
-    }
-}
-
-async function checkSession() {
-    try {
-        const { data, error } = await supabase.auth.getSession();
-        
-        if(error) {
-            throw error;
-        }
-
-        console.log("session data:", data);
-
-    } catch(error) {
-        console.log("No user session:", error.message);
     }
 }
 
@@ -1047,13 +1085,4 @@ async function logout() {
     } catch(error) {
         console.error("Logout error:", error.message);
     }
-}
-
-async function checkUserAuthenticationStatus() {
-    const { data } = await supabase.auth.getUser();
-    if(!data.user) {
-        console.error("User not authenticated");
-        return;
-    }
-    console.log("User authenticated to perform this action");
 }
