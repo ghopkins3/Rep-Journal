@@ -1,3 +1,2 @@
-# ignore .env and copied html to store while experimenting
+# ignore .env
 .env
-copy.html

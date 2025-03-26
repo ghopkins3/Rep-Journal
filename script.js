@@ -1,22 +1,3 @@
-// TODO 
-
-
-// PREVENT ANY ACTION LOGGED OUT
-// CHECK FOR LOGIN BEFORE FETCHING RESOURCES
-// LOGIN/LOGOUT CHANGES UI ELEMENTS
-
-// REFACTOR ASAP
-// ADD EXERCISE TO DATALIST WHEN NEW EXERCISE ADDED
-
-// CARDIO/MILE TIMES 
-// UI/UX, DESIGN, ETC
-// Skeleton html on load
-// MIGRATE TO TYPESCRIPT
-// COMPLETE HTML/CSS OVERHAUL
-
-// FEATURES SUCH AS WEIGHT LOG, RELEVANT RESOURCES, FILTER EXERCISES, OVERVIEW, 
-// COMPARE TWO WORKOUTS IE WEEK VS WEEK, GRAPHWORKS, PR VIEW
-
 import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "./utils/formatUtils.js";
 import { supabase } from "./lib/frontendSupabaseClient.js";
 
@@ -27,7 +8,6 @@ const strengthContainer = document.querySelector(".strength-container");
 const exerciseFormContainer = document.querySelector(".exercise-form-container")
 const exerciseFormTemplate = document.querySelector("#exercise-form-template");
 const editExerciseFormTemplate = document.querySelector("#edit-exercise-form-template");
-const exerciseTableContainer = document.querySelector(".exercise-table-container");
 const exerciseTable = document.querySelector(".exercise-table");
 const exerciseTableBody = document.querySelector("#exercise-table-body");
 const cells = exerciseTable.getElementsByTagName("td");
@@ -53,7 +33,6 @@ let currentDate;
 let isEditing = false;
 let rowToEdit;
 let rowID;
-let storedUserInformation;
 let userAccessToken;
 let userID;
 
@@ -93,9 +72,6 @@ if(dateSplitOnSlash[0] < 10) {
 }
 
 let selectedDate = "selectedDate";
-
-// if a saved date doesnt exist reset
-// PAGE LOADS HERE
 
 if(sessionStorage.getItem(selectedDate) === null) {
     dateDisplay.value = currentDate;
