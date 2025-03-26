@@ -349,7 +349,5 @@ app.delete("/auth/user", supabaseAuthMiddleware, deleteUser);
 
 
 app.listen(PORT, () => {
-    
-        new Date().toLocaleTimeString() + `: Server is running on port ${PORT}...`
-    )
+    console.log(new Date().toLocaleTimeString() + `: Server is running on port ${PORT}...`)
 });
