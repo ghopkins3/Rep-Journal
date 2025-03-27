@@ -341,6 +341,7 @@ closeSignUpDialogBtn.addEventListener("click", () => {
 });
 
 submitLoginBtn.addEventListener("click", (event) => {
+    alert("clicked!");
     try {
         loginUser(loginUsernameInput.value, loginPasswordInput.value);
     } catch(error) {
@@ -349,6 +350,7 @@ submitLoginBtn.addEventListener("click", (event) => {
 });
 
 submitLoginBtn.addEventListener("touchstart", (event) => {
+    alert("touch started.");
     try {
         loginUser(loginUsernameInput.value, loginPasswordInput.value);
     } catch(error) {
@@ -357,6 +359,7 @@ submitLoginBtn.addEventListener("touchstart", (event) => {
 });
 
 submitSignUpBtn.addEventListener("click", (event) => {
+    alert("clicked!");
     try {
         postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
     } catch(error) {
@@ -366,6 +369,7 @@ submitSignUpBtn.addEventListener("click", (event) => {
 });
 
 submitSignUpBtn.addEventListener("touchstart", (event) => {
+    alert("touch started.");
     try {
         postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
     } catch(error) {
