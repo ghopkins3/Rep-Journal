@@ -316,7 +316,6 @@ loginBtn.addEventListener("click", () => {
         loginDialog.showModal();
     } else if(loginBtn.textContent === "Log Out") {
         logout();
-        
     }
 });
 
@@ -349,8 +348,24 @@ submitLoginBtn.addEventListener("click", (event) => {
     }
 });
 
+submitLoginBtn.addEventListener("touchstart", (event) => {
+    try {
+        loginUser(loginUsernameInput.value, loginPasswordInput.value);
+    } catch(error) {
+        console.error(error);
+    }
+});
+
 submitSignUpBtn.addEventListener("click", (event) => {
-    console.log("click");
+    try {
+        postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
+    } catch(error) {
+        console.error(error);
+    }
+
+});
+
+submitSignUpBtn.addEventListener("touchstart", (event) => {
     try {
         postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
     } catch(error) {
