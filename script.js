@@ -321,7 +321,11 @@ loginBtn.addEventListener("click", () => {
 });
 
 signUpBtn.addEventListener("click", () => {
-    signUpDialog.showModal();
+    if(loginBtn.textContent === "Log In") {
+        signUpDialog.showModal();
+    } else if(loginBtn.textContent === "Log Out") {
+        event.preventDefault();
+    }
 });
 
 closeLoginDialogBtn.addEventListener("click", () => {
@@ -346,6 +350,7 @@ submitLoginBtn.addEventListener("click", (event) => {
 });
 
 submitSignUpBtn.addEventListener("click", (event) => {
+    console.log("click");
     try {
         postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
     } catch(error) {
@@ -857,33 +862,33 @@ async function deleteWorkoutByDate(date, authToken) {
 }
 
 async function postUser(email, username, password) {
-    if(!userData.data.user) {
-        return;
-    } else {
-        try {
-            const response = await fetch(`http://localhost:3000/signup`, {
-                method: "POST",
-                body: JSON.stringify({
-                    email: email,
-                    username: username, 
-                    password: password
-                }),
-                headers: getHeaders(),
-            });
+    try {
+        const response = await fetch(`http://localhost:3000/signup`, {
+            method: "POST",
+            body: JSON.stringify({
+                email: email,
+                username: username, 
+                password: password
+            }),
+            headers: getHeaders(),
+        });
 
-            if(!response.ok) {
-                throw new Error(`Could not post user with email: ${email} and password: ${password}`);
-            } else if(response.ok) {
-                signupEmailInput.value = "";
-                signupUsernameInput.value = "";
-                signupPasswordInput.value = "";
-                signUpDialog.close();
-                alert("User successfully created");
-                
+        if(!response.ok) {
+            throw new Error(`Could not post user with email: ${email} and password: ${password}`);
+        } else if(response.ok) {
+            signupEmailInput.value = "";
+            signupUsernameInput.value = "";
+            signupPasswordInput.value = "";
+            signUpDialog.close();
+            alert("User successfully created");
+            try {
+                await loginUser(email, password)
+            } catch(error) {
+                console.error(error);
             }
-        } catch (error) {
-            console.error(error);
         }
+    } catch (error) {
+        console.error(error);
     }
 }
 
