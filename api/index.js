@@ -349,9 +349,4 @@ app.get("/auth/user", supabaseAuthMiddleware, getUser);
 app.put("/auth/user", supabaseAuthMiddleware, putUser);
 app.delete("/auth/user", supabaseAuthMiddleware, deleteUser);
 
-
-app.listen(PORT, () => {
-    console.log(new Date().toLocaleTimeString() + `: Server is running on port ${PORT}...`)
-});
-
 export default app;
