@@ -2,11 +2,11 @@
   "name": "rep-journal",
   "version": "1.0.0",
   "description": "",
-  "main": "script.js",
+  "main": "api/index.js",
   "type": "module",
   "scripts": {
     "test": "node script.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon ./api/index.js"
   },
   "author": "Gavin Hopkins",
   "license": "ISC",
