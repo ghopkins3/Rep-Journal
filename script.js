@@ -913,7 +913,7 @@ async function postUser(email, username, password) {
 
 async function loginUser(email, password) {
     try {
-        const response = await fetch(`https://rep-journal-server.vercel.app//login`, {
+        const response = await fetch(`https://rep-journal.vercel.app/login`, {
             method: "POST",
             body: JSON.stringify({
                 email: email,
