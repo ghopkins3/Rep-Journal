@@ -14,8 +14,16 @@ let PORT = process.env.PORT;
 app.use(express.json());
 app.use(cors());
 
-app.get("/test", (req, res) => {
-    res.send("Express on Vercel!");
+app.get("/test", async (req, res) => {
+    try {
+        const { data, error } = await supabase
+        .from("test")
+        .select("*");
+
+        return res.send(data);
+    } catch (error) {
+        return res.send(error);
+    }
 });
 
 app.get("/exercise/id=:id", supabaseAuthMiddleware, async (req, res) => {
