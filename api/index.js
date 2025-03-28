@@ -21,5 +21,3 @@ app.use("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(new Date().toLocaleTimeString() + `: Server is running on port ${PORT}...`)
 });
-
-export default app;
