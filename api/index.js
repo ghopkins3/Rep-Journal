@@ -16,7 +16,7 @@ app.use(cors());
 
 app.get("/", (req, res) => {
     res.send("Express on Vercel!");
-})
+});
 
 app.get("/exercise/id=:id", supabaseAuthMiddleware, async (req, res) => {
     try {
