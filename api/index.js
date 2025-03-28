@@ -14,7 +14,7 @@ let PORT = process.env.PORT;
 app.use(express.json());
 app.use(cors());
 
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
     res.send("Express on Vercel!");
 });
 
