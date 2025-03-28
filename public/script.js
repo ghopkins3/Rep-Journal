@@ -1,5 +1,5 @@
-import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "./utils/formatUtils.js";
-import { supabase } from "./lib/frontendSupabaseClient.js";
+import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "../utils/formatUtils.js";
+import { supabase } from "../lib/frontendSupabaseClient.js";
 
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
