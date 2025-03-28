@@ -14,8 +14,6 @@ let PORT = process.env.PORT;
 app.use(express.json());
 app.use(cors());
 
-app.get("/", (req, res) => res.send("Express on Vercel"));
-
 app.get("/exercise/id=:id", supabaseAuthMiddleware, async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -348,6 +346,8 @@ app.post("/login", postLogin);
 app.get("/auth/user", supabaseAuthMiddleware, getUser);
 app.put("/auth/user", supabaseAuthMiddleware, putUser);
 app.delete("/auth/user", supabaseAuthMiddleware, deleteUser);
+
+app.get("/", (req, res) => res.send("Express on Vercel"));
 
 app.listen(PORT, () => {
     console.log(new Date().toLocaleTimeString() + `: Server is running on port ${PORT}...`)
