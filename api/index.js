@@ -347,7 +347,7 @@ app.get("/auth/user", supabaseAuthMiddleware, getUser);
 app.put("/auth/user", supabaseAuthMiddleware, putUser);
 app.delete("/auth/user", supabaseAuthMiddleware, deleteUser);
 
-app.get("/", (req, res) => res.send("Express on Vercel"));
+app.use("/", (req, res) => res.send("Express on Vercel"));
 
 app.listen(PORT, () => {
     console.log(new Date().toLocaleTimeString() + `: Server is running on port ${PORT}...`)
