@@ -342,23 +342,12 @@ closeSignUpDialogBtn.addEventListener("click", () => {
     signUpDialog.close();
 });
 
-submitLoginBtn.addEventListener("click", "touchstart", (event) => {
-    try {
-        loginUser(loginUsernameInput.value, loginPasswordInput.value);
-    } catch(error) {
-        console.error(error);
-    }
-});
+submitLoginBtn.addEventListener("click", tryLogin(loginUsernameInput, loginPasswordInput));
+submitLoginBtn.addEventListener("touchstart", tryLogin(loginUsernameInput, loginPasswordInput));
 
-submitSignUpBtn.addEventListener("click", "touchstart", (event) => {
-    try {
-        postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
-    } catch(error) {
-        console.error(error);
-    }
 
-});
-
+submitSignUpBtn.addEventListener("click", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput));
+submitSignUpBtn.addEventListener("touchstart", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput));
 
 async function createExerciseRow() {
     if(!userData.data.user) {
@@ -932,6 +921,22 @@ async function logout() {
         location.reload();
     } catch(error) {
         console.error("Logout error:", error.message);
+    }
+}
+
+async function tryLogin(username, password) {
+    try {
+        loginUser(username.value, password.value);
+    } catch(error) {
+        console.error(error);
+    }
+}
+
+async function trySignUp(email, username, password) {
+    try {
+        postUser(email.value, username.value, password.value);
+    } catch(error) {
+        console.error(error);
     }
 }
 
