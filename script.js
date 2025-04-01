@@ -342,9 +342,7 @@ closeSignUpDialogBtn.addEventListener("click", () => {
     signUpDialog.close();
 });
 
-submitLoginBtn.addEventListener("click", (event) => {
-    tryLogin();
-});
+submitLoginBtn.addEventListener("click", tryLogin);
 
 
 submitSignUpBtn.addEventListener("click", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput), false);
