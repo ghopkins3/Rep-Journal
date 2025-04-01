@@ -343,10 +343,9 @@ closeSignUpDialogBtn.addEventListener("click", () => {
 });
 
 submitLoginBtn.addEventListener("click", tryLogin);
-
-
-submitSignUpBtn.addEventListener("click", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput), false);
-submitSignUpBtn.addEventListener("touchstart", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput), false);
+submitLoginBtn.addEventListener("touchstart", tryLogin);
+submitSignUpBtn.addEventListener("click", trySignUp);
+submitSignUpBtn.addEventListener("touchstart", trySignUp);
 
 async function createExerciseRow() {
     if(!userData.data.user) {
@@ -931,9 +930,9 @@ async function tryLogin() {
     }
 }
 
-async function trySignUp(email, username, password) {
+async function trySignUp() {
     try {
-        await postUser(email.value, username.value, password.value);
+        await postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
     } catch(error) {
         console.error(error);
     }
