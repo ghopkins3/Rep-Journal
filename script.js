@@ -340,8 +340,7 @@ closeSignUpDialogBtn.addEventListener("click", () => {
     signUpDialog.close();
 });
 
-submitLoginBtn.addEventListener("click", (event) => {
-    alert("clicked!");
+submitLoginBtn.addEventListener("click", "touchstart", (event) => {
     try {
         loginUser(loginUsernameInput.value, loginPasswordInput.value);
     } catch(error) {
@@ -349,17 +348,7 @@ submitLoginBtn.addEventListener("click", (event) => {
     }
 });
 
-submitLoginBtn.addEventListener("touchstart", (event) => {
-    alert("touch started.");
-    try {
-        loginUser(loginUsernameInput.value, loginPasswordInput.value);
-    } catch(error) {
-        console.error(error);
-    }
-});
-
-submitSignUpBtn.addEventListener("click", (event) => {
-    alert("clicked!");
+submitSignUpBtn.addEventListener("click", "touchstart", (event) => {
     try {
         postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
     } catch(error) {
@@ -368,15 +357,6 @@ submitSignUpBtn.addEventListener("click", (event) => {
 
 });
 
-submitSignUpBtn.addEventListener("touchstart", (event) => {
-    alert("touch started.");
-    try {
-        postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
-    } catch(error) {
-        console.error(error);
-    }
-
-});
 
 async function createExerciseRow() {
     if(!userData.data.user) {
