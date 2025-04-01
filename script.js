@@ -342,8 +342,9 @@ closeSignUpDialogBtn.addEventListener("click", () => {
     signUpDialog.close();
 });
 
-submitLoginBtn.addEventListener("click", tryLogin(loginUsernameInput, loginPasswordInput), false);
-submitLoginBtn.addEventListener("touchstart", tryLogin(loginUsernameInput, loginPasswordInput), false);
+submitLoginBtn.addEventListener("click", (event) => {
+    tryLogin();
+});
 
 
 submitSignUpBtn.addEventListener("click", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput), false);
@@ -924,9 +925,9 @@ async function logout() {
     }
 }
 
-async function tryLogin(username, password) {
+async function tryLogin() {
     try {
-        loginUser(username.value, password.value);
+        await loginUser(loginUsernameInput.value, loginPasswordInput.value);
     } catch(error) {
         console.error(error);
     }
@@ -934,7 +935,7 @@ async function tryLogin(username, password) {
 
 async function trySignUp(email, username, password) {
     try {
-        postUser(email.value, username.value, password.value);
+        await postUser(email.value, username.value, password.value);
     } catch(error) {
         console.error(error);
     }
