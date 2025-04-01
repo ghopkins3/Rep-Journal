@@ -98,6 +98,8 @@ async function checkWorkoutOnDate(date, authToken) {
 }
 
 document.addEventListener("click", (event) => {
+    console.log(event.target);
+    console.log(event.target.getAttribute("classname"));
     if(event.target.id === "exercise-search" || event.target.getAttribute("className") === "entered-exercise-name") {
         event.target.addEventListener("keydown", (event) => {
             let exerciseNamePattern = /^[a-zA-Z\s]$/;
