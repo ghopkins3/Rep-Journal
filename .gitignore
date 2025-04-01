@@ -1,4 +1,3 @@
 # ignore .env
 .env
 .vercel
-.frontendSupabaseClient.js
