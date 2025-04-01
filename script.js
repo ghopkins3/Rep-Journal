@@ -1,5 +1,5 @@
-import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "../utils/formatUtils.js";
-import { supabase } from "../lib/frontendSupabaseClient.js";
+import { convertToDatabaseFormat, convertToDisplayFormat, toTitleCase } from "./utils/formatUtils.js";
+import { supabase } from "./lib/frontendSupabaseClient.js";
 
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
@@ -286,7 +286,7 @@ document.addEventListener("keydown", (event) => {
 addExerciseLink.addEventListener("click", () => {
     appendExerciseFormToDOM();
     document.querySelector("#exercise-search").value = "";
-    document.querySelector("#sets-input").value = "";
+    document.querySelector("#sets-input").value = "1";
     document.querySelector("#reps-input").value = "";
     document.querySelector("#weight-input").value = ""; 
 });
