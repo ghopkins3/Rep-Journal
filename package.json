@@ -16,7 +16,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "postgres": "^3.4.5",
-    "reload": "^3.3.0"
+    "reload": "^2.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
