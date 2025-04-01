@@ -342,12 +342,12 @@ closeSignUpDialogBtn.addEventListener("click", () => {
     signUpDialog.close();
 });
 
-submitLoginBtn.addEventListener("click", tryLogin(loginUsernameInput, loginPasswordInput));
-submitLoginBtn.addEventListener("touchstart", tryLogin(loginUsernameInput, loginPasswordInput));
+submitLoginBtn.addEventListener("click", tryLogin(loginUsernameInput, loginPasswordInput), false);
+submitLoginBtn.addEventListener("touchstart", tryLogin(loginUsernameInput, loginPasswordInput), false);
 
 
-submitSignUpBtn.addEventListener("click", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput));
-submitSignUpBtn.addEventListener("touchstart", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput));
+submitSignUpBtn.addEventListener("click", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput), false);
+submitSignUpBtn.addEventListener("touchstart", trySignUp(signupEmailInput, signupUsernameInput, signupPasswordInput), false);
 
 async function createExerciseRow() {
     if(!userData.data.user) {
