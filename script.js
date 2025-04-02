@@ -418,7 +418,7 @@ async function createExerciseRow() {
         exerciseWeightCell.setAttribute("data-cell", "weight");
 
         mobileDeleteBtn.textContent = "X";
-        mobileEditBtn.textContent = "Edit";
+        mobileEditBtn.textContent = "E";
         mobileHideBtn.textContent = "-";
         editButton.textContent = "Edit";
         saveButton.textContent = "Save";
@@ -498,8 +498,8 @@ async function populateTableFromData(workoutDate, authToken) {
             exerciseWeightCell.setAttribute("className", "entered-number");
             exerciseWeightCell.setAttribute("data-cell", "weight");
 
-            mobileDeleteBtn.textContent = "Del";
-            mobileEditBtn.textContent = "Edit";
+            mobileDeleteBtn.textContent = "X";
+            mobileEditBtn.textContent = "E";
 
             editButton.textContent = "Edit";
             saveButton.textContent = "Save";
