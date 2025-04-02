@@ -417,7 +417,7 @@ async function createExerciseRow() {
         exerciseWeightCell.setAttribute("className", "entered-number");
         exerciseWeightCell.setAttribute("data-cell", "weight");
 
-        mobileDeleteBtn.textContent = "Del";
+        mobileDeleteBtn.textContent = "X";
         mobileEditBtn.textContent = "Edit";
         mobileHideBtn.textContent = "-";
         editButton.textContent = "Edit";
