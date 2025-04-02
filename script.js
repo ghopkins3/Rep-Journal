@@ -26,11 +26,6 @@ const signupPasswordInput = signUpDialog.querySelector(".password-input");
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
 
-const deleteIcon = new Image(100, 200);
-deleteIcon.src = "images/delete_icon.png";
-const editIcon = new Image(100, 200);
-editIcon.src = "images/edit_1.png";
-
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
@@ -182,6 +177,7 @@ document.addEventListener("click", (event) => {
             event.preventDefault();
         }
     } else if(event.target.id === "mobile-hide-button") {
+        console.log("hide status: ", event.target.getAttribute("src"));
         let mobileRowContent = event.target.parentNode.parentNode.children;
         let targetRowDataID = event.target.parentNode.parentNode.getAttribute("data-id");
 
@@ -189,6 +185,12 @@ document.addEventListener("click", (event) => {
             event.target.textContent = "+";
         } else if(event.target.textContent === "+") {
             event.target.textContent = "-";
+        }
+
+        if(event.target.getAttribute("src") === "images/arrow_dropup.png") {
+            event.target.setAttribute("src", "images/arrow_dropdown.png");
+        } else if(event.target.getAttribute("src") === "images/arrow_dropdown.png") {
+            event.target.setAttribute("src", "images/arrow_dropup.png");
         }
 
         for(let i = 1; i < mobileRowContent.length; i++) {
@@ -199,11 +201,6 @@ document.addEventListener("click", (event) => {
             localStorage.setItem(targetRowDataID, mobileRowContent[i].classList.contains("hidden"));
         }
     } else if(event.target.id === "mobile-edit-button") {
-        
-        let testOne = event.target.parentNode.parentNode.children[1];
-        for(let i = 1; i < 5; i++) {
-            
-        }
         
         rowID = event.target.parentNode.parentNode.getAttribute("data-id");
 
@@ -225,8 +222,8 @@ document.addEventListener("click", (event) => {
             localStorage.setItem(targetRowDataID, "false");
         }
 
-        if(event.target.parentNode.children[2].textContent === "+") {
-            event.target.parentNode.children[2].textContent = "-";
+        if(event.target.parentNode.children[2].src === "images/arrow_dropdown") {
+            event.target.parentNode.children[2].src = "images/arrow_dropup";
         }
 
     } else if(event.target.id === "save-entered-data") {
@@ -380,7 +377,7 @@ async function createExerciseRow() {
         let mobileHideBtn = document.createElement("img");
 
         mobileDeleteBtn.src = "images/delete_icon.png";
-        mobileEditBtn.src = "images/edit_1.png";
+        mobileEditBtn.src = "images/edit.png";
         mobileHideBtn.src = "images/arrow_dropup.png";
 
         mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
@@ -426,6 +423,9 @@ async function createExerciseRow() {
         exerciseWeightCell.setAttribute("className", "entered-number");
         exerciseWeightCell.setAttribute("data-cell", "weight");
 
+        mobileDeleteBtn.textContent = "mobile-delete";
+        mobileEditBtn.textContent = "mobile-edit";
+        mobileHideBtn.textContent = "-";
         editButton.textContent = "Edit";
         saveButton.textContent = "Save";
         deleteButton.textContent = "X";
@@ -471,7 +471,7 @@ async function populateTableFromData(workoutDate, authToken) {
             mobileHideBtnCell.appendChild(mobileHideBtn);
 
             mobileDeleteBtn.src = "images/delete_icon.png";
-            mobileEditBtn.src = "images/edit_1.png";
+            mobileEditBtn.src = "images/edit.png";
 
             editRowCell.className = "edit-button-cell";
 
@@ -507,6 +507,8 @@ async function populateTableFromData(workoutDate, authToken) {
             exerciseWeightCell.setAttribute("className", "entered-number");
             exerciseWeightCell.setAttribute("data-cell", "weight");
 
+            mobileDeleteBtn.textContent = "mobile-delete";
+            mobileEditBtn.textContent = "mobile-edit";
             editButton.textContent = "Edit";
             saveButton.textContent = "Save";
             deleteButton.textContent = "X";
@@ -517,9 +519,11 @@ async function populateTableFromData(workoutDate, authToken) {
                                     && (cell !== cell.parentNode.firstElementChild)
                                     && (cell !== cell.parentNode.firstElementChild.nextElementSibling)) {
                     cell.classList.add("hidden");
-                    mobileHideBtn.src = "images/arrow_dropdown.png";
+                    mobileHideBtn.textContent = "+";
+                    mobileHideBtn.setAttribute("src", "images/arrow_dropdown.png");
                 } else {
-                    mobileHideBtn.src = "images/arrow_dropup.png";
+                    mobileHideBtn.textContent = "-";
+                    mobileHideBtn.setAttribute("src", "images/arrow_dropup.png");
                 }
             }
         });
