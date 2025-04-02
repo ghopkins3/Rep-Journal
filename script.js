@@ -402,7 +402,6 @@ async function createExerciseRow() {
 
         exerciseNameCell.textContent = convertToDisplayFormat(exerciseNameInput.value);
         exerciseNameCell.setAttribute("className", "entered-exercise-name");
-        exerciseNameCell.setAttribute("data-cell", "name");
 
 
         exerciseSetsCell.textContent = exerciseSetsInput.value;
@@ -484,7 +483,6 @@ async function populateTableFromData(workoutDate, authToken) {
         
             exerciseNameCell.textContent = convertToDisplayFormat(exercise.exercise_name);
             exerciseNameCell.setAttribute("className", "entered-exercise-name");
-            exerciseNameCell.setAttribute("data-cell", "name");
 
             exerciseSetsCell.textContent = exercise.sets[0].amount_of_sets;
             exerciseSetsCell.setAttribute("className", "entered-number");
