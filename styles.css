@@ -397,7 +397,7 @@ footer {
         padding-left: 1rem;
     }
 
-    td::before {
+    td::before:not(first-child) {
         content: attr(data-cell) ": ";
         font-weight: 700;
         text-transform: capitalize;
