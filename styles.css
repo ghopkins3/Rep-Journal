@@ -414,14 +414,17 @@ footer {
     #mobile-delete-button {
         margin-left: 13rem;
         width: 1.75rem;
+        filter: invert(100%);
     }
 
     #mobile-edit-button {
         width: 1.75rem;
+        filter: invert(100%);
     }
 
     #mobile-hide-button {
         width: 1.75rem;
+        filter: invert(100%);
     }
 
     .delete-button-cell {

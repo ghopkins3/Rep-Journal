@@ -26,6 +26,11 @@ const signupPasswordInput = signUpDialog.querySelector(".password-input");
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
 
+const deleteIcon = new Image(100, 200);
+deleteIcon.src = "images/delete_icon.png";
+const editIcon = new Image(100, 200);
+editIcon.src = "images/edit_1.png";
+
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
@@ -370,9 +375,13 @@ async function createExerciseRow() {
 
         mobileHideBtnCell.className = "mobile-hide-button-cell";
 
-        let mobileDeleteBtn = document.createElement("button");
-        let mobileEditBtn = document.createElement("button");   
-        let mobileHideBtn = document.createElement("button");
+        let mobileDeleteBtn = document.createElement("img");
+        let mobileEditBtn = document.createElement("img");   
+        let mobileHideBtn = document.createElement("img");
+
+        mobileDeleteBtn.src = "images/delete_icon.png";
+        mobileEditBtn.src = "images/edit_1.png";
+        mobileHideBtn.src = "images/arrow_dropup.png";
 
         mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
         mobileEditBtn.setAttribute("id", "mobile-edit-button");
@@ -417,9 +426,6 @@ async function createExerciseRow() {
         exerciseWeightCell.setAttribute("className", "entered-number");
         exerciseWeightCell.setAttribute("data-cell", "weight");
 
-        mobileDeleteBtn.textContent = "X";
-        mobileEditBtn.textContent = "E";
-        mobileHideBtn.textContent = "-";
         editButton.textContent = "Edit";
         saveButton.textContent = "Save";
         deleteButton.textContent = "X";
@@ -452,9 +458,9 @@ async function populateTableFromData(workoutDate, authToken) {
 
             mobileHideBtnCell.className = "mobile-hide-button-cell";
 
-            let mobileDeleteBtn = document.createElement("button");
-            let mobileEditBtn = document.createElement("button");   
-            let mobileHideBtn = document.createElement("button");
+            let mobileDeleteBtn = document.createElement("img");
+            let mobileEditBtn = document.createElement("img");   
+            let mobileHideBtn = document.createElement("img");
 
             mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
             mobileEditBtn.setAttribute("id", "mobile-edit-button");
@@ -463,6 +469,9 @@ async function populateTableFromData(workoutDate, authToken) {
             mobileHideBtnCell.appendChild(mobileDeleteBtn);
             mobileHideBtnCell.appendChild(mobileEditBtn);
             mobileHideBtnCell.appendChild(mobileHideBtn);
+
+            mobileDeleteBtn.src = "images/delete_icon.png";
+            mobileEditBtn.src = "images/edit_1.png";
 
             editRowCell.className = "edit-button-cell";
 
@@ -498,9 +507,6 @@ async function populateTableFromData(workoutDate, authToken) {
             exerciseWeightCell.setAttribute("className", "entered-number");
             exerciseWeightCell.setAttribute("data-cell", "weight");
 
-            mobileDeleteBtn.textContent = "X";
-            mobileEditBtn.textContent = "E";
-
             editButton.textContent = "Edit";
             saveButton.textContent = "Save";
             deleteButton.textContent = "X";
@@ -511,9 +517,9 @@ async function populateTableFromData(workoutDate, authToken) {
                                     && (cell !== cell.parentNode.firstElementChild)
                                     && (cell !== cell.parentNode.firstElementChild.nextElementSibling)) {
                     cell.classList.add("hidden");
-                    mobileHideBtn.textContent = "+";
+                    mobileHideBtn.src = "images/arrow_dropdown.png";
                 } else {
-                    mobileHideBtn.textContent = "-";
+                    mobileHideBtn.src = "images/arrow_dropup.png";
                 }
             }
         });
@@ -959,5 +965,5 @@ const pageAccessedByReload = (
 );
 
 if(pageAccessedByReload) {
-    alert("refreshed");
+    console.log(await supabase.auth.getSession());
 }
