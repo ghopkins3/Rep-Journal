@@ -264,7 +264,7 @@ footer {
 
     .strengh-header-container, h3 {
         margin-top: 1rem;
-        margin-left: 1rem;
+        text-align: center;
     }
 
     .add-exercise {
@@ -403,10 +403,6 @@ footer {
     td:nth-child(1) {
         padding-top: 0.5rem;
     }
-    
-    td:nth-child(5) {
-        border: ;
-    }
 
     td::before {
         content: attr(data-cell) ": ";
@@ -426,12 +422,14 @@ footer {
         position: absolute;
         margin-left: 14.5rem;
         width: 1.75rem;
+        margin-top: -0.3rem;
         filter: invert(100%);
     }
 
     #mobile-hide-button {
         position: absolute;
         margin-left: 16.5rem;
+        margin-top: -0.3rem;
         width: 1.75rem;
         filter: invert(100%);
     }
