@@ -392,9 +392,15 @@ footer {
         display: block;     
         text-wrap: wrap;   
         word-wrap: break-word;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
         padding-left: 1rem;
+    }
+
+    td:not(:nth-child(1)) {
+        padding-bottom: 0.5rem;
+    }
+
+    td:nth-child(1) {
+        padding-top: 0.5rem;
     }
 
     td::before {
