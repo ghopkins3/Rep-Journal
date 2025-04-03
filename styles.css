@@ -403,6 +403,10 @@ footer {
     td:nth-child(1) {
         padding-top: 0.5rem;
     }
+    
+    td:nth-child(5) {
+        border: ;
+    }
 
     td::before {
         content: attr(data-cell) ": ";
@@ -418,18 +422,24 @@ footer {
         display: none;
     }
 
-    #mobile-delete-button {
-        margin-left: 13rem;
-        width: 1.75rem;
-        filter: invert(100%);
-    }
-
     #mobile-edit-button {
+        position: absolute;
+        margin-left: 14.5rem;
         width: 1.75rem;
         filter: invert(100%);
     }
 
     #mobile-hide-button {
+        position: absolute;
+        margin-left: 16.5rem;
+        width: 1.75rem;
+        filter: invert(100%);
+    }
+
+    #mobile-delete-button {
+        position: absolute;
+        margin-left: 16.5rem;
+        margin-top: 4.5rem;
         width: 1.75rem;
         filter: invert(100%);
     }

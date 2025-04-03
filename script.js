@@ -180,18 +180,16 @@ document.addEventListener("click", (event) => {
         console.log("hide status: ", event.target.getAttribute("src"));
         let mobileRowContent = event.target.parentNode.parentNode.children;
         let targetRowDataID = event.target.parentNode.parentNode.getAttribute("data-id");
+        console.log(event.target.parentNode.lastElementChild);
 
-        if(event.target.textContent === "-") {
-            event.target.textContent = "+";
-        } else if(event.target.textContent === "+") {
-            event.target.textContent = "-";
-        }
 
         if(event.target.getAttribute("src") === "images/arrow_dropup.png") {
             event.target.setAttribute("src", "images/arrow_dropdown.png");
         } else if(event.target.getAttribute("src") === "images/arrow_dropdown.png") {
             event.target.setAttribute("src", "images/arrow_dropup.png");
         }
+
+        event.target.parentNode.lastElementChild.classList.toggle("hidden");
 
         for(let i = 1; i < mobileRowContent.length; i++) {
             if(mobileRowContent[i].getAttribute("data-cell") !== "name") {
@@ -214,17 +212,19 @@ document.addEventListener("click", (event) => {
         let targetRowDataID = event.target.parentNode.parentNode.getAttribute("data-id");
         
         for(let i = 1; i < mobileRowContent.length; i++) {
-
             if(mobileRowContent[i].getAttribute("class") === "hidden") {
                 mobileRowContent[i].classList.remove("hidden");
             }
-        
             localStorage.setItem(targetRowDataID, "false");
         }
 
-        if(event.target.parentNode.children[2].src === "images/arrow_dropdown") {
-            event.target.parentNode.children[2].src = "images/arrow_dropup";
+        console.log("target:", event.target.parentNode.children[1]);
+
+        if(event.target.parentNode.children[1].getAttribute("src") === "images/arrow_dropdown.png") {
+            event.target.parentNode.children[1].src = "images/arrow_dropup.png";
+            event.target.parentNode.children[2].classList.remove("hidden");
         }
+
 
     } else if(event.target.id === "save-entered-data") {
         const exerciseInput = document.querySelector("#exercise-search").value;
@@ -384,9 +384,9 @@ async function createExerciseRow() {
         mobileEditBtn.setAttribute("id", "mobile-edit-button");
         mobileHideBtn.setAttribute("id", "mobile-hide-button");
 
-        mobileHideBtnCell.appendChild(mobileDeleteBtn);
         mobileHideBtnCell.appendChild(mobileEditBtn);
         mobileHideBtnCell.appendChild(mobileHideBtn);
+        mobileHideBtnCell.appendChild(mobileDeleteBtn);
 
         editRowCell.className = "edit-button-cell";
 
@@ -466,9 +466,9 @@ async function populateTableFromData(workoutDate, authToken) {
             mobileEditBtn.setAttribute("id", "mobile-edit-button");
             mobileHideBtn.setAttribute("id", "mobile-hide-button");
 
-            mobileHideBtnCell.appendChild(mobileDeleteBtn);
             mobileHideBtnCell.appendChild(mobileEditBtn);
             mobileHideBtnCell.appendChild(mobileHideBtn);
+            mobileHideBtnCell.appendChild(mobileDeleteBtn);
 
             mobileDeleteBtn.src = "images/delete_icon.png";
             mobileEditBtn.src = "images/edit.png";
@@ -521,9 +521,11 @@ async function populateTableFromData(workoutDate, authToken) {
                     cell.classList.add("hidden");
                     mobileHideBtn.textContent = "+";
                     mobileHideBtn.setAttribute("src", "images/arrow_dropdown.png");
+                    mobileDeleteBtn.classList.add("hidden");
                 } else {
                     mobileHideBtn.textContent = "-";
                     mobileHideBtn.setAttribute("src", "images/arrow_dropup.png");
+                    mobileDeleteBtn.classList.remove("hidden");
                 }
             }
         });
