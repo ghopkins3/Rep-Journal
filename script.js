@@ -18,6 +18,7 @@ const signUpDialog = document.querySelector(".sign-up-dialog");
 const closeSignUpDialogBtn = document.querySelector(".close-signup-dialog-button");
 const submitLoginBtn = document.querySelector(".submit-login-button");
 const submitSignUpBtn = document.querySelector(".submit-sign-up-button");
+const collapseOrExpandBtn = document.querySelector(".collapse-expand-button");
 
 const signupEmailInput = signUpDialog.querySelector(".email-input");
 const signupUsernameInput = signUpDialog.querySelector(".username-input");
@@ -98,8 +99,11 @@ async function checkWorkoutOnDate(date, authToken) {
 }
 
 document.addEventListener("click", (event) => {
-    console.log(event.target);
-    console.log(event.target.getAttribute("classname"));
+    // console.log(event.target);
+    // console.log(event.target.parentNode.parentNode.children);
+    // console.log(event.target.parentNode.children);
+    // console.log(event.target.parentNode.children[2]);
+    // console.log(event.target.parentNode.children[2].classList);
     if(event.target.id === "exercise-search" || event.target.getAttribute("className") === "entered-exercise-name") {
         event.target.addEventListener("keydown", (event) => {
             let exerciseNamePattern = /^[a-zA-Z\s]$/;
@@ -348,6 +352,18 @@ submitLoginBtn.addEventListener("click", tryLogin);
 submitLoginBtn.addEventListener("touchstart", tryLogin);
 submitSignUpBtn.addEventListener("click", trySignUp);
 submitSignUpBtn.addEventListener("touchstart", trySignUp);
+
+collapseOrExpandBtn.addEventListener("click", (event) => {
+    console.log(exerciseTableBody.children);
+    let arr = exerciseTableBody.children;
+    console.log(arr);
+    for(let item of arr) {
+        
+        if(item.children[2].getAttribute("class") === "hidden") {
+            console.log("hidden");
+        }
+    }
+}); 
 
 async function createExerciseRow() {
     if(!userData.data.user) {
