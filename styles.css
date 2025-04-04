@@ -265,10 +265,11 @@ footer {
     .strengh-header-container, h3 {
         margin-top: 1rem;
         text-align: center;
+        display: none;
     }
 
     .add-exercise {
-        margin-top: 1rem;
+        margin-top: 2rem;
         justify-content: center;
         margin-right: 1rem;
         margin-left: 3rem;
@@ -364,12 +365,17 @@ footer {
         border: 2px solid black;
     }
 
+    .show-hide-toggle-container {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+
     .exercise-table-container {
         margin: auto;
         min-width: 20rem;
         width: 20rem;
         max-width: 20rem;
-        margin-top: 2rem;
         margin-bottom: 5rem;
     }
     
