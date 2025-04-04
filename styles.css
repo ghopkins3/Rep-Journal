@@ -129,6 +129,10 @@ footer {
         left: 30rem;
     }
 
+    .show-hide-toggle-container {
+        display: none;
+    }
+
     #add-entered-data {
         float: left;
         width: 4rem;
