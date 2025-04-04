@@ -406,6 +406,10 @@ footer {
         padding-left: 1rem;
     }
 
+    td:nth-child(1)::before {
+        display: none;
+    }
+
     td:not(:nth-child(1)) {
         padding-bottom: 0.5rem;
     }

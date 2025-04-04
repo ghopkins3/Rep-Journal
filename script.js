@@ -183,6 +183,7 @@ document.addEventListener("click", (event) => {
     } else if(event.target.id === "mobile-hide-button") {
         console.log("hide status: ", event.target.getAttribute("src"));
         let mobileRowContent = event.target.parentNode.parentNode.children;
+        console.log(event.target.parentNode.parentNode.children);
         let targetRowDataID = event.target.parentNode.parentNode.getAttribute("data-id");
         console.log(event.target.parentNode.lastElementChild);
 
@@ -354,14 +355,32 @@ submitSignUpBtn.addEventListener("click", trySignUp);
 submitSignUpBtn.addEventListener("touchstart", trySignUp);
 
 collapseOrExpandBtn.addEventListener("click", (event) => {
-    console.log(exerciseTableBody.children);
     let arr = exerciseTableBody.children;
-    console.log(arr);
+    let arrCount = new Array();
+
     for(let item of arr) {
         
         if(item.children[2].getAttribute("class") === "hidden") {
             console.log("hidden");
+            arrCount.push(item.children[2])
+            console.log(arrCount);
         }
+    }
+
+    if(arrCount.length !== arr.length) {
+        console.log("here");
+        console.log(arrCount);
+        for(let item of arr) {
+            for(let child of item.children) {
+                if(child.getAttribute("data-cell") !== "name" && child.getAttribute("className") !== "mobile-hide-button-cell") {
+                    if(!child.classList.contains("hidden")) {
+                        child.classList.toggle("hidden");
+                    }
+                }
+            }
+        }
+    } else if(arrCount.length === arr) {
+
     }
 }); 
 
@@ -386,7 +405,7 @@ async function createExerciseRow() {
         let saveRowCell = newRow.insertCell(6);
         let deleteRowCell = newRow.insertCell(7);
 
-        mobileHideBtnCell.className = "mobile-hide-button-cell";
+        mobileHideBtnCell.setAttribute("className", "mobile-hide-button-cell");
 
         let mobileDeleteBtn = document.createElement("img");
         let mobileEditBtn = document.createElement("img");   
@@ -472,7 +491,7 @@ async function populateTableFromData(workoutDate, authToken) {
             let saveRowCell = newRow.insertCell(6);
             let deleteRowCell = newRow.insertCell(7);
 
-            mobileHideBtnCell.className = "mobile-hide-button-cell";
+            mobileHideBtnCell.setAttribute("className", "mobile-hide-button-cell");
 
             let mobileDeleteBtn = document.createElement("img");
             let mobileEditBtn = document.createElement("img");   
