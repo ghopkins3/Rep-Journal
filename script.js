@@ -35,6 +35,7 @@ if(hiddenItemCount === undefined || hiddenItemCount.length === 0) {
     collapseOrExpandBtn.textContent = "Expand All";
 }
 
+let screenSize = window.innerWidth;
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
@@ -523,7 +524,9 @@ async function populateTableFromData(workoutDate, authToken) {
         exerciseData.forEach(exercise => {
             let newRow = exerciseTableBody.insertRow();
             newRow.setAttribute("data-id", exercise.exercise_id);
-    
+
+
+            
             let mobileHideBtnCell = newRow.insertCell(0);
             let exerciseNameCell = newRow.insertCell(1);
             let exerciseSetsCell = newRow.insertCell(2);
@@ -1046,12 +1049,3 @@ const pageAccessedByReload = (
         .map((nav) => nav.type)
         .includes('reload')
 );
-
-if(pageAccessedByReload) {
-    let userData = await supabase.auth.getUser();
-    if(userData.data.user) {
-        let userSession = await supabase.auth.getSession();
-        userAccessToken = userSession.data.session.access_token;
-        userID = userSession.data.session.user.id;
-    }
-}
