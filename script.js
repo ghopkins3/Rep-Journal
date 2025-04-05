@@ -1049,7 +1049,7 @@ const pageAccessedByReload = (
 if(pageAccessedByReload) {
     userData = await supabase.auth.getUser();
     if(userData.data.user) {
-        userSession = await supabase.auth.getSession();
+        let userSession = await supabase.auth.getSession();
         userAccessToken = userSession.data.session.access_token;
         userID = userSession.data.session.user.id;
     }
