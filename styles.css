@@ -215,6 +215,18 @@ footer {
     .mobile-hide-button-cell {
         display: none;
     }
+
+    #mobile-delete-button {
+        display: none;
+    }
+
+    #mobile-hide-button {
+        display: none;
+    }
+
+    #mobile-edit-button {
+        display: none;
+    }
     
     .delete-button-cell {
         border: none;
