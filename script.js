@@ -328,7 +328,7 @@ loginBtn.addEventListener("click", () => {
     }
 });
 
-signUpBtn.addEventListener("click", () => {
+signUpBtn.addEventListener("click", (event) => {
     if(loginBtn.textContent === "Log In") {
         signUpDialog.showModal();
     } else if(loginBtn.textContent === "Log Out") {
@@ -358,26 +358,25 @@ collapseOrExpandBtn.addEventListener("click", (event) => {
     let arr = exerciseTableBody.children;
     let arrCount = new Array();
 
-    for(let item of arr) {
-        
-        if(item.children[2].getAttribute("class") === "hidden") {
-            console.log("hidden");
-            arrCount.push(item.children[2])
-            console.log(arrCount);
-        }
-    }
-
     if(arrCount.length !== arr.length) {
         console.log("here");
         console.log(arrCount);
         for(let item of arr) {
             for(let child of item.children) {
-                if(child.getAttribute("data-cell") !== "name" && child.getAttribute("className") !== "mobile-hide-button-cell") {
-                    if(!child.classList.contains("hidden")) {
-                        child.classList.toggle("hidden");
+                if(child.getAttribute("data-cell") !== "name" && child.getAttribute("className") !== "mobile-hide-button-cell" && !child.classList.contains("hidden")) {
+                    child.classList.add("hidden");
+                } else if(child.getAttribute("className") === "mobile-hide-button-cell") {
+                    let buttons = child.children;
+                    for(let btn of buttons) {
+                        if(btn.getAttribute("id") === "mobile-hide-button") {
+                            btn.setAttribute("src", "images/arrow_dropdown.png");
+                        } else if(btn.getAttribute("id") === "mobile-delete-button") {
+                            btn.classList.add("hidden");
+                        }
                     }
                 }
             }
+            localStorage.setItem(item.getAttribute("data-id"), item.children[2].classList.contains("hidden"));
         }
     } else if(arrCount.length === arr) {
 
