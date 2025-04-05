@@ -215,11 +215,6 @@ footer {
     .mobile-hide-button-cell {
         display: none;
     }
-
-    #mobile-delete-button, #mobile-hide-button, #mobile-edit-button {
-        position: fixed;
-        display: none;
-    }
     
     .delete-button-cell {
         border: none;

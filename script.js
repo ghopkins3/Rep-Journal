@@ -515,6 +515,7 @@ async function createExerciseRow() {
 
 async function populateTableFromData(workoutDate, authToken) {
     if(!userData.data.user) {
+        alert("user not detected");
         return;
     } else {
         const exerciseData = await getExerciseDataByWorkoutID(workoutDate, authToken);
