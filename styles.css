@@ -216,15 +216,8 @@ footer {
         display: none;
     }
 
-    #mobile-delete-button {
-        display: none;
-    }
-
-    #mobile-hide-button {
-        display: none;
-    }
-
-    #mobile-edit-button {
+    #mobile-delete-button, #mobile-hide-button, #mobile-edit-button {
+        position: fixed;
         display: none;
     }
     

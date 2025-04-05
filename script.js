@@ -1047,7 +1047,7 @@ const pageAccessedByReload = (
 );
 
 if(pageAccessedByReload) {
-    userData = await supabase.auth.getUser();
+    let userData = await supabase.auth.getUser();
     if(userData.data.user) {
         let userSession = await supabase.auth.getSession();
         userAccessToken = userSession.data.session.access_token;
