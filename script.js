@@ -53,9 +53,9 @@ supabase.auth.onAuthStateChange((event, session) => {
     }
 });
 
-const userData = await supabase.auth.getUser();
+let userData = await supabase.auth.getUser();
 if(userData.data.user) {
-    const userSession = await supabase.auth.getSession();
+    let userSession = await supabase.auth.getSession();
     userAccessToken = userSession.data.session.access_token;
     userID = userSession.data.session.user.id;
 }
@@ -1045,3 +1045,12 @@ const pageAccessedByReload = (
         .map((nav) => nav.type)
         .includes('reload')
 );
+
+if(pageAccessedByReload) {
+    userData = await supabase.auth.getUser();
+    if(userData.data.user) {
+        userSession = await supabase.auth.getSession();
+        userAccessToken = userSession.data.session.access_token;
+        userID = userSession.data.session.user.id;
+    }
+}
