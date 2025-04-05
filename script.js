@@ -29,8 +29,6 @@ const loginPasswordInput = loginDialog.querySelector(".password-input");
 
 let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
 
-const test = 1;
-
 if(hiddenItemCount === undefined || hiddenItemCount.length === 0) {
     collapseOrExpandBtn.textContent = "Collapse All";
 } else {
