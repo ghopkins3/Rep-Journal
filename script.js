@@ -53,13 +53,11 @@ supabase.auth.onAuthStateChange((event, session) => {
     }
 });
 
-
-
 const userData = await supabase.auth.getUser();
 if(userData.data.user) {
     const userSession = await supabase.auth.getSession();
     userAccessToken = userSession.data.session.access_token;
-    userID = userData.data.user.id;
+    userID = userSession.data.session.user.id;
 }
 
 if(dateSplitOnSlash[0] < 10) {
@@ -1047,7 +1045,3 @@ const pageAccessedByReload = (
         .map((nav) => nav.type)
         .includes('reload')
 );
-
-if(pageAccessedByReload) {
-    console.log(await supabase.auth.getSession());
-}
