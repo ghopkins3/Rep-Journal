@@ -27,6 +27,14 @@ const signupPasswordInput = signUpDialog.querySelector(".password-input");
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
 
+let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
+
+if(hiddenItemCount === undefined || hiddenItemCount.length === 0) {
+    collapseOrExpandBtn.textContent = "Collapse All";
+} else {
+    collapseOrExpandBtn.textContent = "Expand All";
+}
+
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
@@ -44,6 +52,8 @@ supabase.auth.onAuthStateChange((event, session) => {
         loginBtn.textContent = "Log In";
     }
 });
+
+
 
 const userData = await supabase.auth.getUser();
 if(userData.data.user) {
@@ -355,16 +365,16 @@ submitSignUpBtn.addEventListener("click", trySignUp);
 submitSignUpBtn.addEventListener("touchstart", trySignUp);
 
 collapseOrExpandBtn.addEventListener("click", (event) => {
-    let arr = exerciseTableBody.children;
-    let arrCount = new Array();
+    let tableRows = exerciseTableBody.children;
 
-    if(arrCount.length !== arr.length) {
-        console.log("here");
-        console.log(arrCount);
-        for(let item of arr) {
+    if(hiddenItemCount.length !== tableRows.length) {
+        console.log("Collapsing...");
+    
+        for(let item of tableRows) {
             for(let child of item.children) {
                 if(child.getAttribute("data-cell") !== "name" && child.getAttribute("className") !== "mobile-hide-button-cell" && !child.classList.contains("hidden")) {
                     child.classList.add("hidden");
+
                 } else if(child.getAttribute("className") === "mobile-hide-button-cell") {
                     let buttons = child.children;
                     for(let btn of buttons) {
@@ -377,9 +387,43 @@ collapseOrExpandBtn.addEventListener("click", (event) => {
                 }
             }
             localStorage.setItem(item.getAttribute("data-id"), item.children[2].classList.contains("hidden"));
-        }
-    } else if(arrCount.length === arr) {
+            if(item.children[2].classList.contains("hidden")) {
+                hiddenItemCount.push(item);
+            }
 
+            localStorage.setItem("hiddenItemCount", JSON.stringify(hiddenItemCount));
+            collapseOrExpandBtn.textContent = "Expand All";
+            console.log(hiddenItemCount.length);
+        }
+    } else if(hiddenItemCount.length === tableRows.length) {
+        console.log("Expanding...");
+
+        for(let item of tableRows) {
+            for(let child of item.children) {
+                if(child.getAttribute("data-cell") !== "name" && child.getAttribute("className") !== "mobile-hide-button-cell" && child.classList.contains("hidden")) {
+                    child.classList.remove("hidden");
+
+                } else if(child.getAttribute("className") === "mobile-hide-button-cell") {
+                    let buttons = child.children;
+                    for(let btn of buttons) {
+                        if(btn.getAttribute("id") === "mobile-hide-button") {
+                            btn.setAttribute("src", "images/arrow_dropdown.png");
+                        } else if(btn.getAttribute("id") === "mobile-delete-button") {
+                            btn.classList.remove("hidden");
+                        }
+                    }
+                }
+            }
+            localStorage.setItem(item.getAttribute("data-id"), item.children[2].classList.contains("hidden"));
+            if(!item.children[2].classList.contains("hidden")) {
+                hiddenItemCount = hiddenItemCount.filter((item) => item !== item);
+            }
+
+            localStorage.setItem("hiddenItemCount", JSON.stringify(hiddenItemCount));
+            collapseOrExpandBtn.textContent = "Collapse All";
+            console.log(hiddenItemCount);
+            console.log(hiddenItemCount.length);
+        }
     }
 }); 
 
