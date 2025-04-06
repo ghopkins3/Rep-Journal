@@ -36,6 +36,7 @@ if(hiddenItemCount === undefined || hiddenItemCount.length === 0) {
 }
 
 let screenSize = window.innerWidth;
+
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
 let currentDate;
@@ -51,6 +52,8 @@ supabase.auth.onAuthStateChange((event, session) => {
     } else if(event === "SIGNED_OUT") {
         localStorage.clear();
         loginBtn.textContent = "Log In";
+    } else if(event === "TOKEN_REFRESHED") {
+        alert("token refreshed.");
     }
 });
 
@@ -429,41 +432,52 @@ collapseOrExpandBtn.addEventListener("click", (event) => {
 async function createExerciseRow() {
     if(!userData.data.user) {
         console.error("User not authenticated");
+        alert("user not detected");
         return;
     } else {
         
+        let isMobile = window.innerWidth < 601;
+        let columnOffset = 0;
+
         let exerciseNameInput = document.querySelector("#exercise-search");
         let exerciseSetsInput = document.querySelector("#sets-input");
         let exerciseRepsInput = document.querySelector("#reps-input");
         let exerciseWeightInput = document.querySelector("#weight-input");
 
         let newRow = exerciseTableBody.insertRow();
-        let mobileHideBtnCell = newRow.insertCell(0);
-        let exerciseNameCell = newRow.insertCell(1);
-        let exerciseSetsCell = newRow.insertCell(2);
-        let exerciseRepsCell = newRow.insertCell(3);
-        let exerciseWeightCell = newRow.insertCell(4);
-        let editRowCell = newRow.insertCell(5);
-        let saveRowCell = newRow.insertCell(6);
-        let deleteRowCell = newRow.insertCell(7);
 
-        mobileHideBtnCell.setAttribute("className", "mobile-hide-button-cell");
 
-        let mobileDeleteBtn = document.createElement("img");
-        let mobileEditBtn = document.createElement("img");   
-        let mobileHideBtn = document.createElement("img");
+        if(isMobile) {
+            let mobileHideBtnCell = newRow.insertCell(0);
 
-        mobileDeleteBtn.src = "images/delete_icon.png";
-        mobileEditBtn.src = "images/edit.png";
-        mobileHideBtn.src = "images/arrow_dropup.png";
+            columnOffset = 1;
 
-        mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
-        mobileEditBtn.setAttribute("id", "mobile-edit-button");
-        mobileHideBtn.setAttribute("id", "mobile-hide-button");
+            mobileHideBtnCell.setAttribute("className", "mobile-hide-button-cell");
 
-        mobileHideBtnCell.appendChild(mobileEditBtn);
-        mobileHideBtnCell.appendChild(mobileHideBtn);
-        mobileHideBtnCell.appendChild(mobileDeleteBtn);
+            let mobileDeleteBtn = document.createElement("img");
+            let mobileEditBtn = document.createElement("img");   
+            let mobileHideBtn = document.createElement("img");
+
+            mobileDeleteBtn.src = "images/delete_icon.png";
+            mobileEditBtn.src = "images/edit.png";
+            mobileHideBtn.src = "images/arrow_dropup.png";
+
+            mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
+            mobileEditBtn.setAttribute("id", "mobile-edit-button");
+            mobileHideBtn.setAttribute("id", "mobile-hide-button");
+
+            mobileHideBtnCell.appendChild(mobileEditBtn);
+            mobileHideBtnCell.appendChild(mobileHideBtn);
+            mobileHideBtnCell.appendChild(mobileDeleteBtn);
+        }
+
+        let exerciseNameCell = newRow.insertCell(0 + columnOffset);
+        let exerciseSetsCell = newRow.insertCell(1 + columnOffset);
+        let exerciseRepsCell = newRow.insertCell(2 + columnOffset);
+        let exerciseWeightCell = newRow.insertCell(3 + columnOffset );
+        let editRowCell = newRow.insertCell(4 + columnOffset);
+        let saveRowCell = newRow.insertCell(5 + columnOffset);
+        let deleteRowCell = newRow.insertCell(6 + columnOffset);
 
         editRowCell.className = "edit-button-cell";
 
@@ -500,9 +514,6 @@ async function createExerciseRow() {
         exerciseWeightCell.setAttribute("className", "entered-number");
         exerciseWeightCell.setAttribute("data-cell", "weight");
 
-        mobileDeleteBtn.textContent = "mobile-delete";
-        mobileEditBtn.textContent = "mobile-edit";
-        mobileHideBtn.textContent = "-";
         editButton.textContent = "Edit";
         saveButton.textContent = "Save";
         deleteButton.textContent = "X";
@@ -524,34 +535,58 @@ async function populateTableFromData(workoutDate, authToken) {
         exerciseData.forEach(exercise => {
             let newRow = exerciseTableBody.insertRow();
             newRow.setAttribute("data-id", exercise.exercise_id);
-
-
             
-            let mobileHideBtnCell = newRow.insertCell(0);
-            let exerciseNameCell = newRow.insertCell(1);
-            let exerciseSetsCell = newRow.insertCell(2);
-            let exerciseRepsCell = newRow.insertCell(3);
-            let exerciseWeightCell = newRow.insertCell(4);
-            let editRowCell = newRow.insertCell(5);
-            let saveRowCell = newRow.insertCell(6);
-            let deleteRowCell = newRow.insertCell(7);
+            let isMobile = window.innerWidth < 601;
+            let columnOffset = 0;
 
-            mobileHideBtnCell.setAttribute("className", "mobile-hide-button-cell");
 
-            let mobileDeleteBtn = document.createElement("img");
-            let mobileEditBtn = document.createElement("img");   
-            let mobileHideBtn = document.createElement("img");
+            if(isMobile) {
+                let mobileHideBtnCell = newRow.insertCell(0);
 
-            mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
-            mobileEditBtn.setAttribute("id", "mobile-edit-button");
-            mobileHideBtn.setAttribute("id", "mobile-hide-button");
+                columnOffset = 1;
 
-            mobileHideBtnCell.appendChild(mobileEditBtn);
-            mobileHideBtnCell.appendChild(mobileHideBtn);
-            mobileHideBtnCell.appendChild(mobileDeleteBtn);
+                mobileHideBtnCell.setAttribute("className", "mobile-hide-button-cell");
 
-            mobileDeleteBtn.src = "images/delete_icon.png";
-            mobileEditBtn.src = "images/edit.png";
+                let mobileDeleteBtn = document.createElement("img");
+                let mobileEditBtn = document.createElement("img");   
+                let mobileHideBtn = document.createElement("img");
+
+                mobileDeleteBtn.src = "images/delete_icon.png";
+                mobileEditBtn.src = "images/edit.png";
+                mobileHideBtn.src = "images/arrow_dropup.png";
+
+                mobileDeleteBtn.setAttribute("id", "mobile-delete-button");
+                mobileEditBtn.setAttribute("id", "mobile-edit-button");
+                mobileHideBtn.setAttribute("id", "mobile-hide-button");
+
+                mobileHideBtnCell.appendChild(mobileEditBtn);
+                mobileHideBtnCell.appendChild(mobileHideBtn);
+                mobileHideBtnCell.appendChild(mobileDeleteBtn);
+
+                for(const cell of cells) {
+                
+                    if(localStorage.getItem(cell.parentNode.getAttribute("data-id")) === "true" 
+                                        && (cell !== cell.parentNode.firstElementChild)
+                                        && (cell !== cell.parentNode.firstElementChild.nextElementSibling)) {
+                        cell.classList.add("hidden");
+                        mobileHideBtn.textContent = "+";
+                        mobileHideBtn.setAttribute("src", "images/arrow_dropdown.png");
+                        mobileDeleteBtn.classList.add("hidden");
+                    } else {
+                        mobileHideBtn.textContent = "-";
+                        mobileHideBtn.setAttribute("src", "images/arrow_dropup.png");
+                        mobileDeleteBtn.classList.remove("hidden");
+                    }
+                }
+            }
+
+            let exerciseNameCell = newRow.insertCell(0 + columnOffset);
+            let exerciseSetsCell = newRow.insertCell(1 + columnOffset);
+            let exerciseRepsCell = newRow.insertCell(2 + columnOffset);
+            let exerciseWeightCell = newRow.insertCell(3 + columnOffset );
+            let editRowCell = newRow.insertCell(4 + columnOffset);
+            let saveRowCell = newRow.insertCell(5 + columnOffset);
+            let deleteRowCell = newRow.insertCell(6 + columnOffset);
 
             editRowCell.className = "edit-button-cell";
 
@@ -587,27 +622,9 @@ async function populateTableFromData(workoutDate, authToken) {
             exerciseWeightCell.setAttribute("className", "entered-number");
             exerciseWeightCell.setAttribute("data-cell", "weight");
 
-            mobileDeleteBtn.textContent = "mobile-delete";
-            mobileEditBtn.textContent = "mobile-edit";
             editButton.textContent = "Edit";
             saveButton.textContent = "Save";
             deleteButton.textContent = "X";
-
-            for(const cell of cells) {
-                
-                if(localStorage.getItem(cell.parentNode.getAttribute("data-id")) === "true" 
-                                    && (cell !== cell.parentNode.firstElementChild)
-                                    && (cell !== cell.parentNode.firstElementChild.nextElementSibling)) {
-                    cell.classList.add("hidden");
-                    mobileHideBtn.textContent = "+";
-                    mobileHideBtn.setAttribute("src", "images/arrow_dropdown.png");
-                    mobileDeleteBtn.classList.add("hidden");
-                } else {
-                    mobileHideBtn.textContent = "-";
-                    mobileHideBtn.setAttribute("src", "images/arrow_dropup.png");
-                    mobileDeleteBtn.classList.remove("hidden");
-                }
-            }
         });
     }
 }
@@ -1049,3 +1066,7 @@ const pageAccessedByReload = (
         .map((nav) => nav.type)
         .includes('reload')
 );
+
+window.addEventListener("resize", () => {
+    location.reload();
+})
