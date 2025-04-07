@@ -51,10 +51,15 @@ supabase.auth.onAuthStateChange((event, session) => {
         loginBtn.textContent = "Log Out";
     } else if(event === "SIGNED_OUT") {
         localStorage.clear();
+        console.log("logged out");
         loginBtn.textContent = "Log In";
+        localStorage.removeItem("supabase_session");
     } else if(event === "TOKEN_REFRESHED") {
         alert("token refreshed.");
-    }
+    } else if(session) {
+        localStorage.setItem("supabase_session", JSON.stringify(session));
+        console.log(JSON.parse(localStorage.getItem("supabase_session")));
+    } 
 });
 
 let userData = await supabase.auth.getUser();
@@ -142,6 +147,7 @@ document.addEventListener("click", (event) => {
         if((exerciseNameInput.value != "") && (exerciseSetsInput.value != "") && 
             (exerciseRepsInput.value != "") && (exerciseWeightInput.value != "")) {
                 createExerciseRow();
+                console.log(hiddenItemCount.length);
                 removeExerciseFormFromDOM();
         } else {
             event.preventDefault();
