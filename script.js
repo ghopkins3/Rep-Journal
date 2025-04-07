@@ -53,12 +53,8 @@ supabase.auth.onAuthStateChange((event, session) => {
         localStorage.clear();
         console.log("logged out");
         loginBtn.textContent = "Log In";
-        localStorage.removeItem("supabase_session");
     } else if(event === "TOKEN_REFRESHED") {
         alert("token refreshed.");
-    } else if(session) {
-        localStorage.setItem("supabase_session", JSON.stringify(session));
-        console.log(JSON.parse(localStorage.getItem("supabase_session")));
     } 
 });
 
