@@ -106,12 +106,18 @@ dateDisplay.addEventListener("change", () => {
 
 async function checkWorkoutOnDate(date, authToken) {
     console.log("arrived.");
+    console.log("auth token:", authToken);
     if(userData.data.user) {
+        console.log("user:", userData.data.user);
         console.log("there seems to be a user.");
-        const workoutOnDate = await getWorkoutByDate(date, authToken);
+        let workoutOnDate = await getWorkoutByDate(date, authToken);
+        console.log(workoutOnDate);
         if(workoutOnDate !== null && workoutOnDate !== undefined) {
+            console.log("here");
             populateTableFromData(workoutOnDate, authToken);
-        } 
+        } else {
+            console.log(workoutOnDate);
+        }
     }
 }
 
