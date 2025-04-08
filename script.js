@@ -373,9 +373,9 @@ closeSignUpDialogBtn.addEventListener("click", () => {
 });
 
 submitLoginBtn.addEventListener("click", tryLogin);
-submitLoginBtn.addEventListener("touchstart", tryLogin);
+
+
 submitSignUpBtn.addEventListener("click", trySignUp);
-submitSignUpBtn.addEventListener("touchstart", trySignUp);
 
 collapseOrExpandBtn.addEventListener("click", (event) => {
     let tableRows = exerciseTableBody.children;
@@ -681,7 +681,7 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
         console.log("user:", userData.data.user);
         console.log("auth:", authToken);
         try {
-            const response = await fetch("https://rep-journal.vercel.app/exercise", {
+            const response = await fetch("http://localhost:3000/exercise", {
                 method: "POST",
                 body: JSON.stringify({
                     exercise_name: exerciseName,
@@ -739,7 +739,7 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight, authTo
 
         try {
             
-            const response = await fetch("https://rep-journal.vercel.app/exercise-set", {
+            const response = await fetch("http://localhost:3000/exercise-set", {
                 method: "POST",
                 body: JSON.stringify({
                     exercise_id: exerciseID,
@@ -766,7 +766,7 @@ async function getWorkoutByDate(date, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/workout/date=${date}`, {
+            const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
                 method: "GET",
                 headers: getHeaders(authToken),
             });
@@ -793,7 +793,7 @@ async function postWorkoutData(date, userID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch("https://rep-journal.vercel.app/workout", {
+            const response = await fetch("http://localhost:3000/workout", {
                 method: "POST",
                 body: JSON.stringify({
                     date: date,
@@ -821,7 +821,7 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authTo
         return;
     } else {
         try {
-            const response = await fetch("https://rep-journal.vercel.app/workout-exercise", {
+            const response = await fetch("http://localhost:3000/workout-exercise", {
                 method: "POST",
                 body: JSON.stringify({
                     workout_id: workoutID,
@@ -847,7 +847,7 @@ async function getExerciseDataByWorkoutID(workoutID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/workout-exercise/workout-id=${workoutID}`, {
+            const response = await fetch(`http://localhost:3000/workout-exercise/workout-id=${workoutID}`, {
                 method: "GET",
                 headers: getHeaders(authToken),
             });
@@ -871,7 +871,7 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
         return; 
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/exercise/id=${exerciseID}`, {
+            const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
                 method: "PUT",
                 body: JSON.stringify({
                     exercise_name: exerciseName
@@ -896,7 +896,7 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/exercise-set/id=${exerciseID}`, {
+            const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
                 method: "PUT",
                 body: JSON.stringify({
                     sets: sets,
@@ -922,7 +922,7 @@ async function deleteExerciseByID(exerciseID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/exercise/id=${exerciseID}`, {
+            const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
                 method: "DELETE",
                 headers: getHeaders(authToken),
             });
@@ -944,7 +944,7 @@ async function deleteExerciseSetDataByID(exerciseID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/exercise-set/id=${exerciseID}`, {
+            const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
                 method: "DELETE",
                 headers: getHeaders(authToken),
             });
@@ -964,7 +964,7 @@ async function deleteWorkoutByDate(date, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/workout/date=${date}`, {
+            const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
                 method: "DELETE",
                 headers: getHeaders(authToken),
             });
@@ -981,7 +981,7 @@ async function deleteWorkoutByDate(date, authToken) {
 
 async function postUser(email, username, password) {
     try {
-        const response = await fetch(`https://rep-journal.vercel.app/signup`, {
+        const response = await fetch(`http://localhost:3000/signup`, {
             method: "POST",
             body: JSON.stringify({
                 email: email,
@@ -1012,7 +1012,7 @@ async function postUser(email, username, password) {
 
 async function loginUser(email, password) {
     try {
-        const response = await fetch(`https://rep-journal.vercel.app/login`, {
+        const response = await fetch(`http://localhost:3000/login`, {
             method: "POST",
             body: JSON.stringify({
                 email: email,
@@ -1025,8 +1025,11 @@ async function loginUser(email, password) {
             throw new Error(`Could not login`);
         }
 
+
         const data = await response.json();
-        console.log("data:", data);
+        console.log(data);
+        console.log(data.session.access_token);
+        console.log(data.session.refresh_token);
 
         await supabase.auth.setSession({
             access_token: data.session.access_token,
@@ -1034,7 +1037,7 @@ async function loginUser(email, password) {
         });
 
         loginDialog.close();
-        
+        location.reload();
     } catch (error) {
         console.error(error);
     }
