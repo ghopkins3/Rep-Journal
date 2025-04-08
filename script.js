@@ -31,6 +31,7 @@ let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
 
 if(hiddenItemCount === undefined || hiddenItemCount.length === 0) {
     collapseOrExpandBtn.textContent = "Collapse All";
+    console.log("hidden item count undefined or zero.");
 } else {
     collapseOrExpandBtn.textContent = "Expand All";
 }
@@ -143,7 +144,8 @@ document.addEventListener("click", (event) => {
         if((exerciseNameInput.value != "") && (exerciseSetsInput.value != "") && 
             (exerciseRepsInput.value != "") && (exerciseWeightInput.value != "")) {
                 createExerciseRow();
-                console.log(hiddenItemCount.length);
+                console.log("hidden item length: ", hiddenItemCount.length);
+                collapseOrExpandBtn.textContent = "Collapse All";
                 removeExerciseFormFromDOM();
         } else {
             event.preventDefault();
@@ -200,13 +202,20 @@ document.addEventListener("click", (event) => {
         console.log(event.target.parentNode.parentNode.children);
         let targetRowDataID = event.target.parentNode.parentNode.getAttribute("data-id");
         console.log(event.target.parentNode.lastElementChild);
-
-
+        console.log(event.target.parentNode.parentNode);
+        hiddenItemCount.push(event.target.parentNode.parentNode);
         if(event.target.getAttribute("src") === "images/arrow_dropup.png") {
+            
             event.target.setAttribute("src", "images/arrow_dropdown.png");
         } else if(event.target.getAttribute("src") === "images/arrow_dropdown.png") {
+            console.log("target:", event.target);
+            console.log("target parent:", event.target.parentNode);
+            console.log("target parent's parent:", event.target.parentNode.parentNode);
+            hiddenItemCount = hiddenItemCount.filter((item) => item !== item);
+            collapseOrExpandBtn.textContent = "Collapse All";
             event.target.setAttribute("src", "images/arrow_dropup.png");
         }
+        
 
         event.target.parentNode.lastElementChild.classList.toggle("hidden");
 
@@ -371,6 +380,9 @@ submitSignUpBtn.addEventListener("touchstart", trySignUp);
 collapseOrExpandBtn.addEventListener("click", (event) => {
     let tableRows = exerciseTableBody.children;
 
+    console.log("hidden item count: ", hiddenItemCount.length);
+    console.log("hidden items: ", hiddenItemCount);
+
     if(hiddenItemCount.length !== tableRows.length) {
         console.log("Collapsing...");
     
@@ -390,8 +402,10 @@ collapseOrExpandBtn.addEventListener("click", (event) => {
                     }
                 }
             }
+
+            
             localStorage.setItem(item.getAttribute("data-id"), item.children[2].classList.contains("hidden"));
-            if(item.children[2].classList.contains("hidden")) {
+            if(item.children[2].classList.contains("hidden") && !hiddenItemCount.includes(item)) {
                 hiddenItemCount.push(item);
             }
 
@@ -411,7 +425,7 @@ collapseOrExpandBtn.addEventListener("click", (event) => {
                     let buttons = child.children;
                     for(let btn of buttons) {
                         if(btn.getAttribute("id") === "mobile-hide-button") {
-                            btn.setAttribute("src", "images/arrow_dropdown.png");
+                            btn.setAttribute("src", "images/arrow_dropup.png");
                         } else if(btn.getAttribute("id") === "mobile-delete-button") {
                             btn.classList.remove("hidden");
                         }
@@ -420,6 +434,7 @@ collapseOrExpandBtn.addEventListener("click", (event) => {
             }
             localStorage.setItem(item.getAttribute("data-id"), item.children[2].classList.contains("hidden"));
             if(!item.children[2].classList.contains("hidden")) {
+                console.log("item:", item);
                 hiddenItemCount = hiddenItemCount.filter((item) => item !== item);
             }
 
@@ -524,7 +539,6 @@ async function createExerciseRow() {
         
         newRow.setAttribute("data-id", exerciseID);
     }
-
 }
 
 async function populateTableFromData(workoutDate, authToken) {
@@ -664,6 +678,8 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
     if(!userData.data.user) {
         return;
     } else {
+        console.log("user:", userData.data.user);
+        console.log("auth:", authToken);
         try {
             const response = await fetch("https://rep-journal.vercel.app/exercise", {
                 method: "POST",
@@ -674,7 +690,10 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
                 headers: getHeaders(authToken),
             });
 
+            console.log(getHeaders(authToken));
+
             if(!response.ok) {
+                console.log(response);
                 throw new Error("Could not post exercise");
             }
 
@@ -1007,17 +1026,15 @@ async function loginUser(email, password) {
         }
 
         const data = await response.json();
-        
-        const { user, session } = data;
+        console.log("data:", data);
+
         await supabase.auth.setSession({
-            access_token: session.access_token,
-            refresh_token: session.refresh_token,
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token,
         });
 
         loginDialog.close();
-        loginUsernameInput.value = "";
-        loginPasswordInput.value = "";
-        location.reload();
+        
     } catch (error) {
         console.error(error);
     }
