@@ -90,6 +90,7 @@ if(sessionStorage.getItem(selectedDate) === null) {
 }
 
 if(userData.data.user) {
+    console.log("awaiting workout on date...");
     await checkWorkoutOnDate(dateDisplay.value, userAccessToken);
 }
 
@@ -104,7 +105,9 @@ dateDisplay.addEventListener("change", () => {
 });
 
 async function checkWorkoutOnDate(date, authToken) {
+    console.log("arrived.");
     if(userData.data.user) {
+        console.log("there seems to be a user.");
         const workoutOnDate = await getWorkoutByDate(date, authToken);
         if(workoutOnDate !== null && workoutOnDate !== undefined) {
             populateTableFromData(workoutOnDate, authToken);
