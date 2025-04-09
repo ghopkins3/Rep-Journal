@@ -36,7 +36,7 @@ if(hiddenItemCount === undefined || hiddenItemCount.length === 0) {
     collapseOrExpandBtn.textContent = "Expand All";
 }
 
-let screenSize = window.innerWidth;
+let isMobile = window.innerWidth < 601;
 
 let date = new Date().toLocaleDateString();
 let dateSplitOnSlash = date.split("/");
@@ -106,11 +106,12 @@ dateDisplay.addEventListener("change", () => {
 
 async function checkWorkoutOnDate(date, authToken) {
     console.log("arrived.");
+    console.log("date:", date);
     console.log("auth token:", authToken);
     if(userData.data.user) {
         console.log("user:", userData.data.user);
         console.log("there seems to be a user.");
-        let workoutOnDate = await getWorkoutByDate(date, authToken);
+        const workoutOnDate = await getWorkoutByDate(date, authToken);
         console.log(workoutOnDate);
         if(workoutOnDate !== null && workoutOnDate !== undefined) {
             console.log("here");
@@ -559,7 +560,6 @@ async function populateTableFromData(workoutDate, authToken) {
             let newRow = exerciseTableBody.insertRow();
             newRow.setAttribute("data-id", exercise.exercise_id);
             
-            let isMobile = window.innerWidth < 601;
             let columnOffset = 0;
 
 
@@ -585,22 +585,6 @@ async function populateTableFromData(workoutDate, authToken) {
                 mobileHideBtnCell.appendChild(mobileEditBtn);
                 mobileHideBtnCell.appendChild(mobileHideBtn);
                 mobileHideBtnCell.appendChild(mobileDeleteBtn);
-
-                for(const cell of cells) {
-                
-                    if(localStorage.getItem(cell.parentNode.getAttribute("data-id")) === "true" 
-                                        && (cell !== cell.parentNode.firstElementChild)
-                                        && (cell !== cell.parentNode.firstElementChild.nextElementSibling)) {
-                        cell.classList.add("hidden");
-                        mobileHideBtn.textContent = "+";
-                        mobileHideBtn.setAttribute("src", "images/arrow_dropdown.png");
-                        mobileDeleteBtn.classList.add("hidden");
-                    } else {
-                        mobileHideBtn.textContent = "-";
-                        mobileHideBtn.setAttribute("src", "images/arrow_dropup.png");
-                        mobileDeleteBtn.classList.remove("hidden");
-                    }
-                }
             }
 
             let exerciseNameCell = newRow.insertCell(0 + columnOffset);
@@ -649,6 +633,39 @@ async function populateTableFromData(workoutDate, authToken) {
             saveButton.textContent = "Save";
             deleteButton.textContent = "X";
         });
+
+        for(const cell of cells) {
+            let cellChildren = cell.children;
+        
+            if(localStorage.getItem(cell.parentNode.getAttribute("data-id")) === "true" 
+                                && (cell !== cell.parentNode.firstElementChild.nextElementSibling)) {
+                if(cell !== cell.parentNode.firstElementChild) {
+                    cell.classList.add("hidden");
+                } else if(cell === cell.parentNode.firstElementChild) {
+                    for(let cellChild of cellChildren) {
+                        if(cellChild.getAttribute("id") === "mobile-hide-button") {
+                            cellChild.setAttribute("src", "images/arrow_dropdown.png");
+                        } else if(cellChild.getAttribute("id") === "mobile-delete-button") {
+                            cellChild.classList.add("hidden");
+                        }
+                    }
+                }
+            } else {
+                for(let cellChild of cellChildren) {
+                    if(cellChild.getAttribute("id") === "mobile-hide-button") {
+                        cellChild.setAttribute("src", "images/arrow_dropup.png");
+                    } else if(cellChild.getAttribute("id") === "mobile-delete-button") {
+                        cellChild.classList.remove("hidden");
+                    }
+                }
+            }
+        }
+
+        if(!isMobile) {
+            for(const cell of cells) {
+                cell.classList.remove("hidden");
+            }
+        }
     }
 }
 
@@ -770,8 +787,12 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight, authTo
 
 async function getWorkoutByDate(date, authToken) {
     if(!userData.data.user) {
+        console.log("invalid user.");
         return;
     } else {
+
+        console.log("trying get workout by date...");
+        console.log("auth token from workout by id:", authToken);
         try {
             const response = await fetch(`https://rep-journal.vercel.app/workout/date=${date}`, {
                 method: "GET",
@@ -783,8 +804,10 @@ async function getWorkoutByDate(date, authToken) {
             }
 
             const data = await response.json();
-            
+            console.log(data);
+
             if(data.length > 0) {
+                console.log(data[0].workout_id);
                 return data[0].workout_id;
             }
         }
@@ -864,6 +887,7 @@ async function getExerciseDataByWorkoutID(workoutID, authToken) {
             }
 
             const data = await response.json();
+            console.log("exercises:", data);
             return data;
         }
         catch(error) {
@@ -1095,6 +1119,10 @@ const pageAccessedByReload = (
         .map((nav) => nav.type)
         .includes('reload')
 );
+
+if(pageAccessedByReload) {
+    console.log(hiddenItemCount);
+}
 
 window.addEventListener("resize", () => {
     location.reload();
