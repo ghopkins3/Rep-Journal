@@ -82,7 +82,7 @@ if(dateSplitOnSlash[0] < 10) {
 
 let selectedDate = "selectedDate";
 
-let test = "test";
+let test = "time";
 
 if(sessionStorage.getItem(selectedDate) === null) {
     dateDisplay.value = currentDate;
