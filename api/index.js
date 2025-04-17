@@ -267,10 +267,10 @@ app.get("/workout-exercise/workout-id=:id", supabaseAuthMiddleware, async (req, 
                 exercise (
                     exercise_name,
                     exercise_set (
-                    sets: amount_of_sets,
-                    repetitions,
-                    weight
-                )
+                        sets: amount_of_sets,
+                        repetitions,
+                        weight
+                    )
                 )
             `)
             .eq("user_id", req.user.auth_id)
