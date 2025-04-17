@@ -15,6 +15,7 @@ export const getUserByAuthID = async (authID) => {
             throw error;
         }
 
+        console.log("Getting user by auth id.");
         return data;
     } catch(err) {
         console.error("Error fetching user by auth ID:", err);

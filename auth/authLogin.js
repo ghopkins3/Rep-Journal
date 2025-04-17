@@ -10,7 +10,8 @@ export const authLogin = async (email, password) => {
         if(error) {
             throw error;
         }
-
+        
+        console.log("auth login route hit.");
         return data;
     } catch(err) {
         console.error("Error creating auth user:", err.message);

@@ -78,6 +78,8 @@ app.post("/exercise", supabaseAuthMiddleware, async (req, res) => {
         })
         .select("exercise_id");
 
+        console.log("Posting exercise. \n");
+
     if (error) {
         return res.status(400).json({ error: error.message });
     }
@@ -130,6 +132,8 @@ app.post("/exercise-set", supabaseAuthMiddleware, async (req, res) => {
             repetitions: req.body.repetitions,
             weight: req.body.weight,
         });
+
+        console.log("Posting exercise sets. \n");
 
     if (error) {
         return res.status(400).json({ error: error.message });
@@ -187,10 +191,10 @@ app.get("/workout/date=:date", supabaseAuthMiddleware, async (req, res) => {
             .eq("user_id", req.user.auth_id)
             .limit(1);
         
-        
+        console.log("sending workout by date data. \n");
         return res.send(data);
     } catch (error) {
-        return res.send({error});
+        return res.send({ error });
     }
 });
 
@@ -202,6 +206,8 @@ app.post("/workout", supabaseAuthMiddleware, async (req, res) => {
             user_id: req.body.user_id,
         })
         .select("workout_id");
+
+        console.log("Posting workout. \n");
 
     if (error) {
         return res.status(400).json({ error: error.message });
@@ -251,39 +257,36 @@ app.get("/workout-exercise", supabaseAuthMiddleware, async (req, res) => {
 });
 
 app.get("/workout-exercise/workout-id=:id", supabaseAuthMiddleware, async (req, res) => {
-    
+
+
     try {
-        // select exercise id and exercise name from exercise equal to workout id
-        const { data: workoutExercises, error: exerciseError } = await supabase
+        const { data, error } = await supabase
             .from("workout_exercise")
             .select(`
                 exercise_id,
-                exercise (exercise_name)
+                exercise (
+                    exercise_name,
+                    exercise_set (
+                    sets: amount_of_sets,
+                    repetitions,
+                    weight
+                )
+                )
             `)
             .eq("user_id", req.user.auth_id)
             .eq("workout_id", req.params.id);
 
-        if(exerciseError) throw exerciseError;
         
-        // extract exerciseIDs from workoutExercises
-        const exerciseIDs = workoutExercises.map(exercise => exercise.exercise_id);
-
-        // select exercise id, sets, reps, weight from exercise set with id
-        const { data: exerciseSets, error: setError } = await supabase
-            .from("exercise_set")
-            .select("exercise_id, amount_of_sets, repetitions, weight")
-            .in("exercise_id", exerciseIDs);
+        if (error) {
+            console.log(req.user.auth_id);
+            console.log(req.params.id);
+            console.error("Supabase query error:", error);
+            return res.status(500).send({ error: error.message });
+        }    
         
-        if(setError) throw setError;
 
-        // extract exercise names, keep exercise id, then filter data by matching exercise IDs
-        const combinedData = workoutExercises.map(exercise => ({
-            exercise_name: exercise.exercise.exercise_name,
-            exercise_id: exercise.exercise_id,
-            sets: exerciseSets.filter(set => set.exercise_id === exercise.exercise_id)
-        }));
-
-        return res.send(combinedData);
+        console.log(data);
+        return res.send(data);
     } catch (error) {
         console.error(error);
         return res.status(500).send({error: error.message});
@@ -298,6 +301,8 @@ app.post("/workout-exercise", supabaseAuthMiddleware, async (req, res) => {
             exercise_id: req.body.exercise_id,
             user_id: req.body.user_id,
         });
+
+        console.log("Posting workout exercise. \n");
 
     if (error) {
         return res.status(400).json({ error: error.message });

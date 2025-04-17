@@ -5,6 +5,7 @@ export const postLogin = async (req, res) => {
     try {
         let data = await authLogin(email, password);
         res.status(200).send(data);
+        console.log("Login route hit.");
     } catch(error) {
         res.status(400).send("Failed to login");
     }
