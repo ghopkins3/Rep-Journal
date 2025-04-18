@@ -559,22 +559,27 @@ async function populateTableFromData(workoutDate, authToken) {
     } else {
         const exerciseData = await getExerciseDataByWorkoutID(workoutDate, authToken);
 
-        exerciseData.forEach(exercise => {
-            let exerciseName = exercise.exercise.exercise_name;
+        exerciseData.forEach(entry => {
+            let exerciseName = entry.exercise.exercise_name;
             let numberOfSets;
             let numberOfReps;
-            let weight;
+            let weightNumber;
+
+            console.log("here");
             
-            exercise.exercise.exercise_set.forEach(({ sets, repetitions, weight }) => {
+            console.log(entry.exercise.exercise_set);
+
+            entry.exercise.exercise_set.forEach(({ sets, repetitions, weight }) => {
+                console.log(sets);
+                console.log(repetitions);
+                console.log(weight);
                 numberOfSets = sets;
                 numberOfReps = repetitions;
-                weight = weight;
+                weightNumber = weight;
             });
 
-
-
             let newRow = exerciseTableBody.insertRow();
-            newRow.setAttribute("data-id", exercise.exercise_id);
+            newRow.setAttribute("data-id", entry.exercise_id);
             
             let columnOffset = 0;
 
@@ -641,7 +646,7 @@ async function populateTableFromData(workoutDate, authToken) {
             exerciseRepsCell.setAttribute("className", "entered-number");
             exerciseRepsCell.setAttribute("data-cell", "reps");
 
-            exerciseWeightCell.textContent = weight;
+            exerciseWeightCell.textContent = weightNumber;
             exerciseWeightCell.setAttribute("className", "entered-number");
             exerciseWeightCell.setAttribute("data-cell", "weight");
 

@@ -263,6 +263,7 @@ app.get("/workout-exercise/workout-id=:id", supabaseAuthMiddleware, async (req, 
         const { data, error } = await supabase
             .from("workout_exercise")
             .select(`
+                exercise_id,
                 exercise (
                     exercise_name,
                     exercise_set (
