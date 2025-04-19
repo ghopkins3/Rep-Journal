@@ -52,7 +52,9 @@ let userID;
 supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
         loginBtn.textContent = "Log Out";
+        signUpBtn.classList.add("hidden");
     } else if(event === "SIGNED_OUT") {
+        signUpBtn.classList.remove("hidden");
         localStorage.clear();
         console.log("logged out");
         loginBtn.textContent = "Log In";
