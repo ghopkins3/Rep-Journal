@@ -56,8 +56,6 @@ supabase.auth.onAuthStateChange((event, session) => {
         localStorage.clear();
         console.log("logged out");
         loginBtn.textContent = "Log In";
-    } else if(event === "TOKEN_REFRESHED") {
-        alert("token refreshed.");
     } 
 });
 
