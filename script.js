@@ -111,13 +111,14 @@ async function checkWorkoutOnDate(date, authToken) {
     console.log("auth token:", authToken);
     if(userData.data.user) {
         console.log("user:", userData.data.user);
-        console.log("there seems to be a user.");
+        console.log("there seems to be a user in check workout.");
         const workoutOnDate = await getWorkoutByDate(date, authToken);
         console.log(workoutOnDate);
         if(workoutOnDate !== null && workoutOnDate !== undefined) {
             console.log("here");
             await populateTableFromData(workoutOnDate, authToken);
         } else {
+            console.log("workout on date seems to be null or undefined.");
             console.log(workoutOnDate);
         }
     }
@@ -570,9 +571,6 @@ async function populateTableFromData(workoutDate, authToken) {
             console.log(entry.exercise.exercise_set);
 
             entry.exercise.exercise_set.forEach(({ sets, repetitions, weight }) => {
-                console.log(sets);
-                console.log(repetitions);
-                console.log(weight);
                 numberOfSets = sets;
                 numberOfReps = repetitions;
                 weightNumber = weight;
@@ -894,7 +892,9 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authTo
 
 // function to get data to popoulate table
 async function getExerciseDataByWorkoutID(workoutID, authToken) {
+    console.log("workout id from function:", workoutID);
     if(!userData.data.user) {
+        console.log("there is no user!");
         return;
     } else {
         try {
@@ -1098,6 +1098,7 @@ async function loginUser(email, password) {
 
 async function logout() {
     try {
+        console.log("Logging Out.");
         const { error } = await supabase.auth.signOut();
         if(error) throw error;
         location.reload();

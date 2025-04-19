@@ -8,6 +8,7 @@ export const postSignOut = async (req, res) => {
             throw error;
         }
 
+        console.log("sign out route hit.");
         res.status(200).send("Successfully signed out user.");
 
     } catch(error) {

@@ -8,6 +8,7 @@ import { supabaseAuthMiddleware } from "../auth/supabaseAuthMiddleware.js";
 import { getUser } from "../auth/getUser.js";
 import { putUser } from "../auth/putUser.js";
 import { deleteUser } from "../auth/deleteUser.js";
+import { postSignOut } from "../auth/postSignOut.js";
 
 const app = express();
 let PORT = process.env.PORT;
@@ -257,8 +258,6 @@ app.get("/workout-exercise", supabaseAuthMiddleware, async (req, res) => {
 });
 
 app.get("/workout-exercise/workout-id=:id", supabaseAuthMiddleware, async (req, res) => {
-
-
     try {
         const { data, error } = await supabase
             .from("workout_exercise")
