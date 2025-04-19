@@ -114,13 +114,16 @@ app.delete("/exercise/id=:id", supabaseAuthMiddleware, async (req, res) => {
     res.status(201).send("deleted exercise with id: " + req.params.id);
 });
 
-app.get("/exercise-set", async (req, res) => {
+app.get("/exercise-set", supabaseAuthMiddleware, async (req, res) => {
     try {
-        let { data, error } = await supabase.from("exercise_set").select();
+        const { data, error } = await supabase
+        .from("exercise_set")
+        .select()
+        .eq("user_id", req.user.auth_id);
         
-        return res.send(data);
+        return res.status(200).send(data);
     } catch (error) {
-        return res.send({error});
+        return res.status(500).send({ error });
     }
 });
 
@@ -132,6 +135,7 @@ app.post("/exercise-set", supabaseAuthMiddleware, async (req, res) => {
             amount_of_sets: req.body.sets,
             repetitions: req.body.repetitions,
             weight: req.body.weight,
+            user_id: req.body.user_id,
         });
 
         console.log("Posting exercise sets. \n");
@@ -150,6 +154,7 @@ app.put("/exercise-set/id=:id", supabaseAuthMiddleware, async (req, res) => {
             repetitions: req.body.repetitions,
             weight: req.body.weight,
         })
+        .eq("user_id", req.user.auth_id)
         .eq("exercise_id", req.params.id);
     if(error) {
         return res.status(400).json({error: error.message});
@@ -201,7 +206,7 @@ app.get("/workout/date=:date", supabaseAuthMiddleware, async (req, res) => {
 
 app.post("/workout", supabaseAuthMiddleware, async (req, res) => {
     const { data, error } = await supabase
-        .from("workout")
+        .from("workout")    
         .insert({
             date: req.body.date,
             user_id: req.body.user_id,

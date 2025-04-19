@@ -11,6 +11,7 @@ export const authLogin = async (email, password) => {
             throw error;
         }
         
+        console.log("auth data:", data);
         console.log("auth login route hit.");
         return data;
     } catch(err) {

@@ -746,7 +746,7 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
             }
 
             if(sets !== null || sets !== undefined) {
-                await postExerciseSetData(data.exercise_id, sets, repetitions, weight, authToken);
+                await postExerciseSetData(data.exercise_id, sets, repetitions, weight, userID, authToken);
             } else {
                 
             }
@@ -771,7 +771,7 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
 }
 
 // post to exercise sets table
-async function postExerciseSetData(exerciseID, sets, repetitions, weight, authToken) {
+async function postExerciseSetData(exerciseID, sets, repetitions, weight, userID, authToken) {
     if(!userData.data.user) {
         return; 
     } else{
@@ -788,7 +788,8 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight, authTo
                     exercise_id: exerciseID,
                     sets: Number(sets),
                     repetitions: Number(repetitions),
-                    weight: Number(weight)
+                    weight: Number(weight),
+                    user_id: userID,
                 }),
                 headers: getHeaders(authToken),
             });
