@@ -3,6 +3,7 @@ import { createDbUser } from "./createDbUser.js";
 
 export const postSignUp = async (req, res) => {
     let {email, password, username} = req.body;
+    console.log(req.body);
 
     try {
         let authID = await createAuthUser(email, password);

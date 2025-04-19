@@ -10,7 +10,7 @@ export const supabaseAuthMiddleware = async (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    const { data, error } = await supabase.auth.getUser(token);
+    let { data, error } = await supabase.auth.getUser(token);
 
     if(error) {
         return res.status(401).json({ message: "Unauthorized" });

@@ -8,7 +8,6 @@ import { supabaseAuthMiddleware } from "../auth/supabaseAuthMiddleware.js";
 import { getUser } from "../auth/getUser.js";
 import { putUser } from "../auth/putUser.js";
 import { deleteUser } from "../auth/deleteUser.js";
-import { postSignOut } from "../auth/postSignOut.js";
 
 const app = express();
 let PORT = process.env.PORT;
@@ -367,6 +366,10 @@ app.post("/login", postLogin);
 app.get("/auth/user", supabaseAuthMiddleware, getUser);
 app.put("/auth/user", supabaseAuthMiddleware, putUser);
 app.delete("/auth/user", supabaseAuthMiddleware, deleteUser);
+
+app.get("/", async (req, res) => {
+    return res.send("hello");
+});
 
 app.listen(PORT, () => {
     console.log(new Date().toLocaleTimeString() + `: Server is running on port ${PORT}...`)

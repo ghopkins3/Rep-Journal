@@ -51,8 +51,8 @@ let userID;
 
 supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
-        loginBtn.textContent = "Log Out";
         signUpBtn.classList.add("hidden");
+        loginBtn.textContent = "Log Out";
     } else if(event === "SIGNED_OUT") {
         signUpBtn.classList.remove("hidden");
         localStorage.clear();
@@ -126,7 +126,7 @@ async function checkWorkoutOnDate(date, authToken) {
 }
 
 document.addEventListener("click", (event) => {
-    // console.log(event.target);
+    console.log(event.target);
     // console.log(event.target.parentNode.parentNode.children);
     // console.log(event.target.parentNode.children);
     // console.log(event.target.parentNode.children[2]);
@@ -1041,6 +1041,10 @@ async function deleteWorkoutByDate(date, authToken) {
 }
 
 async function postUser(email, username, password) {
+
+    console.log(email);
+    console.log(username);
+    console.log(password);
     try {
         const response = await fetch(`http://localhost:3000/signup`, {
             method: "POST",
@@ -1053,6 +1057,7 @@ async function postUser(email, username, password) {
         });
 
         if(!response.ok) {
+            console.log(response);
             throw new Error(`Could not post user with email: ${email} and password: ${password}`);
         } else if(response.ok) {
             signupEmailInput.value = "";
@@ -1072,12 +1077,13 @@ async function postUser(email, username, password) {
 }
 
 async function loginUser(email, password) {
+
     try {
         const response = await fetch(`http://localhost:3000/login`, {
             method: "POST",
             body: JSON.stringify({
                 email: email,
-                password: password
+                password: password,
             }),
             headers: getHeaders(),
         });

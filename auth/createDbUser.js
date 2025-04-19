@@ -10,7 +10,7 @@ export const createDbUser = async (userData) => {
 
         return data;
     } catch(err) {
-        console.error("Error creating user:", err);
+        console.error("Error creating database user:", err);
         throw err;
     }
 };
