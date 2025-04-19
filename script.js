@@ -19,6 +19,7 @@ const closeSignUpDialogBtn = document.querySelector(".close-signup-dialog-button
 const submitLoginBtn = document.querySelector(".submit-login-button");
 const submitSignUpBtn = document.querySelector(".submit-sign-up-button");
 const collapseOrExpandBtn = document.querySelector(".collapse-expand-button");
+collapseOrExpandBtn.classList.add("hidden");
 
 const signupEmailInput = signUpDialog.querySelector(".email-input");
 const signupUsernameInput = signUpDialog.querySelector(".username-input");
@@ -171,6 +172,7 @@ document.addEventListener("click", (event) => {
     
         if(exerciseTableBody.childElementCount === 0) {
             deleteWorkoutByDate(dateDisplay.value, userAccessToken);
+            collapseOrExpandBtn.classList.add("hidden");
         }
         deleteExerciseByID(rowID, userAccessToken);
         localStorage.removeItem(rowID);
@@ -464,6 +466,8 @@ async function createExerciseRow() {
         return;
     } else {
         
+        collapseOrExpandBtn.classList.remove("hidden");
+
         let isMobile = window.innerWidth < 601;
         let columnOffset = 0;
 
@@ -559,6 +563,9 @@ async function populateTableFromData(workoutDate, authToken) {
         return;
     } else {
         const exerciseData = await getExerciseDataByWorkoutID(workoutDate, authToken);
+        if(exerciseData.length > 0) {
+            collapseOrExpandBtn.classList.remove("hidden");
+        }
 
         exerciseData.forEach(entry => {
             let exerciseName = entry.exercise.exercise_name;
