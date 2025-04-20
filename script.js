@@ -43,6 +43,7 @@ passwordSymbolReq.classList.add("invalid-req");
 
 let test = testing;
 let t = t;
+let e = e;
 
 let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
 
