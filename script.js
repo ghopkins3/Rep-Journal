@@ -41,8 +41,25 @@ passwordUppercaseReq.classList.add("invalid-req");
 passwordDigitReq.classList.add("invalid-req");
 passwordSymbolReq.classList.add("invalid-req");
 
-const closeLoginErrorNotifBtn = document.querySelector("#login-notif-img");
-const loginErrorNotif = document.querySelector(".log-in-notification");
+const diaryHeaderContainer = document.querySelector(".diary-header-container");
+const loginErrorNotif = document.createElement("div");
+loginErrorNotif.setAttribute("class", "log-in-notification");
+console.log("class:", loginErrorNotif.getAttribute("class"));
+diaryHeaderContainer.appendChild(loginErrorNotif);
+
+const closeLoginErrorNotifBtn = document.createElement("img");
+closeLoginErrorNotifBtn.setAttribute("src", "./images/close-icon.png");
+closeLoginErrorNotifBtn.setAttribute("id", "login-notif-img");
+
+const loginErrorNotifText = document.createElement("p");
+loginErrorNotifText.textContent = "Must be logged in to perform this action.";
+loginErrorNotifText.setAttribute("id", "login-notif-text");
+
+loginErrorNotif.appendChild(closeLoginErrorNotifBtn);
+loginErrorNotif.appendChild(loginErrorNotifText);
+
+document.querySelector("#login-notif-img");
+
 loginErrorNotif.classList.add("hidden");
 
 let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
