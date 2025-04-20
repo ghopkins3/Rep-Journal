@@ -41,6 +41,10 @@ passwordUppercaseReq.classList.add("invalid-req");
 passwordDigitReq.classList.add("invalid-req");
 passwordSymbolReq.classList.add("invalid-req");
 
+const closeLoginErrorNotifBtn = document.querySelector("#login-notif-img");
+const loginErrorNotif = document.querySelector(".log-in-notification");
+loginErrorNotif.classList.add("hidden");
+
 let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
 
 if(hiddenItemCount === undefined || hiddenItemCount.length === 0) {
@@ -342,17 +346,27 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+closeLoginErrorNotifBtn.addEventListener("click", () => {
+    loginErrorNotif.classList.add("hidden");
+})
+
 addExerciseLink.addEventListener("click", () => {
-    appendExerciseFormToDOM();
-    document.querySelector("#exercise-search").value = "";
-    document.querySelector("#sets-input").value = "1";
-    document.querySelector("#reps-input").value = "";
-    document.querySelector("#weight-input").value = ""; 
+    if(!userData.data.user) {
+        appendLoginErrorNotificationToDOM();
+        return;
+    } else {
+        appendExerciseFormToDOM();
+        document.querySelector("#exercise-search").value = "";
+        document.querySelector("#sets-input").value = "1";
+        document.querySelector("#reps-input").value = "";
+        document.querySelector("#weight-input").value = ""; 
+    }
 });
 
 addExerciseSetsLink.addEventListener("click", (event) => {
     if(exerciseTable.rows.length <= 1) {
-        event.preventDefault();
+        appendLoginErrorNotificationToDOM();
+        return;
     } else {
         appendExerciseFormToDOM();
         
@@ -786,7 +800,8 @@ async function removeExerciseFormFromDOM() {
 
 async function appendExerciseFormToDOM() {
     if(!userData.data.user) {
-        return;    
+        appendLoginErrorNotificationToDOM();
+        return;
     } else {
         let existingExerciseForms = document.getElementsByClassName("exercise-form");
         if(existingExerciseForms.length === 0) {
@@ -798,6 +813,7 @@ async function appendExerciseFormToDOM() {
 
 async function appendEditExerciseFormToDOM() {
     if(!userData.data.user) {
+        appendLoginErrorNotificationToDOM();
         return;
     } else {
         let existingExerciseForms = document.getElementsByClassName("exercise-form");
@@ -806,6 +822,10 @@ async function appendEditExerciseFormToDOM() {
             exerciseFormContainer.appendChild(exerciseFormToAppend);
         }
     }
+}
+
+function appendLoginErrorNotificationToDOM() {
+    loginErrorNotif.classList.remove("hidden");
 }
 
 async function postExerciseData(exerciseName, sets, repetitions, weight, date, userID, authToken) {
