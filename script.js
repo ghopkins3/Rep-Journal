@@ -28,6 +28,19 @@ const signupPasswordInput = signUpDialog.querySelector(".password-input");
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
 
+const passwordRequirementsContainer = signUpDialog.querySelector(".password-requirements");
+const passwordLengthReq = signUpDialog.querySelector("#length")
+const passwordLowercaseReq = signUpDialog.querySelector("#lowercase")
+const passwordUppercaseReq = signUpDialog.querySelector("#uppercase")
+const passwordDigitReq = signUpDialog.querySelector("#digit")
+const passwordSymbolReq = signUpDialog.querySelector("#symbol")
+passwordRequirementsContainer.classList.add("hidden");
+passwordLengthReq.classList.add("invalid-req");
+passwordLowercaseReq.classList.add("invalid-req");
+passwordUppercaseReq.classList.add("invalid-req");
+passwordDigitReq.classList.add("invalid-req");
+passwordSymbolReq.classList.add("invalid-req");
+
 let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
 
 if(hiddenItemCount === undefined || hiddenItemCount.length === 0) {
@@ -372,6 +385,77 @@ signUpBtn.addEventListener("click", (event) => {
     } else if(loginBtn.textContent === "Log Out") {
         event.preventDefault();
     }
+});
+
+signupPasswordInput.addEventListener("focus", () => {
+    passwordRequirementsContainer.classList.remove("hidden");
+    signupPasswordInput.addEventListener("keyup", () => {
+        let password = signupPasswordInput.value;
+
+        if(password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).+$/) && password.length >= 8) {
+            signupPasswordInput.classList.remove("invalid");
+            signupPasswordInput.classList.add("valid");
+        } else if(password.length === 0) {
+            signupPasswordInput.classList.remove("invalid");
+            signupPasswordInput.classList.remove("valid");
+        } else {
+            signupPasswordInput.classList.remove("valid");
+            signupPasswordInput.classList.add("invalid");
+        }
+    });
+});
+
+signupPasswordInput.addEventListener("keyup", () => {
+    let password = signupPasswordInput.value;
+
+    let lowercaseLetters = /[a-z]/g;
+    let uppercaseLetters = /[A-Z]/g;
+    let digits = /[0-9]/g;
+    let symbols = /[^a-zA-Z0-9\s]/g;
+
+    if(password.length >= 8) {
+        passwordLengthReq.classList.remove("invalid-req");
+        passwordLengthReq.classList.add("valid-req");
+    } else {
+        passwordLengthReq.classList.remove("valid-req");
+        passwordLengthReq.classList.add("invalid-req");
+    }
+
+    if(password.match(digits)) {
+        passwordDigitReq.classList.remove("invalid-req")
+        passwordDigitReq.classList.add("valid-req")
+    } else {
+        passwordDigitReq.classList.remove("valid-req")
+        passwordDigitReq.classList.add("invalid-req")
+    }
+
+    if(password.match(lowercaseLetters)) {
+        passwordLowercaseReq.classList.remove("invalid-req")
+        passwordLowercaseReq.classList.add("valid-req")
+    } else {
+        passwordLowercaseReq.classList.remove("valid-req")
+        passwordLowercaseReq.classList.add("invalid-req")
+    }
+    
+    if(password.match(uppercaseLetters)) {
+        passwordUppercaseReq.classList.remove("invalid-req")
+        passwordUppercaseReq.classList.add("valid-req")
+    } else {
+        passwordUppercaseReq.classList.remove("valid-req")
+        passwordUppercaseReq.classList.add("invalid-req")
+    }
+
+    if(password.match(symbols)) {
+        passwordSymbolReq.classList.remove("invalid-req")
+        passwordSymbolReq.classList.add("valid-req")
+    } else {
+        passwordSymbolReq.classList.remove("valid-req")
+        passwordSymbolReq.classList.add("invalid-req")
+    }
+});
+
+signupPasswordInput.addEventListener("blur", () => {
+    passwordRequirementsContainer.classList.add("hidden");
 });
 
 closeLoginDialogBtn.addEventListener("click", () => {
