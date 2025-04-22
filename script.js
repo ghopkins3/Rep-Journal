@@ -83,7 +83,7 @@ let userSession;
 let userAccessToken;
 let userID;
 
-let test = "t";
+let test = "test";
 
 supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
