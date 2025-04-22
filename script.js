@@ -83,8 +83,6 @@ let userSession;
 let userAccessToken;
 let userID;
 
-let test = "test";
-
 supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
         signUpBtn.classList.add("hidden");
