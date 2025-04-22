@@ -312,6 +312,11 @@ footer {
         height: 1.5rem;
     }
 
+    .submit-sign-up-button {
+        margin-top: 10rem;
+        margin-left: 8rem;
+    }
+
     .diary-header-container {
         justify-content: center;
     }
@@ -542,10 +547,12 @@ footer {
     }
 
     .password-requirements {
+        position: absolute;
+        margin-left: 3rem;
         margin-top: 0.25rem;
-        margin-bottom: 1rem;
         font-size: 0.75rem;
         text-align: center;
+        border: 2px solid red;
     }
 
     .password-req-header {
