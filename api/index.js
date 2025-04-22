@@ -340,7 +340,8 @@ app.delete("/workout-exercise/id=:id", supabaseAuthMiddleware, async (req, res) 
 
 app.get("/exercise_library", async (req, res) => {
     try {
-        let {data, error} = await supabase.from("exercise_library").select();
+        let { data, error } = await supabase
+            .from("exercise_library").select();
         
         return res.send(data);
     } catch(error) {
@@ -350,9 +351,9 @@ app.get("/exercise_library", async (req, res) => {
 
 app.get("/exercise_library/name", async (req, res) => {
     try {
-        let {data, error} = await supabase
+        let { data, error } = await supabase
         .from("exercise_library")
-        .select("name")
+        .select("name");
         
         return res.send(data);
     } catch (error) {
@@ -360,6 +361,40 @@ app.get("/exercise_library/name", async (req, res) => {
     }
 });
 
+app.get("/user/username=:username", async (req, res) => {
+    try {
+      const { count, error } = await supabase
+        .from("user")
+        .select("username", { count: "exact", head: true })
+        .ilike("username", req.params.username.trim());
+  
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
+  
+      return res.status(200).json({ count });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+});
+
+app.get("/user/email=:email", async (req, res) => {
+    try {
+      const { count, error } = await supabase
+        .from("user")
+        .select("email", { count: "exact", head: true })
+        .ilike("email", req.params.email.trim());
+  
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
+  
+      return res.status(200).json({ count });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+});
+  
 app.post("/signup", postSignUp);
 app.post("/login", postLogin);
 

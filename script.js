@@ -1250,7 +1250,35 @@ async function tryLogin() {
     }
 }
 
-async function trySignUp() {
+async function trySignUp(email, username) {
+    // try {
+    //     const response = await fetch(`http://localhost:3000/user/username=${username}`, {
+    //         method: "GET",
+    //         headers: getHeaders(),
+    //     });
+
+    //     if(!response.ok) {
+    //         throw new Error("Could not fetch username");
+    //     }
+
+    // } catch(error) {
+    //     console.error(error);
+    // }
+
+    // try {
+    //     const response = await fetch(`http://localhost:3000/email/email=${email}`, {
+    //         method: "GET",
+    //         headers: getHeaders(),
+    //     });
+
+    //     if(!response.ok) {
+    //         throw new Error("Could not fetch username");
+    //     }
+
+    // } catch(error) {
+    //     console.error(error);
+    // }
+
     try {
         await postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
     } catch(error) {
