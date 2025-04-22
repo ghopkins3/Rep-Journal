@@ -347,6 +347,27 @@ document.addEventListener("keydown", (event) => {
             signupEmailInput.value = "";
             signupUsernameInput.value = "";
             signupPasswordInput.value = "";
+
+            signupPasswordInput.classList.remove("invalid");
+            signupPasswordInput.classList.remove("valid");
+
+            passwordLengthReq.classList.add("invalid-req");
+            passwordLengthReq.classList.remove("valid-req");
+
+            passwordLowercaseReq.classList.add("invalid-req");
+            passwordLowercaseReq.classList.remove("valid-req");
+
+            passwordUppercaseReq.classList.add("invalid-req");
+            passwordUppercaseReq.classList.remove("valid-req");
+
+            passwordDigitReq.classList.add("invalid-req");
+            passwordDigitReq.classList.remove("valid-req");
+            
+            passwordSymbolReq.classList.add("invalid-req");
+            passwordSymbolReq.classList.remove("valid-req");
+
+            passwordRequirementsContainer.classList.add("hidden");
+
             signUpDialog.close();
         } else if(loginDialog.open) {
             loginUsernameInput.value = "";
@@ -485,10 +506,6 @@ signupPasswordInput.addEventListener("keyup", () => {
     }
 });
 
-signupPasswordInput.addEventListener("blur", () => {
-    passwordRequirementsContainer.classList.add("hidden");
-});
-
 closeLoginDialogBtn.addEventListener("click", () => {
     loginUsernameInput.value = "";
     loginPasswordInput.value = "";
@@ -499,6 +516,27 @@ closeSignUpDialogBtn.addEventListener("click", () => {
     signupEmailInput.value = "";
     signupUsernameInput.value = "";
     signupPasswordInput.value = "";
+
+    signupPasswordInput.classList.remove("invalid");
+    signupPasswordInput.classList.remove("valid");
+
+    passwordLengthReq.classList.add("invalid-req");
+    passwordLengthReq.classList.remove("valid-req");
+
+    passwordLowercaseReq.classList.add("invalid-req");
+    passwordLowercaseReq.classList.remove("valid-req");
+
+    passwordUppercaseReq.classList.add("invalid-req");
+    passwordUppercaseReq.classList.remove("valid-req");
+
+    passwordDigitReq.classList.add("invalid-req");
+    passwordDigitReq.classList.remove("valid-req");
+    
+    passwordSymbolReq.classList.add("invalid-req");
+    passwordSymbolReq.classList.remove("valid-req");
+
+    passwordRequirementsContainer.classList.add("hidden");
+    
     signUpDialog.close();
 });
 
@@ -864,7 +902,7 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
         console.log("user:", userData.data.user);
         console.log("auth:", authToken);
         try {
-            const response = await fetch("https://rep-journal.vercel.app/exercise", {
+            const response = await fetch("http://localhost:3000/exercise", {
                 method: "POST",
                 body: JSON.stringify({
                     exercise_name: exerciseName,
@@ -922,7 +960,7 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight, userID
 
         try {
             
-            const response = await fetch("https://rep-journal.vercel.app/exercise-set", {
+            const response = await fetch("http://localhost:3000/exercise-set", {
                 method: "POST",
                 body: JSON.stringify({
                     exercise_id: exerciseID,
@@ -954,7 +992,7 @@ async function getWorkoutByDate(date, authToken) {
         console.log("trying get workout by date...");
         console.log("auth token from workout by id:", authToken);
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/workout/date=${date}`, {
+            const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
                 method: "GET",
                 headers: getHeaders(authToken),
             });
@@ -983,7 +1021,7 @@ async function postWorkoutData(date, userID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch("https://rep-journal.vercel.app/workout", {
+            const response = await fetch("http://localhost:3000/workout", {
                 method: "POST",
                 body: JSON.stringify({
                     date: date,
@@ -1011,7 +1049,7 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authTo
         return;
     } else {
         try {
-            const response = await fetch("https://rep-journal.vercel.app/workout-exercise", {
+            const response = await fetch("http://localhost:3000/workout-exercise", {
                 method: "POST",
                 body: JSON.stringify({
                     workout_id: workoutID,
@@ -1039,7 +1077,7 @@ async function getExerciseDataByWorkoutID(workoutID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/workout-exercise/workout-id=${workoutID}`, {
+            const response = await fetch(`http://localhost:3000/workout-exercise/workout-id=${workoutID}`, {
                 method: "GET",
                 headers: getHeaders(authToken),
             });
@@ -1065,7 +1103,7 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
         return; 
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/exercise/id=${exerciseID}`, {
+            const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
                 method: "PUT",
                 body: JSON.stringify({
                     exercise_name: exerciseName
@@ -1090,7 +1128,7 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/exercise-set/id=${exerciseID}`, {
+            const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
                 method: "PUT",
                 body: JSON.stringify({
                     sets: sets,
@@ -1116,7 +1154,7 @@ async function deleteExerciseByID(exerciseID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/exercise/id=${exerciseID}`, {
+            const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
                 method: "DELETE",
                 headers: getHeaders(authToken),
             });
@@ -1138,7 +1176,7 @@ async function deleteExerciseSetDataByID(exerciseID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/exercise-set/id=${exerciseID}`, {
+            const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
                 method: "DELETE",
                 headers: getHeaders(authToken),
             });
@@ -1158,7 +1196,7 @@ async function deleteWorkoutByDate(date, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`https://rep-journal.vercel.app/workout/date=${date}`, {
+            const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
                 method: "DELETE",
                 headers: getHeaders(authToken),
             });
@@ -1179,7 +1217,7 @@ async function postUser(email, username, password) {
     console.log(username);
     console.log(password);
     try {
-        const response = await fetch(`https://rep-journal.vercel.app/signup`, {
+        const response = await fetch(`http://localhost:3000/signup`, {
             method: "POST",
             body: JSON.stringify({
                 email: email,
@@ -1212,7 +1250,7 @@ async function postUser(email, username, password) {
 async function loginUser(email, password) {
 
     try {
-        const response = await fetch(`https://rep-journal.vercel.app/login`, {
+        const response = await fetch(`http://localhost:3000/login`, {
             method: "POST",
             body: JSON.stringify({
                 email: email,
@@ -1271,7 +1309,7 @@ async function trySignUp() {
     let emailCount = 0;
 
     try {
-        const response = await fetch(`https://rep-journal.vercel.app/user/username=${username}`, {
+        const response = await fetch(`http://localhost:3000/user/username=${username}`, {
             method: "GET",
             headers: getHeaders(),
         });
@@ -1288,7 +1326,7 @@ async function trySignUp() {
     }
 
     try {
-        const response = await fetch(`https://rep-journal.vercel.app/user/email=${email}`, {
+        const response = await fetch(`http://localhost:3000/user/email=${email}`, {
             method: "GET",
             headers: getHeaders(),
         });
