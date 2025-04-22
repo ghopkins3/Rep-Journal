@@ -1267,6 +1267,8 @@ async function trySignUp() {
     const email = signupEmailInput.value;
     const username = signupUsernameInput.value;
     const password = signupPasswordInput.value;
+    let usernameCount = 0;
+    let emailCount = 0;
 
     try {
         const response = await fetch(`https://rep-journal.vercel.app/user/username=${username}`, {
@@ -1278,7 +1280,7 @@ async function trySignUp() {
             throw new Error("Could not fetch username");
         }
 
-        const usernameCount = await response.json();
+        usernameCount = await response.json();
         console.log("username count: ", usernameCount);
 
     } catch(error) {
@@ -1286,7 +1288,7 @@ async function trySignUp() {
     }
 
     try {
-        const response = await fetch(`https://rep-journal.vercel.app/email/email=${email}`, {
+        const response = await fetch(`https://rep-journal.vercel.app/user/email=${email}`, {
             method: "GET",
             headers: getHeaders(),
         });
@@ -1295,14 +1297,14 @@ async function trySignUp() {
             throw new Error("Could not fetch username");
         }
 
-        const emailCount = await response.json();
-        console.log("username count: ", emailCount);
+        emailCount = await response.json();
+        console.log("email count: ", emailCount);
 
     } catch(error) {
         console.error(error);
     }
 
-    if(usernameCount === 0 && emailCount === 0) {
+    if((usernameCount && usernameCount === 0) && (emailCount && emailCount === 0)) {
         try {
             await postUser(email, username, password);
         } catch(error) {
