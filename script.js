@@ -502,6 +502,18 @@ closeSignUpDialogBtn.addEventListener("click", () => {
     signUpDialog.close();
 });
 
+signUpDialog.addEventListener("keydown", (event) => {
+    if(event.key === "SPACE" || event.key === " ") {
+        event.preventDefault();
+    }
+});
+
+loginDialog.addEventListener("keydown", (event) => {
+    if(event.key === "SPACE" || event.key === " ") {
+        event.preventDefault();
+    }
+});
+
 submitLoginBtn.addEventListener("click", tryLogin);
 submitSignUpBtn.addEventListener("click", trySignUp);
 
