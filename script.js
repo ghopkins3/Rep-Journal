@@ -1262,39 +1262,54 @@ async function tryLogin() {
     }
 }
 
-async function trySignUp(email, username) {
-    // try {
-    //     const response = await fetch(`http://localhost:3000/user/username=${username}`, {
-    //         method: "GET",
-    //         headers: getHeaders(),
-    //     });
+async function trySignUp() {
 
-    //     if(!response.ok) {
-    //         throw new Error("Could not fetch username");
-    //     }
-
-    // } catch(error) {
-    //     console.error(error);
-    // }
-
-    // try {
-    //     const response = await fetch(`http://localhost:3000/email/email=${email}`, {
-    //         method: "GET",
-    //         headers: getHeaders(),
-    //     });
-
-    //     if(!response.ok) {
-    //         throw new Error("Could not fetch username");
-    //     }
-
-    // } catch(error) {
-    //     console.error(error);
-    // }
+    const email = signupEmailInput.value;
+    const username = signupUsernameInput.value;
+    const password = signupPasswordInput.value;
 
     try {
-        await postUser(signupEmailInput.value, signupUsernameInput.value, signupPasswordInput.value);
+        const response = await fetch(`http://localhost:3000/user/username=${username}`, {
+            method: "GET",
+            headers: getHeaders(),
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not fetch username");
+        }
+
+        const usernameCount = await response.json();
+        console.log("username count: ", usernameCount);
+
     } catch(error) {
         console.error(error);
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/email/email=${email}`, {
+            method: "GET",
+            headers: getHeaders(),
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not fetch username");
+        }
+
+        const emailCount = await response.json();
+        console.log("username count: ", emailCount);
+
+    } catch(error) {
+        console.error(error);
+    }
+
+    if(usernameCount === 0 && emailCount === 0) {
+        try {
+            await postUser(email, username, password);
+        } catch(error) {
+            console.error(error);
+        }
+    } else {
+        alert("Username or email error");
     }
 }
 
