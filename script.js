@@ -439,7 +439,8 @@ signUpBtn.addEventListener("click", (event) => {
     }
 });
 
-const checkEmailExists = createDebouncedEmailChecker();
+const checkEmailExists = createDebouncedInputChecker(emailExists, 200);
+const checkUsernameExists = createDebouncedInputChecker(usernameExists, 200);
 
 signupEmailInput.addEventListener("keyup", (event) => {
     let email = event.target.value.trim();
@@ -448,6 +449,14 @@ signupEmailInput.addEventListener("keyup", (event) => {
         checkEmailExists(email);
     }
 });
+
+signupUsernameInput.addEventListener("keyup", (event) => {
+    let username = event.target.value.trim();
+
+    if(username != "") {
+        checkUsernameExists(username);
+    }
+})
 
 signupPasswordInput.addEventListener("focus", () => {
     passwordRequirementsContainer.classList.remove("hidden");
@@ -1387,16 +1396,16 @@ async function emailExists(email) {
     return emailCount === 1;
 };
 
-function createDebouncedEmailChecker() {
-    return debounce(async (email) => {
-        const exists = await emailExists(email);
-        console.log("exists:", exists);
+function createDebouncedInputChecker(checkAvailability, delay = 300) {
+    return debounce(async (input) => {
+        const exists = await checkAvailability(input);
+        console.log(`${input} exists: ${exists}`);
         if(exists) {
-            console.log("email taken.");
+            console.log(`${input} taken.`);
         } else {
-            console.log("email available.");
+            console.log(`${input} available.`);
         }
-    }, 300);
+    }, delay);
 }; 
 
 async function usernameExists(username) {
