@@ -504,6 +504,9 @@ signupPasswordInput.addEventListener("keyup", () => {
         passwordSymbolReq.classList.remove("valid-req")
         passwordSymbolReq.classList.add("invalid-req")
     }
+
+
+    
 });
 
 closeLoginDialogBtn.addEventListener("click", () => {
@@ -1302,9 +1305,9 @@ async function tryLogin() {
 
 async function trySignUp() {
 
-    const email = signupEmailInput.value;
-    const username = signupUsernameInput.value;
-    const password = signupPasswordInput.value;
+    const email = signupEmailInput.value.trim();
+    const username = signupUsernameInput.value.trim();
+    const password = signupPasswordInput.value.trim();
     let usernameCount = 0;
     let emailCount = 0;
 
@@ -1332,7 +1335,7 @@ async function trySignUp() {
         });
 
         if(!response.ok) {
-            throw new Error("Could not fetch username");
+            throw new Error("Could not fetch email");
         }
 
         emailCount = await response.json();
@@ -1351,6 +1354,48 @@ async function trySignUp() {
     } else {
         alert("Username or email error");
     }
+}
+
+async function emailExists(email) {
+    try {
+        const response = await fetch(`http://localhost:3000/user/email=${email.trim()}`, {
+            method: "GET",
+            headers: getHeaders(),
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not fetch email");
+        }
+
+        const emailCount = await response.json();
+        console.log("email count: ", emailCount);
+
+    } catch(error) {
+        console.error(error);
+    }
+
+    return emailCount === 1;
+}
+
+async function usernameExists(username) {
+    try {
+        const response = await fetch(`http://localhost:3000/user/username=${username.trim()}`, {
+            method: "GET",
+            headers: getHeaders(),
+        });
+
+        if(!response.ok) {
+            throw new Error("Could not fetch email");
+        }
+
+        const usernameCount = await response.json();
+        console.log("username count: ", usernameCount);
+
+    } catch(error) {
+        console.error(error);
+    }
+
+    return usernameCount === 1;
 }
 
 function getHeaders(authToken = null) {
