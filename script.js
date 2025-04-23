@@ -439,23 +439,27 @@ signUpBtn.addEventListener("click", (event) => {
     }
 });
 
-const checkEmailExists = createDebouncedInputChecker(emailExists, 200);
-const checkUsernameExists = createDebouncedInputChecker(usernameExists, 200);
+const checkEmailExists = createDebouncedInputChecker(emailExists, signupEmailInput);
+const checkUsernameExists = createDebouncedInputChecker(usernameExists, signupUsernameInput);
 
 signupEmailInput.addEventListener("keyup", (event) => {
     let email = event.target.value.trim();
-
-    if(email != "") {
-        checkEmailExists(email);
-    }
+    checkEmailExists(email);
 });
+
+signupEmailInput.addEventListener("blur", (event) => {
+    event.target.classList.remove("invalid");
+    event.target.classList.remove("valid");
+});
+
+signupEmailInput.addEventListener("focus", (event) => {
+    let email = event.target.value.trim();
+    checkEmailExists(email);
+})
 
 signupUsernameInput.addEventListener("keyup", (event) => {
     let username = event.target.value.trim();
-
-    if(username != "") {
-        checkUsernameExists(username);
-    }
+    checkUsernameExists(username);
 })
 
 signupPasswordInput.addEventListener("focus", () => {
@@ -1386,7 +1390,6 @@ async function emailExists(email) {
         }
 
         emailCount = await response.json();
-        console.log("email count: ", emailCount.count);
         emailCount = emailCount.count;
 
     } catch(error) {
@@ -1395,18 +1398,6 @@ async function emailExists(email) {
 
     return emailCount === 1;
 };
-
-function createDebouncedInputChecker(checkAvailability, delay = 300) {
-    return debounce(async (input) => {
-        const exists = await checkAvailability(input);
-        console.log(`${input} exists: ${exists}`);
-        if(exists) {
-            console.log(`${input} taken.`);
-        } else {
-            console.log(`${input} available.`);
-        }
-    }, delay);
-}; 
 
 async function usernameExists(username) {
     let usernameCount;
@@ -1421,7 +1412,6 @@ async function usernameExists(username) {
         }
 
         usernameCount = await response.json();
-        console.log("username count: ", usernameCount);
         usernameCount = usernameCount.count;
 
     } catch(error) {
@@ -1430,6 +1420,27 @@ async function usernameExists(username) {
 
     return usernameCount === 1;
 }
+
+function createDebouncedInputChecker(checkAvailability, target, delay = 100) {
+    return debounce(async (input) => {
+
+        if(input === "" || input.length === 0) {
+            target.classList.remove("invalid");
+            target.classList.remove("valid");
+        }
+
+        if(input !== "" && input !== null && input !== undefined && input.length !== 0) {
+            const exists = await checkAvailability(input);
+            if(exists) {
+                target.classList.remove("valid");
+                target.classList.add("invalid");
+            } else {
+                target.classList.remove("invalid");
+                target.classList.add("valid");
+            }
+        }
+    }, delay);
+}; 
 
 function getHeaders(authToken = null) {
     const headers = {
