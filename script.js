@@ -439,6 +439,16 @@ signUpBtn.addEventListener("click", (event) => {
     }
 });
 
+const checkEmailExists = createDebouncedEmailChecker();
+
+signupEmailInput.addEventListener("keyup", (event) => {
+    let email = event.target.value.trim();
+
+    if(email != "") {
+        checkEmailExists(email);
+    }
+});
+
 signupPasswordInput.addEventListener("focus", () => {
     passwordRequirementsContainer.classList.remove("hidden");
     signupPasswordInput.addEventListener("keyup", () => {
@@ -504,9 +514,6 @@ signupPasswordInput.addEventListener("keyup", () => {
         passwordSymbolReq.classList.remove("valid-req")
         passwordSymbolReq.classList.add("invalid-req")
     }
-
-
-    
 });
 
 closeLoginDialogBtn.addEventListener("click", () => {
@@ -892,11 +899,11 @@ async function appendEditExerciseFormToDOM() {
             exerciseFormContainer.appendChild(exerciseFormToAppend);
         }
     }
-}
+};
 
 function appendLoginErrorNotificationToDOM() {
     loginErrorNotif.classList.remove("hidden");
-}
+};
 
 async function postExerciseData(exerciseName, sets, repetitions, weight, date, userID, authToken) {
     if(!userData.data.user) {
@@ -949,7 +956,7 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
             console.error(error);
         }
     }
-}
+};
 
 // post to exercise sets table
 async function postExerciseSetData(exerciseID, sets, repetitions, weight, userID, authToken) {
@@ -984,7 +991,7 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight, userID
             console.error(error);
         }
     }
-}
+};
 
 async function getWorkoutByDate(date, authToken) {
     if(!userData.data.user) {
@@ -1016,7 +1023,7 @@ async function getWorkoutByDate(date, authToken) {
             console.error(error);
         }
     }
-}
+};
 
 // post to workout table
 async function postWorkoutData(date, userID, authToken) {
@@ -1044,7 +1051,7 @@ async function postWorkoutData(date, userID, authToken) {
             console.error(error);
         }
     }
-}
+};
 
 // post to workout exercises junction table
 async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authToken) {
@@ -1070,7 +1077,7 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authTo
             console.error(error);
         }
     }
-}
+};
 
 // function to get data to popoulate table
 async function getExerciseDataByWorkoutID(workoutID, authToken) {
@@ -1098,7 +1105,7 @@ async function getExerciseDataByWorkoutID(workoutID, authToken) {
             console.error(error);
         }
     }
-}
+};
 
 // functions to put to appropriate tables -> edit data in row
 async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, weight, authToken) {
@@ -1124,7 +1131,7 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
             console.error(error);
         }
     }
-}
+};
 
 async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weight, authToken) {
     if(!userData.data.user) {
@@ -1149,7 +1156,7 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
             console.error(error);
         }
     }
-}
+};
 
 // functions to delete from appropriate tables -> delete data in row
 async function deleteExerciseByID(exerciseID, authToken) {
@@ -1172,7 +1179,7 @@ async function deleteExerciseByID(exerciseID, authToken) {
             console.error(error);
         }
     }
-}
+};
 
 async function deleteExerciseSetDataByID(exerciseID, authToken) {
     if(!userData.data.user) {
@@ -1192,7 +1199,7 @@ async function deleteExerciseSetDataByID(exerciseID, authToken) {
             console.error(error);
         }
     }
-}
+};
 
 async function deleteWorkoutByDate(date, authToken) {
     if(!userData.data.user) {
@@ -1212,7 +1219,7 @@ async function deleteWorkoutByDate(date, authToken) {
             console.error(error);
         }
     }
-}
+};
 
 async function postUser(email, username, password) {
 
@@ -1248,7 +1255,7 @@ async function postUser(email, username, password) {
     } catch (error) {
         console.error(error);
     }
-}
+};
 
 async function loginUser(email, password) {
 
@@ -1282,7 +1289,7 @@ async function loginUser(email, password) {
     } catch (error) {
         console.error(error);
     }
-}
+};
 
 async function logout() {
     try {
@@ -1293,7 +1300,7 @@ async function logout() {
     } catch(error) {
         console.error("Logout error:", error.message);
     }
-}
+};
 
 async function tryLogin() {
     try {
@@ -1301,7 +1308,7 @@ async function tryLogin() {
     } catch(error) {
         console.error(error);
     }
-}
+};
 
 async function trySignUp() {
 
@@ -1354,9 +1361,11 @@ async function trySignUp() {
     } else {
         alert("Username or email error");
     }
-}
+};
 
 async function emailExists(email) {
+    let emailCount;
+
     try {
         const response = await fetch(`http://localhost:3000/user/email=${email.trim()}`, {
             method: "GET",
@@ -1367,17 +1376,31 @@ async function emailExists(email) {
             throw new Error("Could not fetch email");
         }
 
-        const emailCount = await response.json();
-        console.log("email count: ", emailCount);
+        emailCount = await response.json();
+        console.log("email count: ", emailCount.count);
+        emailCount = emailCount.count;
 
     } catch(error) {
         console.error(error);
     }
 
     return emailCount === 1;
-}
+};
+
+function createDebouncedEmailChecker() {
+    return debounce(async (email) => {
+        const exists = await emailExists(email);
+        console.log("exists:", exists);
+        if(exists) {
+            console.log("email taken.");
+        } else {
+            console.log("email available.");
+        }
+    }, 300);
+}; 
 
 async function usernameExists(username) {
+    let usernameCount;
     try {
         const response = await fetch(`http://localhost:3000/user/username=${username.trim()}`, {
             method: "GET",
@@ -1388,8 +1411,9 @@ async function usernameExists(username) {
             throw new Error("Could not fetch email");
         }
 
-        const usernameCount = await response.json();
+        usernameCount = await response.json();
         console.log("username count: ", usernameCount);
+        usernameCount = usernameCount.count;
 
     } catch(error) {
         console.error(error);
@@ -1421,3 +1445,13 @@ const pageAccessedByReload = (
 window.addEventListener("resize", () => {
     location.reload();
 })
+
+function debounce(callback, wait) {
+    let timeoutId = null;
+    return(...args) => {
+        window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+            callback(...args);
+        }, wait);
+    };
+};
