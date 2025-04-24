@@ -55,13 +55,28 @@ only adding 2.5lbs to weight
     margin-top: 5rem;
 }
 
-/* .sign-up-dialog .username-input, .email-input {
-    outline: none;
+.email-input-container {
+    margin-top: 4rem;
+    margin-left: 1rem;
 }
 
-#sign-up-password {
-    outline: none;
-} */
+.username-input-container {
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+.password-input-container {
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+#signup-password-input {
+    margin-left: 0.2rem;
+}
+
+#signup-email-input {
+    margin-left: 1.6rem;
+}
 
 footer {
     background-color: #19212a;
