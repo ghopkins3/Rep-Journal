@@ -453,14 +453,28 @@ signupEmailInput.addEventListener("blur", (event) => {
 });
 
 signupEmailInput.addEventListener("focus", (event) => {
+    passwordRequirementsContainer.classList.add("hidden");
     let email = event.target.value.trim();
     checkEmailExists(email);
-})
+});
 
 signupUsernameInput.addEventListener("keyup", (event) => {
     let username = event.target.value.trim();
     checkUsernameExists(username);
-})
+});
+
+signupUsernameInput.addEventListener("focus", (event) => {
+    passwordRequirementsContainer.classList.add("hidden");
+    let username = event.target.value.trim();
+    checkUsernameExists(username);
+});
+
+signupUsernameInput.addEventListener("blur", (event) => {
+    event.target.classList.remove("invalid");
+    event.target.classList.remove("valid");
+});
+
+
 
 signupPasswordInput.addEventListener("focus", () => {
     passwordRequirementsContainer.classList.remove("hidden");
@@ -471,9 +485,11 @@ signupPasswordInput.addEventListener("focus", () => {
             signupPasswordInput.classList.remove("invalid");
             signupPasswordInput.classList.add("valid");
         } else if(password.length === 0) {
+            signupPasswordInput.classList.remove("remove-outline");
             signupPasswordInput.classList.remove("invalid");
             signupPasswordInput.classList.remove("valid");
         } else {
+            signupPasswordInput.classList.add("remove-outline");
             signupPasswordInput.classList.remove("valid");
             signupPasswordInput.classList.add("invalid");
         }
@@ -481,7 +497,7 @@ signupPasswordInput.addEventListener("focus", () => {
 });
 
 signupPasswordInput.addEventListener("keyup", () => {
-    let password = signupPasswordInput.value;
+    let password = signupPasswordInput.value.trim();
 
     let lowercaseLetters = /[a-z]/g;
     let uppercaseLetters = /[A-Z]/g;
@@ -1427,14 +1443,17 @@ function createDebouncedInputChecker(checkAvailability, target, delay = 100) {
         if(input === "" || input.length === 0) {
             target.classList.remove("invalid");
             target.classList.remove("valid");
+            target.classList.remove("remove-outline");
         }
 
         if(input !== "" && input !== null && input !== undefined && input.length !== 0) {
             const exists = await checkAvailability(input);
             if(exists) {
+                target.classList.add("remove-outline");
                 target.classList.remove("valid");
                 target.classList.add("invalid");
             } else {
+                target.classList.add("remove-outline");
                 target.classList.remove("invalid");
                 target.classList.add("valid");
             }

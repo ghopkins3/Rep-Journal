@@ -55,9 +55,13 @@ only adding 2.5lbs to weight
     margin-top: 5rem;
 }
 
-.sign-up-dialog .username-input, .email-input {
+/* .sign-up-dialog .username-input, .email-input {
     outline: none;
 }
+
+#sign-up-password {
+    outline: none;
+} */
 
 footer {
     background-color: #19212a;
@@ -67,6 +71,10 @@ footer {
     width: 100%;
     height: 2rem;
     line-height: 2rem;
+}
+
+.remove-outline {
+    outline: none;
 }
 
 .hidden {
@@ -96,10 +104,6 @@ footer {
 
 .invalid-req::before { 
     content: "\2718"
-}
-
-#sign-up-password {
-    outline: none;
 }
 
 @media (min-width: 601px) {
@@ -286,6 +290,18 @@ footer {
     #delete-row-button {
         margin-left: 1rem;
         width: 1.5rem;
+    }
+
+    .password-requirements {
+        position: absolute;
+        margin-left: 2rem;
+        margin-top: 0.5rem;
+        text-align: center;
+    }
+
+    .submit-sign-up-button {
+        margin-top: 10rem;
+        margin-left: 8rem;
     }
 }
 
@@ -566,5 +582,9 @@ footer {
 
     .password-req-text {
         margin-bottom: 0.2rem;
+    }
+
+    .login-dialog, .sign-up-dialog {
+        margin: auto;
     }
 }
