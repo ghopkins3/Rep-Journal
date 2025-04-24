@@ -334,7 +334,6 @@ document.addEventListener("click", (event) => {
     }
 });
 
-
 document.addEventListener("keydown", (event) => {
     if(event.key === "Enter") {
         let existingExerciseForms = document.getElementsByClassName("exercise-form");
@@ -460,7 +459,15 @@ signupEmailInput.addEventListener("focus", (event) => {
 
 signupUsernameInput.addEventListener("keyup", (event) => {
     let username = event.target.value.trim();
-    checkUsernameExists(username);
+    let symbols = /[^a-zA-Z0-9\s]/g;
+    
+    if(username.match(symbols)) {
+        event.target.classList.add("remove-outline");
+        event.target.classList.remove("valid");
+        event.target.classList.add("invalid");
+    } else {
+        checkUsernameExists(username);
+    }
 });
 
 signupUsernameInput.addEventListener("focus", (event) => {
@@ -473,8 +480,6 @@ signupUsernameInput.addEventListener("blur", (event) => {
     event.target.classList.remove("invalid");
     event.target.classList.remove("valid");
 });
-
-
 
 signupPasswordInput.addEventListener("focus", () => {
     passwordRequirementsContainer.classList.remove("hidden");
