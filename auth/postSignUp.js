@@ -31,17 +31,17 @@ export const postSignUp = async (req, res) => {
         res.status(500).send(error.message, "Email address already exists.")
     }
 
-    // if(usernameCount === 1) {
-    //     res.status(409).send({ error: "Username already taken." });
-    // } else {
-    //     try {
-    //         let authID = await createAuthUser(email, password);
+    if(usernameCount === 1) {
+        res.status(409).send({ error: "Username already taken." });
+    } else {
+        try {
+            let authID = await createAuthUser(email, password);
     
-    //         await createDbUser({ auth_id: authID, username, email })
+            await createDbUser({ auth_id: authID, username, email })
     
-    //         res.status(200).send("Successfully signed user up");
-    //     } catch(error) {
-    //         res.status(400).send("Failed to sign user up");
-    //     }
-    // }
+            res.status(200).send("Successfully signed user up");
+        } catch(error) {
+            res.status(400).send("Failed to sign user up");
+        }
+    }
 };
