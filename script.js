@@ -545,6 +545,10 @@ signupPasswordInput.addEventListener("keyup", () => {
     }
 });
 
+signupPasswordInput.addEventListener("blur", (event) => {
+    passwordRequirementsContainer.classList.add("hidden");
+});
+
 closeLoginDialogBtn.addEventListener("click", () => {
     loginUsernameInput.value = "";
     loginPasswordInput.value = "";
