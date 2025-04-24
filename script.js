@@ -60,6 +60,8 @@ loginErrorNotif.appendChild(loginErrorNotifText);
 
 document.querySelector("#login-notif-img");
 
+let change = "yes";
+
 loginErrorNotif.classList.add("hidden");
 
 let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
