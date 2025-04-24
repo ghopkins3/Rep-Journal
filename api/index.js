@@ -7,7 +7,7 @@ import { postLogin } from "../auth/postLogin.js";
 import { supabaseAuthMiddleware } from "../auth/supabaseAuthMiddleware.js";
 import { getUser } from "../auth/getUser.js";
 import { putUser } from "../auth/putUser.js";
-import { deleteUser } from "../auth/deleteUser.js";
+import { deleteUser } from "../auth/deleteUser.js";``
 
 const app = express();
 let PORT = process.env.PORT;
