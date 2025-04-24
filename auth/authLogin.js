@@ -3,11 +3,7 @@ import { supabase } from "../lib/backendSupabaseClient.js";
 export const authLogin = async (email, password) => {
 
     try {
-
-        console.log("email to use:", email);
-
         if(!email.includes("@")) {
-            console.log("yikes");
             const { data, error } = await supabase
                 .from("user")
                 .select("email")
@@ -16,7 +12,6 @@ export const authLogin = async (email, password) => {
             if(error) return res.status(400).json({ error: "Username not found" });
 
             email = data[0].email;
-            console.log("email data: ", data[0].email);
         }
 
         const { data, error } = await supabase.auth.signInWithPassword({
