@@ -21,7 +21,7 @@ const submitSignUpBtn = document.querySelector(".submit-sign-up-button");
 const collapseOrExpandBtn = document.querySelector(".collapse-expand-button");
 collapseOrExpandBtn.classList.add("hidden");
 
-let test = "tes";
+let test = "te";
 
 const signupEmailInput = signUpDialog.querySelector(".email-input");
 const signupUsernameInput = signUpDialog.querySelector(".username-input");
