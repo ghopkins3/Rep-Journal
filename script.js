@@ -21,9 +21,9 @@ const submitSignUpBtn = document.querySelector(".submit-sign-up-button");
 const collapseOrExpandBtn = document.querySelector(".collapse-expand-button");
 collapseOrExpandBtn.classList.add("hidden");
 
-const signupEmailInput = signUpDialog.querySelector(".email-input");
-const signupUsernameInput = signUpDialog.querySelector(".username-input");
-const signupPasswordInput = signUpDialog.querySelector(".password-input");
+const signupEmailInput = signUpDialog.querySelector("#signup-email-input");
+const signupUsernameInput = signUpDialog.querySelector("#signup-username-input");
+const signupPasswordInput = signUpDialog.querySelector("#signup-password-input");
 
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
@@ -40,6 +40,13 @@ passwordLowercaseReq.classList.add("invalid-req");
 passwordUppercaseReq.classList.add("invalid-req");
 passwordDigitReq.classList.add("invalid-req");
 passwordSymbolReq.classList.add("invalid-req");
+
+const invalidEmailText = document.querySelector("#invalid-email-text");
+const invalidUsernameText = document.querySelector("#invalid-username-text");
+const invalidPasswordText = document.querySelector("#invalid-password-text");
+invalidEmailText.classList.add("hidden");
+invalidUsernameText.classList.add("hidden");
+invalidPasswordText.classList.add("hidden");
 
 const diaryHeaderContainer = document.querySelector(".diary-header-container");
 const loginErrorNotif = document.createElement("div");
@@ -442,29 +449,67 @@ const checkEmailExists = createDebouncedInputChecker(emailExists, signupEmailInp
 const checkUsernameExists = createDebouncedInputChecker(usernameExists, signupUsernameInput);
 
 signupEmailInput.addEventListener("keyup", (event) => {
-    let email = event.target.value.trim();
-    checkEmailExists(email);
+    const email = event.target.value.trim();
+
+    if(email === "" || email.length === 0) {
+        checkEmailExists.cancel();
+    }
+
+    if(email === "" || email.length === 0) {
+        event.target.classList.remove("remove-outline");
+        event.target.classList.remove("valid");
+        event.target.classList.remove("invalid");
+        invalidEmailText.classList.add("hidden");
+    } else if(!email.includes("@")) {
+        event.target.classList.add("remove-outline");
+        event.target.classList.remove("valid");
+        event.target.classList.add("invalid");
+        invalidEmailText.classList.remove("hidden");
+    } else if(email.includes("@")) {
+        checkEmailExists(email);
+    }
 });
 
 signupEmailInput.addEventListener("blur", (event) => {
     event.target.classList.remove("invalid");
     event.target.classList.remove("valid");
+    invalidEmailText.classList.add("hidden");
 });
 
 signupEmailInput.addEventListener("focus", (event) => {
     passwordRequirementsContainer.classList.add("hidden");
-    let email = event.target.value.trim();
-    checkEmailExists(email);
-});
-
-signupUsernameInput.addEventListener("keyup", (event) => {
-    let username = event.target.value.trim();
-    let symbols = /[^a-zA-Z0-9\s]/g;
-    
-    if(username.match(symbols)) {
+    const email = event.target.value.trim();
+    if(email === "" || email.length === 0) {
+        event.target.classList.remove("remove-outline");
+        event.target.classList.remove("valid");
+        event.target.classList.remove("invalid");
+        invalidEmailText.classList.add("hidden");
+    } else if(!email.includes("@")) {
         event.target.classList.add("remove-outline");
         event.target.classList.remove("valid");
         event.target.classList.add("invalid");
+        invalidEmailText.classList.remove("hidden");
+    } else if(email.includes("@")) {
+        event.target.classList.remove("invalid");
+        event.target.classList.add("valid");
+        invalidEmailText.classList.add("hidden");
+        checkEmailExists(email);
+    }
+});
+
+signupUsernameInput.addEventListener("keyup", (event) => {
+    const username = event.target.value.trim();
+    const symbols = /[^a-zA-Z0-9\s]/g;
+    
+    if(username === "" || username.length === 0) {
+        event.target.classList.remove("invalid");
+        event.target.classList.remove("valid");
+        event.target.classList.remove("remove-outline");
+    } else if(username.match(symbols)) {
+        event.target.classList.add("remove-outline");
+        event.target.classList.remove("valid");
+        event.target.classList.add("invalid");
+        invalidUsernameText.classList.remove("hidden");
     } else {
         checkUsernameExists(username);
     }
@@ -472,42 +517,51 @@ signupUsernameInput.addEventListener("keyup", (event) => {
 
 signupUsernameInput.addEventListener("focus", (event) => {
     passwordRequirementsContainer.classList.add("hidden");
-    let username = event.target.value.trim();
-    checkUsernameExists(username);
+    const username = event.target.value.trim();
+    if(username === "" || username.length === 0) {
+        event.target.classList.remove("remove-outline");
+    } else {
+        checkUsernameExists(username);
+    }
 });
 
 signupUsernameInput.addEventListener("blur", (event) => {
     event.target.classList.remove("invalid");
     event.target.classList.remove("valid");
+    event.target.classList.add("remove-outline");
+    invalidUsernameText.classList.add("hidden");
 });
 
 signupPasswordInput.addEventListener("focus", () => {
     passwordRequirementsContainer.classList.remove("hidden");
     signupPasswordInput.addEventListener("keyup", () => {
-        let password = signupPasswordInput.value;
+        const password = signupPasswordInput.value;
 
         if(password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).+$/) && password.length >= 8) {
             signupPasswordInput.classList.remove("invalid");
             signupPasswordInput.classList.add("valid");
+            invalidPasswordText.classList.add("hidden");
         } else if(password.length === 0) {
             signupPasswordInput.classList.remove("remove-outline");
             signupPasswordInput.classList.remove("invalid");
-            signupPasswordInput.classList.remove("valid");
+            signupPasswordInput.classList.remove("valid")
+            invalidPasswordText.classList.add("hidden");
         } else {
             signupPasswordInput.classList.add("remove-outline");
             signupPasswordInput.classList.remove("valid");
             signupPasswordInput.classList.add("invalid");
+            invalidPasswordText.classList.remove("hidden");
         }
     });
 });
 
 signupPasswordInput.addEventListener("keyup", () => {
-    let password = signupPasswordInput.value.trim();
+    const password = signupPasswordInput.value.trim();
 
-    let lowercaseLetters = /[a-z]/g;
-    let uppercaseLetters = /[A-Z]/g;
-    let digits = /[0-9]/g;
-    let symbols = /[^a-zA-Z0-9\s]/g;
+    const lowercaseLetters = /[a-z]/g;
+    const uppercaseLetters = /[A-Z]/g;
+    const digits = /[0-9]/g;
+    const symbols = /[^a-zA-Z0-9\s]/g;
 
     if(password.length >= 8) {
         passwordLengthReq.classList.remove("invalid-req");
@@ -552,6 +606,10 @@ signupPasswordInput.addEventListener("keyup", () => {
 
 signupPasswordInput.addEventListener("blur", (event) => {
     passwordRequirementsContainer.classList.add("hidden");
+    invalidPasswordText.classList.add("hidden");
+    event.target.classList.remove("invalid");
+    event.target.classList.remove("valid");
+    event.target.classList.add("remove-outline");
 });
 
 closeLoginDialogBtn.addEventListener("click", () => {
@@ -584,6 +642,9 @@ closeSignUpDialogBtn.addEventListener("click", () => {
     passwordSymbolReq.classList.remove("valid-req");
 
     passwordRequirementsContainer.classList.add("hidden");
+    invalidEmailText.classList.add("hidden");
+    invalidUsernameText.classList.add("hidden");
+    invalidPasswordText.classList.add("hidden");
     
     signUpDialog.close();
 });
@@ -1452,13 +1513,14 @@ async function usernameExists(username) {
     return usernameCount === 1;
 }
 
-function createDebouncedInputChecker(checkAvailability, target, delay = 100) {
+function createDebouncedInputChecker(checkAvailability, target, delay = 50) {
     return debounce(async (input) => {
 
-        if(input === "" || input.length === 0) {
-            target.classList.remove("invalid");
-            target.classList.remove("valid");
-            target.classList.remove("remove-outline");
+        const currentValue = target.value.trim();
+        console.log("current value:", currentValue);
+
+        if(currentValue === "" || currentValue.length === 0) {
+            return;
         }
 
         if(input !== "" && input !== null && input !== undefined && input.length !== 0) {
@@ -1467,11 +1529,33 @@ function createDebouncedInputChecker(checkAvailability, target, delay = 100) {
                 target.classList.add("remove-outline");
                 target.classList.remove("valid");
                 target.classList.add("invalid");
+                console.log(target);
+                if(target.id === "signup-email-input") {
+                    invalidEmailText.classList.remove("hidden");
+                } else if(target.id === "signup-username-input") {
+                    invalidUsernameText.classList.remove("hidden");
+                }
             } else {
                 target.classList.add("remove-outline");
                 target.classList.remove("invalid");
                 target.classList.add("valid");
+                if(target.id === "signup-email-input") {
+                    invalidEmailText.classList.add("hidden");
+                } else if(target.id === "signup-username-input") {
+                    invalidUsernameText.classList.add("hidden");
+                }
+                console.log(target);
             }
+        } else {
+            if(target.id === "signup-email-input") {
+                invalidEmailText.classList.remove("hidden");
+            } else if(target.id === "signup-username-input") {
+                invalidUsernameText.classList.remove("hidden");
+            }
+            target.classList.add("invalid");
+            target.classList.remove("valid");
+            target.classList.add("remove-outline");
+            console.log(target);
         }
     }, delay);
 }; 
@@ -1502,6 +1586,7 @@ window.addEventListener("resize", () => {
 
 function debounce(callback, wait) {
     let timeoutId = null;
+
     return(...args) => {
         window.clearTimeout(timeoutId);
         timeoutId = window.setTimeout(() => {

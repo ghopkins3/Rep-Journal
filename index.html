@@ -221,20 +221,30 @@
         <!-- Sign Up Dialog Box -->
         <dialog class="sign-up-dialog">
             <button class="close-signup-dialog-button">Exit</button>
+
             <div class="email-input-container">
-                <label for="email-input">Email</label>
-                <input type="email" name="signup-email-input" id="signup-email-input" class="email-input" placeholder="email@domain.com">
+                <div class="sign-up-input-label">
+                    <label for="email-input" class="sign-up-label">Email</label>
+                    <div class="invalid-input-text" id="invalid-email-text">* invalid email</div>
+                </div>
+                <input type="email" name="signup-email-input" id="signup-email-input" class="sign-up-input" placeholder="email@domain.com">
             </div>
             <div class="username-input-container">
-                <label for="username-input">Username</label>
-                <input type="text" name="signup-username-input" class="username-input" id="signup-username-input" placeholder="Username">
+                <div class="sign-up-input-label">    
+                    <label for="username-input" class="sign-up-label">Username</label>    
+                    <div class="invalid-input-text" id="invalid-username-text">* invalid username</div>
+                </div>
+                <input type="text" name="signup-username-input" class="sign-up-input" id="signup-username-input" placeholder="Username">
             </div>
             <div class="password-input-container">
-                <label for="password-input">Password</label>
+                <div class="sign-up-input-label">
+                    <label for="password-input" class="sign-up-label">Password</label>    
+                    <div class="invalid-input-text" id="invalid-password-text">* invalid password</div>
+                </div>
                 <input name="disable-pwd-mgr-1" type="password" id="disable-pwd-mgr-1" style="display: none;" value="disable-pwd-mgr-1" />
                 <input name="disable-pwd-mgr-2" type="password" id="disable-pwd-mgr-2" style="display: none;" value="disable-pwd-mgr-2" />
                 <input name="disable-pwd-mgr-3" type="password" id="disable-pwd-mgr-3" style="display: none;" value="disable-pwd-mgr-3" />
-                <input type="password" name="signup-password-input" class="password-input" id="signup-password-input" autocomplete="off" placeholder="Password">
+                <input type="password" name="signup-password-input" class="sign-up-input" id="signup-password-input" autocomplete="off" placeholder="Password">
             </div>
             <div class="password-requirements">
                 <p class="password-req-header">Password must contain the following:</p>
