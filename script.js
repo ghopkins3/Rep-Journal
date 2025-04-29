@@ -21,9 +21,9 @@ const submitSignUpBtn = document.querySelector(".submit-sign-up-button");
 const collapseOrExpandBtn = document.querySelector(".collapse-expand-button");
 collapseOrExpandBtn.classList.add("hidden");
 
-const signupEmailInput = signUpDialog.querySelector(".email-input");
-const signupUsernameInput = signUpDialog.querySelector(".username-input");
-const signupPasswordInput = signUpDialog.querySelector(".password-input");
+const signupEmailInput = signUpDialog.querySelector("#signup-email-input");
+const signupUsernameInput = signUpDialog.querySelector("#signup-username-input");
+const signupPasswordInput = signUpDialog.querySelector("#signup-password-input");
 
 const loginUsernameInput = loginDialog.querySelector(".username-input");
 const loginPasswordInput = loginDialog.querySelector(".password-input");
@@ -40,6 +40,13 @@ passwordLowercaseReq.classList.add("invalid-req");
 passwordUppercaseReq.classList.add("invalid-req");
 passwordDigitReq.classList.add("invalid-req");
 passwordSymbolReq.classList.add("invalid-req");
+
+const invalidEmailText = document.querySelector("#invalid-email-text");
+const invalidUsernameText = document.querySelector("#invalid-username-text");
+const invalidPasswordText = document.querySelector("#invalid-password-text");
+invalidEmailText.classList.add("hidden");
+invalidUsernameText.classList.add("hidden");
+invalidPasswordText.classList.add("hidden");
 
 const diaryHeaderContainer = document.querySelector(".diary-header-container");
 const loginErrorNotif = document.createElement("div");
@@ -442,29 +449,67 @@ const checkEmailExists = createDebouncedInputChecker(emailExists, signupEmailInp
 const checkUsernameExists = createDebouncedInputChecker(usernameExists, signupUsernameInput);
 
 signupEmailInput.addEventListener("keyup", (event) => {
-    let email = event.target.value.trim();
-    checkEmailExists(email);
+    const email = event.target.value.trim();
+
+    if(email === "" || email.length === 0) {
+        checkEmailExists.cancel();
+    }
+
+    if(email === "" || email.length === 0) {
+        event.target.classList.remove("remove-outline");
+        event.target.classList.remove("valid");
+        event.target.classList.remove("invalid");
+        invalidEmailText.classList.add("hidden");
+    } else if(!email.includes("@")) {
+        event.target.classList.add("remove-outline");
+        event.target.classList.remove("valid");
+        event.target.classList.add("invalid");
+        invalidEmailText.classList.remove("hidden");
+    } else if(email.includes("@")) {
+        checkEmailExists(email);
+    }
 });
 
 signupEmailInput.addEventListener("blur", (event) => {
     event.target.classList.remove("invalid");
     event.target.classList.remove("valid");
+    invalidEmailText.classList.add("hidden");
 });
 
 signupEmailInput.addEventListener("focus", (event) => {
     passwordRequirementsContainer.classList.add("hidden");
-    let email = event.target.value.trim();
-    checkEmailExists(email);
-});
-
-signupUsernameInput.addEventListener("keyup", (event) => {
-    let username = event.target.value.trim();
-    let symbols = /[^a-zA-Z0-9\s]/g;
-    
-    if(username.match(symbols)) {
+    const email = event.target.value.trim();
+    if(email === "" || email.length === 0) {
+        event.target.classList.remove("remove-outline");
+        event.target.classList.remove("valid");
+        event.target.classList.remove("invalid");
+        invalidEmailText.classList.add("hidden");
+    } else if(!email.includes("@")) {
         event.target.classList.add("remove-outline");
         event.target.classList.remove("valid");
         event.target.classList.add("invalid");
+        invalidEmailText.classList.remove("hidden");
+    } else if(email.includes("@")) {
+        event.target.classList.remove("invalid");
+        event.target.classList.add("valid");
+        invalidEmailText.classList.add("hidden");
+        checkEmailExists(email);
+    }
+});
+
+signupUsernameInput.addEventListener("keyup", (event) => {
+    const username = event.target.value.trim();
+    const symbols = /[^a-zA-Z0-9\s]/g;
+    
+    if(username === "" || username.length === 0) {
+        event.target.classList.remove("invalid");
+        event.target.classList.remove("valid");
+        event.target.classList.remove("remove-outline");
+    } else if(username.match(symbols)) {
+        event.target.classList.add("remove-outline");
+        event.target.classList.remove("valid");
+        event.target.classList.add("invalid");
+        invalidUsernameText.classList.remove("hidden");
     } else {
         checkUsernameExists(username);
     }
@@ -472,42 +517,51 @@ signupUsernameInput.addEventListener("keyup", (event) => {
 
 signupUsernameInput.addEventListener("focus", (event) => {
     passwordRequirementsContainer.classList.add("hidden");
-    let username = event.target.value.trim();
-    checkUsernameExists(username);
+    const username = event.target.value.trim();
+    if(username === "" || username.length === 0) {
+        event.target.classList.remove("remove-outline");
+    } else {
+        checkUsernameExists(username);
+    }
 });
 
 signupUsernameInput.addEventListener("blur", (event) => {
     event.target.classList.remove("invalid");
     event.target.classList.remove("valid");
+    event.target.classList.add("remove-outline");
+    invalidUsernameText.classList.add("hidden");
 });
 
 signupPasswordInput.addEventListener("focus", () => {
     passwordRequirementsContainer.classList.remove("hidden");
     signupPasswordInput.addEventListener("keyup", () => {
-        let password = signupPasswordInput.value;
+        const password = signupPasswordInput.value;
 
         if(password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).+$/) && password.length >= 8) {
             signupPasswordInput.classList.remove("invalid");
             signupPasswordInput.classList.add("valid");
+            invalidPasswordText.classList.add("hidden");
         } else if(password.length === 0) {
             signupPasswordInput.classList.remove("remove-outline");
             signupPasswordInput.classList.remove("invalid");
-            signupPasswordInput.classList.remove("valid");
+            signupPasswordInput.classList.remove("valid")
+            invalidPasswordText.classList.add("hidden");
         } else {
             signupPasswordInput.classList.add("remove-outline");
             signupPasswordInput.classList.remove("valid");
             signupPasswordInput.classList.add("invalid");
+            invalidPasswordText.classList.remove("hidden");
         }
     });
 });
 
 signupPasswordInput.addEventListener("keyup", () => {
-    let password = signupPasswordInput.value.trim();
+    const password = signupPasswordInput.value.trim();
 
-    let lowercaseLetters = /[a-z]/g;
-    let uppercaseLetters = /[A-Z]/g;
-    let digits = /[0-9]/g;
-    let symbols = /[^a-zA-Z0-9\s]/g;
+    const lowercaseLetters = /[a-z]/g;
+    const uppercaseLetters = /[A-Z]/g;
+    const digits = /[0-9]/g;
+    const symbols = /[^a-zA-Z0-9\s]/g;
 
     if(password.length >= 8) {
         passwordLengthReq.classList.remove("invalid-req");
@@ -552,6 +606,10 @@ signupPasswordInput.addEventListener("keyup", () => {
 
 signupPasswordInput.addEventListener("blur", (event) => {
     passwordRequirementsContainer.classList.add("hidden");
+    invalidPasswordText.classList.add("hidden");
+    event.target.classList.remove("invalid");
+    event.target.classList.remove("valid");
+    event.target.classList.add("remove-outline");
 });
 
 closeLoginDialogBtn.addEventListener("click", () => {
@@ -584,6 +642,9 @@ closeSignUpDialogBtn.addEventListener("click", () => {
     passwordSymbolReq.classList.remove("valid-req");
 
     passwordRequirementsContainer.classList.add("hidden");
+    invalidEmailText.classList.add("hidden");
+    invalidUsernameText.classList.add("hidden");
+    invalidPasswordText.classList.add("hidden");
     
     signUpDialog.close();
 });
@@ -950,7 +1011,7 @@ async function postExerciseData(exerciseName, sets, repetitions, weight, date, u
         console.log("user:", userData.data.user);
         console.log("auth:", authToken);
         try {
-            const response = await fetch("http://localhost:3000/exercise", {
+            const response = await fetch("https://rep-journal.vercel.app/exercise", {
                 method: "POST",
                 body: JSON.stringify({
                     exercise_name: exerciseName,
@@ -1008,7 +1069,7 @@ async function postExerciseSetData(exerciseID, sets, repetitions, weight, userID
 
         try {
             
-            const response = await fetch("http://localhost:3000/exercise-set", {
+            const response = await fetch("https://rep-journal.vercel.app/exercise-set", {
                 method: "POST",
                 body: JSON.stringify({
                     exercise_id: exerciseID,
@@ -1040,7 +1101,7 @@ async function getWorkoutByDate(date, authToken) {
         console.log("trying get workout by date...");
         console.log("auth token from workout by id:", authToken);
         try {
-            const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
+            const response = await fetch(`https://rep-journal.vercel.app/workout/date=${date}`, {
                 method: "GET",
                 headers: getHeaders(authToken),
             });
@@ -1069,7 +1130,7 @@ async function postWorkoutData(date, userID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch("http://localhost:3000/workout", {
+            const response = await fetch("https://rep-journal.vercel.app/workout", {
                 method: "POST",
                 body: JSON.stringify({
                     date: date,
@@ -1097,7 +1158,7 @@ async function postWorkoutExerciseJoinData(workoutID, exerciseID, userID, authTo
         return;
     } else {
         try {
-            const response = await fetch("http://localhost:3000/workout-exercise", {
+            const response = await fetch("https://rep-journal.vercel.app/workout-exercise", {
                 method: "POST",
                 body: JSON.stringify({
                     workout_id: workoutID,
@@ -1125,7 +1186,7 @@ async function getExerciseDataByWorkoutID(workoutID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`http://localhost:3000/workout-exercise/workout-id=${workoutID}`, {
+            const response = await fetch(`https://rep-journal.vercel.app/workout-exercise/workout-id=${workoutID}`, {
                 method: "GET",
                 headers: getHeaders(authToken),
             });
@@ -1151,7 +1212,7 @@ async function updateExerciseByID(exerciseID, exerciseName, sets, repetitions, w
         return; 
     } else {
         try {
-            const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
+            const response = await fetch(`https://rep-journal.vercel.app/exercise/id=${exerciseID}`, {
                 method: "PUT",
                 body: JSON.stringify({
                     exercise_name: exerciseName
@@ -1176,7 +1237,7 @@ async function updateExerciseSetByExerciseID(exerciseID, sets, repetitions, weig
         return;
     } else {
         try {
-            const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
+            const response = await fetch(`https://rep-journal.vercel.app/exercise-set/id=${exerciseID}`, {
                 method: "PUT",
                 body: JSON.stringify({
                     sets: sets,
@@ -1202,7 +1263,7 @@ async function deleteExerciseByID(exerciseID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`http://localhost:3000/exercise/id=${exerciseID}`, {
+            const response = await fetch(`https://rep-journal.vercel.app/exercise/id=${exerciseID}`, {
                 method: "DELETE",
                 headers: getHeaders(authToken),
             });
@@ -1224,7 +1285,7 @@ async function deleteExerciseSetDataByID(exerciseID, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`http://localhost:3000/exercise-set/id=${exerciseID}`, {
+            const response = await fetch(`https://rep-journal.vercel.app/exercise-set/id=${exerciseID}`, {
                 method: "DELETE",
                 headers: getHeaders(authToken),
             });
@@ -1244,7 +1305,7 @@ async function deleteWorkoutByDate(date, authToken) {
         return;
     } else {
         try {
-            const response = await fetch(`http://localhost:3000/workout/date=${date}`, {
+            const response = await fetch(`https://rep-journal.vercel.app/workout/date=${date}`, {
                 method: "DELETE",
                 headers: getHeaders(authToken),
             });
@@ -1265,7 +1326,7 @@ async function postUser(email, username, password) {
     console.log(username);
     console.log(password);
     try {
-        const response = await fetch(`http://localhost:3000/signup`, {
+        const response = await fetch(`https://rep-journal.vercel.app/signup`, {
             method: "POST",
             body: JSON.stringify({
                 email: email,
@@ -1298,7 +1359,7 @@ async function postUser(email, username, password) {
 async function loginUser(email, password) {
 
     try {
-        const response = await fetch(`http://localhost:3000/login`, {
+        const response = await fetch(`https://rep-journal.vercel.app/login`, {
             method: "POST",
             body: JSON.stringify({
                 email: email,
@@ -1357,7 +1418,7 @@ async function trySignUp() {
     let emailCount;
 
     try {
-        const response = await fetch(`http://localhost:3000/user/username=${username}`, {
+        const response = await fetch(`https://rep-journal.vercel.app/user/username=${username}`, {
             method: "GET",
             headers: getHeaders(),
         });
@@ -1375,7 +1436,7 @@ async function trySignUp() {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/user/email=${email}`, {
+        const response = await fetch(`https://rep-journal.vercel.app/user/email=${email}`, {
             method: "GET",
             headers: getHeaders(),
         });
@@ -1411,7 +1472,7 @@ async function emailExists(email) {
     let emailCount;
 
     try {
-        const response = await fetch(`http://localhost:3000/user/email=${email.trim()}`, {
+        const response = await fetch(`https://rep-journal.vercel.app/user/email=${email.trim()}`, {
             method: "GET",
             headers: getHeaders(),
         });
@@ -1433,7 +1494,7 @@ async function emailExists(email) {
 async function usernameExists(username) {
     let usernameCount;
     try {
-        const response = await fetch(`http://localhost:3000/user/username=${username.trim()}`, {
+        const response = await fetch(`https://rep-journal.vercel.app/user/username=${username.trim()}`, {
             method: "GET",
             headers: getHeaders(),
         });
@@ -1452,13 +1513,14 @@ async function usernameExists(username) {
     return usernameCount === 1;
 }
 
-function createDebouncedInputChecker(checkAvailability, target, delay = 100) {
+function createDebouncedInputChecker(checkAvailability, target, delay = 50) {
     return debounce(async (input) => {
 
-        if(input === "" || input.length === 0) {
-            target.classList.remove("invalid");
-            target.classList.remove("valid");
-            target.classList.remove("remove-outline");
+        const currentValue = target.value.trim();
+        console.log("current value:", currentValue);
+
+        if(currentValue === "" || currentValue.length === 0) {
+            return;
         }
 
         if(input !== "" && input !== null && input !== undefined && input.length !== 0) {
@@ -1467,11 +1529,33 @@ function createDebouncedInputChecker(checkAvailability, target, delay = 100) {
                 target.classList.add("remove-outline");
                 target.classList.remove("valid");
                 target.classList.add("invalid");
+                console.log(target);
+                if(target.id === "signup-email-input") {
+                    invalidEmailText.classList.remove("hidden");
+                } else if(target.id === "signup-username-input") {
+                    invalidUsernameText.classList.remove("hidden");
+                }
             } else {
                 target.classList.add("remove-outline");
                 target.classList.remove("invalid");
                 target.classList.add("valid");
+                if(target.id === "signup-email-input") {
+                    invalidEmailText.classList.add("hidden");
+                } else if(target.id === "signup-username-input") {
+                    invalidUsernameText.classList.add("hidden");
+                }
+                console.log(target);
             }
+        } else {
+            if(target.id === "signup-email-input") {
+                invalidEmailText.classList.remove("hidden");
+            } else if(target.id === "signup-username-input") {
+                invalidUsernameText.classList.remove("hidden");
+            }
+            target.classList.add("invalid");
+            target.classList.remove("valid");
+            target.classList.add("remove-outline");
+            console.log(target);
         }
     }, delay);
 }; 
@@ -1502,6 +1586,7 @@ window.addEventListener("resize", () => {
 
 function debounce(callback, wait) {
     let timeoutId = null;
+    
     return(...args) => {
         window.clearTimeout(timeoutId);
         timeoutId = window.setTimeout(() => {
