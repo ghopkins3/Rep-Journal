@@ -100,6 +100,11 @@ only adding 2.5lbs to weight
     color: red;
 }
 
+.submit-login-button {
+    margin-left: 8rem;
+    margin-top: 2rem;
+}
+
 footer {
     background-color: #19212a;
     text-align: center;
