@@ -71,12 +71,16 @@ loginErrorNotif.classList.add("hidden");
 
 let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
 
-if(hiddenItemCount === undefined || hiddenItemCount.length === 0) {
-    collapseOrExpandBtn.textContent = "Collapse All";
-    console.log("hidden item count undefined or zero.");
-} else {
-    collapseOrExpandBtn.textContent = "Expand All";
-}
+console.log("hidden items:", hiddenItemCount);
+
+for(let i = 0; i < localStorage.length; i++) {
+    console.log(localStorage.getItem(localStorage.key(i)));
+    if(localStorage.getItem(localStorage.key(i)) === "false") {
+        collapseOrExpandBtn.textContent = "Collapse All";
+    } else {
+        collapseOrExpandBtn.textContent = "Expand All";
+    }
+} 
 
 let isMobile = window.innerWidth < 601;
 
@@ -214,6 +218,7 @@ document.addEventListener("click", (event) => {
         if(exerciseTableBody.childElementCount === 0) {
             deleteWorkoutByDate(dateDisplay.value, userAccessToken);
             collapseOrExpandBtn.classList.add("hidden");
+            localStorage.removeItem("hiddenItemCount");
         }
         deleteExerciseByID(rowID, userAccessToken);
         localStorage.removeItem(rowID);
@@ -827,6 +832,7 @@ async function createExerciseRow() {
         let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, userID, userAccessToken);
         
         newRow.setAttribute("data-id", exerciseID);
+        localStorage.setItem(exerciseID, "false");
     }
 }
 
