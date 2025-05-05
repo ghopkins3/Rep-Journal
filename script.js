@@ -758,8 +758,6 @@ async function createExerciseRow() {
         alert("user not detected");
         return;
     } else {
-        
-        collapseOrExpandBtn.classList.remove("hidden");
 
         let isMobile = window.innerWidth < 601;
         let columnOffset = 0;
@@ -775,6 +773,7 @@ async function createExerciseRow() {
         
         newRow.setAttribute("data-id", exerciseID);
         localStorage.setItem(exerciseID, "false");
+        collapseOrExpandBtn.classList.remove("hidden");
 
 
         if(isMobile) {
