@@ -771,6 +771,11 @@ async function createExerciseRow() {
 
         let newRow = exerciseTableBody.insertRow();
 
+        let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, userID, userAccessToken);
+        
+        newRow.setAttribute("data-id", exerciseID);
+        localStorage.setItem(exerciseID, "false");
+
 
         if(isMobile) {
             let mobileHideBtnCell = newRow.insertCell(0);
@@ -842,11 +847,6 @@ async function createExerciseRow() {
         editButton.textContent = "Edit";
         saveButton.textContent = "Save";
         deleteButton.textContent = "X";
-        
-        let exerciseID = await postExerciseData(exerciseNameInput.value, Number(exerciseSetsInput.value), Number(exerciseRepsInput.value), Number(exerciseWeightInput.value), dateDisplay.value, userID, userAccessToken);
-        
-        newRow.setAttribute("data-id", exerciseID);
-        localStorage.setItem(exerciseID, "false");
     }
 }
 
