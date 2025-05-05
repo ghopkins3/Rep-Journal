@@ -70,17 +70,22 @@ document.querySelector("#login-notif-img");
 loginErrorNotif.classList.add("hidden");
 
 let hiddenItemCount = JSON.parse(localStorage.getItem("hiddenItemCount")) || [];
+let tableHiddenValues = [];
 
 console.log("hidden items:", hiddenItemCount);
 
 for(let i = 0; i < localStorage.length; i++) {
-    console.log(localStorage.getItem(localStorage.key(i)));
-    if(localStorage.getItem(localStorage.key(i)) === "false" || hiddenItemCount.length === 0 || hiddenItemCount === undefined || hiddenItemCount === null) {
-        collapseOrExpandBtn.textContent = "Collapse All";
-    } else {
-        collapseOrExpandBtn.textContent = "Expand All";
+    if(!isNaN(parseInt(localStorage.key(i)))) {
+        tableHiddenValues.push(localStorage.getItem(localStorage.key(i)));
     }
 } 
+
+if(tableHiddenValues.includes("false")) {
+    collapseOrExpandBtn.textContent = "Collapse All";
+} else {
+    collapseOrExpandBtn.textContent = "Expand All";
+}
+
 
 let isMobile = window.innerWidth < 601;
 
@@ -214,11 +219,13 @@ document.addEventListener("click", (event) => {
         exerciseTableBody.removeChild(event.target.parentNode.parentNode);
         let rowToDelete = event.target.closest("tr");
         rowID = rowToDelete.getAttribute("data-id");
-    
-        if(exerciseTableBody.childElementCount === 0) {
+
+        if(exerciseTableBody.children.length === 0) {
             deleteWorkoutByDate(dateDisplay.value, userAccessToken);
             collapseOrExpandBtn.classList.add("hidden");
             localStorage.removeItem("hiddenItemCount");
+            hiddenItemCount = [];
+            console.log("removing local storage count.");
         }
         deleteExerciseByID(rowID, userAccessToken);
         localStorage.removeItem(rowID);
@@ -295,6 +302,7 @@ document.addEventListener("click", (event) => {
         console.log("hidden length:", hiddenItemCount.length);
 
         if(hiddenItemCount.length === totalRows.length) {
+            console.log("Collapsed here 2.");
             collapseOrExpandBtn.textContent = "Expand All";
         } else {
             collapseOrExpandBtn.textContent = "Collapse All";
@@ -689,6 +697,8 @@ collapseOrExpandBtn.addEventListener("click", (event) => {
     console.log("hidden item count: ", hiddenItemCount.length);
     console.log("hidden items: ", hiddenItemCount);
 
+
+    // hidden item count somehow being added to 
     if(hiddenItemCount.length !== tableRows.length) {
         console.log("Collapsing...");
     
@@ -716,6 +726,7 @@ collapseOrExpandBtn.addEventListener("click", (event) => {
             }
 
             localStorage.setItem("hiddenItemCount", JSON.stringify(hiddenItemCount));
+            console.log("Collapsed here 3.");
             collapseOrExpandBtn.textContent = "Expand All";
             console.log(hiddenItemCount.length);
         }
