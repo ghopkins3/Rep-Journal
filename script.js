@@ -74,19 +74,6 @@ let tableHiddenValues = [];
 
 console.log("hidden items:", hiddenItemCount);
 
-for(let i = 0; i < localStorage.length; i++) {
-    if(!isNaN(parseInt(localStorage.key(i)))) {
-        tableHiddenValues.push(localStorage.getItem(localStorage.key(i)));
-    }
-} 
-
-if(tableHiddenValues.includes("false")) {
-    collapseOrExpandBtn.textContent = "Collapse All";
-} else {
-    collapseOrExpandBtn.textContent = "Expand All";
-}
-
-
 let isMobile = window.innerWidth < 601;
 
 let date = new Date().toLocaleDateString();
@@ -144,6 +131,24 @@ if(sessionStorage.getItem(selectedDate) === null) {
 if(userData.data.user) {
     console.log("awaiting workout on date...");
     await checkWorkoutOnDate(dateDisplay.value, userAccessToken);
+}
+
+let renderedRows = exerciseTableBody.children;
+for(let row of renderedRows) {
+    if(row.cells[2].classList.contains("hidden")) {
+        console.log(row);
+        console.log(row.getAttribute("data-id"));
+        tableHiddenValues.push(row.getAttribute("data-id"));
+    }
+}
+
+console.log("table hidden values:", tableHiddenValues);
+console.log()
+
+if(tableHiddenValues.length !== renderedRows.length) {
+    collapseOrExpandBtn.textContent = "Collapse All";
+} else {
+    collapseOrExpandBtn.textContent = "Expand All";
 }
 
 dateDisplay.addEventListener("change", () => {
@@ -722,6 +727,8 @@ collapseOrExpandBtn.addEventListener("click", (event) => {
             
             localStorage.setItem(item.getAttribute("data-id"), item.children[2].classList.contains("hidden"));
             if(item.children[2].classList.contains("hidden") && !hiddenItemCount.includes(item)) {
+                console.log("Pushing to hidden item count");
+                console.log("item:", item);
                 hiddenItemCount.push(item);
             }
 
