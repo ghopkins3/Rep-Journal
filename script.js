@@ -192,14 +192,18 @@ document.addEventListener("click", (event) => {
         });
     } else if(event.target.id === "sets-input" 
         || event.target.id === "reps-input" 
-        || event.target.id === "weight-input"
         || event.target.getAttribute("className") === "entered-number") {
         event.target.addEventListener("keydown", (event) => {
             let numberInputPattern = /[0-9]/;
             if(!numberInputPattern.test(event.key) && event.key !== "Backspace") {
                 event.preventDefault();
             }
-        });
+        });    
+    } else if(event.target.id === "weigt-input") {
+        let weightInputPattern = /[0-9]*\.[0-9]+/
+        if(!weightInputPattern.test(event.key) && event.key !== "Backspace") {
+            event.preventDefault();
+        }
     } else if(event.target.id === "add-entered-data") {
         let exerciseNameInput = document.querySelector("#exercise-search");
         let exerciseSetsInput = document.querySelector("#sets-input");
