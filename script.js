@@ -142,9 +142,6 @@ for(let row of renderedRows) {
     }
 }
 
-console.log("table hidden values:", tableHiddenValues);
-console.log()
-
 if(tableHiddenValues.length !== renderedRows.length) {
     collapseOrExpandBtn.textContent = "Collapse All";
 } else {
@@ -697,76 +694,58 @@ submitLoginBtn.addEventListener("click", tryLogin);
 submitSignUpBtn.addEventListener("click", trySignUp);
 
 collapseOrExpandBtn.addEventListener("click", (event) => {
-    let tableRows = exerciseTableBody.children;
 
-    console.log("hidden item count: ", hiddenItemCount.length);
-    console.log("hidden items: ", hiddenItemCount);
-
-
-    // hidden item count somehow being added to 
-    if(hiddenItemCount.length !== tableRows.length) {
-        console.log("Collapsing...");
+    let totalRows = exerciseTableBody.children;
     
-        for(let item of tableRows) {
-            for(let child of item.children) {
-                if(child.getAttribute("data-cell") !== "name" && child.getAttribute("className") !== "mobile-hide-button-cell" && !child.classList.contains("hidden")) {
-                    child.classList.add("hidden");
-
-                } else if(child.getAttribute("className") === "mobile-hide-button-cell") {
-                    let buttons = child.children;
-                    for(let btn of buttons) {
-                        if(btn.getAttribute("id") === "mobile-hide-button") {
-                            btn.setAttribute("src", "images/arrow_dropdown.png");
-                        } else if(btn.getAttribute("id") === "mobile-delete-button") {
-                            btn.classList.add("hidden");
-                        }
-                    }
-                }
+    if(hiddenItemCount.length !== totalRows.length) {
+        console.log("here 1");
+        for(let row of totalRows) {
+            console.log("hidden row");
+            if(!row.cells[2].classList.contains("hidden")) {
+                hiddenItemCount.push(row);
             }
+            row.cells[2].classList.add("hidden");
+            row.cells[3].classList.add("hidden");
+            row.cells[4].classList.add("hidden");
+            row.cells[5].classList.add("hidden");
+            row.cells[6].classList.add("hidden");
+            row.cells[7].classList.add("hidden");
+            row.cells[0].firstElementChild.nextElementSibling.setAttribute("src", "images/arrow_dropdown.png");
+            row.cells[0].lastElementChild.classList.add("hidden");
 
+            console.log(row.cells[0].firstElementChild.nextElementSibling);
             
-            localStorage.setItem(item.getAttribute("data-id"), item.children[2].classList.contains("hidden"));
-            if(item.children[2].classList.contains("hidden") && !hiddenItemCount.includes(item)) {
-                console.log("Pushing to hidden item count");
-                console.log("item:", item);
-                hiddenItemCount.push(item);
-            }
-
             localStorage.setItem("hiddenItemCount", JSON.stringify(hiddenItemCount));
-            console.log("Collapsed here 3.");
-            collapseOrExpandBtn.textContent = "Expand All";
-            console.log(hiddenItemCount.length);
+            localStorage.setItem(row.getAttribute("data-id"), row.cells[2].classList.contains("hidden"));
+
+            console.log(row.cells[0].lastElementChild);
+            console.log("row id:", row.getAttribute("data-id"));
         }
-    } else if(hiddenItemCount.length === tableRows.length) {
-        console.log("Expanding...");
 
-        for(let item of tableRows) {
-            for(let child of item.children) {
-                if(child.getAttribute("data-cell") !== "name" && child.getAttribute("className") !== "mobile-hide-button-cell" && child.classList.contains("hidden")) {
-                    child.classList.remove("hidden");
+        collapseOrExpandBtn.textContent = "Expand All";
+    } else if(hiddenItemCount.length === totalRows.length) {
+        console.log("here");
+        for(let row of totalRows) {
+            console.log("not hidden row");
+            row.cells[2].classList.remove("hidden");
+            row.cells[3].classList.remove("hidden");
+            row.cells[4].classList.remove("hidden");
+            row.cells[5].classList.remove("hidden");
+            row.cells[6].classList.remove("hidden");
+            row.cells[7].classList.remove("hidden");
+            row.cells[0].firstElementChild.nextElementSibling.setAttribute("src", "images/arrow_dropup.png");
+            row.cells[0].lastElementChild.classList.remove("hidden");
 
-                } else if(child.getAttribute("className") === "mobile-hide-button-cell") {
-                    let buttons = child.children;
-                    for(let btn of buttons) {
-                        if(btn.getAttribute("id") === "mobile-hide-button") {
-                            btn.setAttribute("src", "images/arrow_dropup.png");
-                        } else if(btn.getAttribute("id") === "mobile-delete-button") {
-                            btn.classList.remove("hidden");
-                        }
-                    }
-                }
-            }
-            localStorage.setItem(item.getAttribute("data-id"), item.children[2].classList.contains("hidden"));
-            if(!item.children[2].classList.contains("hidden")) {
-                console.log("item:", item);
-                hiddenItemCount = hiddenItemCount.filter((item) => item !== item);
-            }
-
+            hiddenItemCount = [];
             localStorage.setItem("hiddenItemCount", JSON.stringify(hiddenItemCount));
-            collapseOrExpandBtn.textContent = "Collapse All";
-            console.log(hiddenItemCount);
-            console.log(hiddenItemCount.length);
+            localStorage.setItem(row.getAttribute("data-id"), row.cells[2].classList.contains("hidden"));
+
+
+            console.log(row.cells[0].lastElementChild);
+            console.log("row id:", row.getAttribute("data-id"));
         }
+
+        collapseOrExpandBtn.textContent = "Collapse All";
     }
 }); 
 
