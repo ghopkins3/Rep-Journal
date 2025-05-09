@@ -4,7 +4,10 @@ import { supabase } from "./lib/frontendSupabaseClient.js";
 const dateDisplay = document.querySelector("#date-display");
 const addExerciseLink = document.querySelector("#add-exercise-link");
 const addExerciseSetsLink = document.querySelector("#add-sets-link");
-const exerciseFormContainer = document.querySelector(".exercise-form-container")
+const exerciseFormContainer = document.querySelector(".exercise-form-container");
+if(document.querySelector("#weight-input") !== null) {
+    const weightInput = document.querySelector("#weight-input");
+}
 const exerciseFormTemplate = document.querySelector("#exercise-form-template");
 const editExerciseFormTemplate = document.querySelector("#edit-exercise-form-template");
 const exerciseTable = document.querySelector(".exercise-table");
@@ -18,6 +21,7 @@ const signUpDialog = document.querySelector(".sign-up-dialog");
 const closeSignUpDialogBtn = document.querySelector(".close-signup-dialog-button");
 const submitLoginBtn = document.querySelector(".submit-login-button");
 const submitSignUpBtn = document.querySelector(".submit-sign-up-button");
+
 const collapseOrExpandBtn = document.querySelector(".collapse-expand-button");
 collapseOrExpandBtn.classList.add("hidden");
 
@@ -199,12 +203,7 @@ document.addEventListener("click", (event) => {
                 event.preventDefault();
             }
         });    
-    } else if(event.target.id === "weigt-input") {
-        let weightInputPattern = /[0-9]*\.[0-9]+/
-        if(!weightInputPattern.test(event.key) && event.key !== "Backspace") {
-            event.preventDefault();
-        }
-    } else if(event.target.id === "add-entered-data") {
+    }  else if(event.target.id === "add-entered-data") {
         let exerciseNameInput = document.querySelector("#exercise-search");
         let exerciseSetsInput = document.querySelector("#sets-input");
         let exerciseRepsInput = document.querySelector("#reps-input");
@@ -423,9 +422,74 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+let decimalPressed = false;
+let weightDecimalLength = 0;
+exerciseFormContainer.addEventListener("keydown", (event) => {
+    if(event.target.id === "weight-input") {
+        let input = event.target.value;
+        console.log(input);
+        
+        if(weightDecimalLength === 2 && event.key !== "Backspace") {
+            event.preventDefault();
+        }
+
+        if(event.key === ".") {
+            console.log("decimal pressed");
+
+            if(!decimalPressed) {
+                decimalPressed = true;
+                console.log("decimal status:", decimalPressed);
+            } else if(decimalPressed) {
+                console.log("decimal status:", decimalPressed);
+                event.preventDefault();
+            }
+        }
+
+        if(input === "") {
+            decimalPressed = false;
+            weightDecimalLength = 0;
+            if(event.key === ".") {
+                event.preventDefault();
+            }
+        }
+    }
+});
+
+exerciseFormContainer.addEventListener("change", (event) => {
+    if(event.target.id === "weight-input") {
+        let input = event.target.value;
+        console.log("changed:", input);
+        decimalPressed = false;
+        weightDecimalLength = 0;
+    }
+});
+
+exerciseFormContainer.addEventListener("keyup", (event) => { 
+    if(event.target.id === "weight-input") {
+        let input = event.target.value;
+        let inputParts = input.split(".");
+        console.log("keyup:", input);
+        console.log("keyup:", inputParts);
+        if(inputParts.length > 1) {
+            console.log("keyup:", inputParts[1]);
+            console.log("keyup:", inputParts[1].length);
+        }
+
+        if(inputParts.length > 1) {
+            weightDecimalLength = inputParts[1].length;    
+        }
+        
+
+        if(weightDecimalLength === 2 && event.key !== "Backspace") {
+            event.preventDefault();
+        }
+        
+    }
+})
+
 closeLoginErrorNotifBtn.addEventListener("click", () => {
     loginErrorNotif.classList.add("hidden");
-})
+});
 
 addExerciseLink.addEventListener("click", () => {
     if(!userData.data.user) {
